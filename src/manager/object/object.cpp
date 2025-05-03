@@ -1,17 +1,41 @@
 #include "object.hpp"
 
-void Object::early_update() {
-    std::cerr << "ERROR: early_update not implemented\n";
-}
+namespace GMTKEngine {
+    Object::Object() {
+        LOG("Object Awoke");
+    }
 
-void Object::update() {
-    std::cerr << "ERROR: update not implemented\n";
-}
+    Object::~Object() {
+        for (auto &comp : mComponents) {
+            delete comp;
+        }
+    }
 
-void Object::late_update() {
-    std::cerr << "ERROR: late_update not implemented\n";
-}
+    void Object::start() {
+        for (auto &comp : mComponents) {
+            comp->start();
+        }
+    }
 
-void Object::draw() {
-    std::cerr << "ERROR: draw not implemented\n";
+    void Object::early_update() {
+        for (auto &comp : mComponents) {
+            comp->early_update();
+        }
+    }
+    
+    void Object::update() {
+        for (auto &comp : mComponents) {
+            comp->update();
+        }
+    }
+    
+    void Object::late_update() {
+        for (auto &comp : mComponents) {
+            comp->late_update();
+        }
+    }
+    
+    void Object::draw() {
+        std::cerr << "ERROR: draw not implemented\n";
+    }
 }

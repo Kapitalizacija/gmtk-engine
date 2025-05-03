@@ -12,6 +12,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Collect source files
 file(GLOB_RECURSE SOURCES src/*.cpp)
+file(GLOB_RECURSE SOURCES ${SOURCES} glad/glad.c)
 
 # Add executable
 add_executable(engine ${SOURCES})
@@ -28,6 +29,8 @@ endif()
 # Include directories (assumes headers are in PATH-visible locations)
 include_directories($ENV{VULKAN_SDK}/Include)
 include_directories($ENV{GLFW_INCLUDE_DIR})  # Optional, if GLFW headers are not in a standard include path
+include_directories(src)
+include_directories(glad)
 
 # Link libraries (assuming they are in the system linker path)
 target_link_libraries(engine PRIVATE glfw vulkan)

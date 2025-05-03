@@ -6,28 +6,31 @@
 
 #include "object/object.hpp"
 
-class Manager {
-    public:
-        Manager();
+namespace GMTKEngine {
+    class Manager {
+        public:
+            Manager();
+            ~Manager();
 
-        template<class T>
-        void create_object(T** object) {
-            static_assert(std::is_base_of<Object, T>::value, "Class must derive from *Object*");
-        
-            *object = new T;
-        
-            objects.insert((Object*)*object);
-        }
-
-        template<class T>
-        void destroy_object(T* object) {
-            static_assert(std::is_base_of<Object, T>::value, "Class must derive from *Object*");
-        
-            objects.erase((Object*)object);
-        }
-
-        void update();
-
-    private:
-        std::unordered_set<Object*> objects;
-};
+            //"Create" is a bit misleading, you have to create an instance of the class and then pass a pointer for it. Same goes for components in the Object 
+            template<class T>
+            void create_object(T* object) {
+                static_assert(std::is_base_of<Object, std::remove_pointer_t<T>>::value);
+            
+                objects.insert((Object*)*object);
+            }
+    
+            template<class T>
+            void destroy_object(T* object) {
+                static_assert(std::is_base_of<Object, std::remove_pointer_t<T>>::value);
+            
+                objects.erase((Object*)*object);
+            }
+            
+            void start();
+            void update();
+    
+        private:
+            std::unordered_set<Object*> objects;
+    };
+}

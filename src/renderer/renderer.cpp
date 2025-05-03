@@ -1,9 +1,11 @@
 #include "renderer.hpp"
 
-Renderer::Renderer(Window& window): core(window) {
+namespace GMTKEngine {
+    Renderer::Renderer(Window& window) {
 
-}
-
-Renderer::~Renderer() {
-
+    }
+    
+    Renderer::~Renderer() {
+    
+    }
 }
