@@ -22,6 +22,7 @@ class Instance {
         VkInstance get_vk_instance();
     private:
         void create_vk_instance(std::string app_name, uint32_t app_version);
+        std::vector<const char*> get_instance_extensions();
 
         VkInstance vk_instance;
 };
