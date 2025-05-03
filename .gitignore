@@ -1,0 +1,9 @@
+backrooms
+CMakeCache.txt
+CMakeFiles
+cmake_install.cmake
+Makefile
+shell.nix
+.envrc
+.direnv
+.vscode
