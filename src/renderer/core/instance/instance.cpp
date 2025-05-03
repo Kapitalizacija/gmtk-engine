@@ -4,11 +4,11 @@ const std::vector<const char*> validation_layers = {
     "VK_LAYER_KHRONOS_validation"
 };
 
-Instance::Instance(GLFWWindow* window) {
+Instance::Instance(GLFWwindow* window) {
     create_vk_instance("placeholder_name", 0);    
 }
 
-Instance::Instance(GLFWWindow* window, std::string app_name, uint32_t app_version) {
+Instance::Instance(GLFWwindow* window, std::string app_name, uint32_t app_version) {
     create_vk_instance(app_name, app_version);    
 }
 

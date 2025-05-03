@@ -1,7 +1,7 @@
 #include "core.hpp"
 
 Core::Core(Window& window):
- instance(),
+ instance(window.get_glfw_window()),
  device(instance.get_vk_instance()),
  swapchain(
     {
