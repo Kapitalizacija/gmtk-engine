@@ -1,9 +1,11 @@
 #include "gl_buffer.hpp"
 
+#define UNDEFINED_WARN WARN("Tried to create a buffer of UNDEFINED type")
+
 namespace GMTKEngine {
     GLBuffer::GLBuffer(GLBufferType buffer_type): buff(0) {
         if (buffer_type == UNDEFINED) {
-            WARN("Tried to create a buffer of undefined type");
+            UNDEFINED_WARN;
         }
 
         create_buffer();
@@ -21,8 +23,7 @@ namespace GMTKEngine {
 
 
     GLBuffer::~GLBuffer() {
-        if ( buff == 0 ) {
-            LOG("Buffer destructed before it was ever used");
+        if ( !is_valid() ) {
             return;
         }
 
@@ -41,9 +42,12 @@ namespace GMTKEngine {
         glCreateBuffers(1, &buff);
     }
 
+    bool GLBuffer::is_valid() {
+        return buff != 0;
+    }
 
     bool GLBuffer::assert_valid() {
-        if ( buff == 0 ) {
+        if ( !is_valid() ) {
             ERROR("Tried to use invalid buffer");
             return true;
         }
@@ -59,6 +63,13 @@ namespace GMTKEngine {
             case INDEX:
                 type = GL_INDEX_ARRAY;
                 break;
+            case UNDEFINED:
+                UNDEFINED_WARN;
+                
+                glDeleteBuffers(1, &buff);
+                buff = 0;
+
+                return;
         }
     }
 }

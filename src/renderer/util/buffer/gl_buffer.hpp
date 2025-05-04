@@ -37,6 +37,8 @@ namespace GMTKEngine {
 
             template<typename T>
             void upload_data(T* data, size_t size, GLBufferUsage buffer_usage);
+
+            bool is_valid();
         private:
             bool assert_valid();
             void create_buffer();

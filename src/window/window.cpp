@@ -43,6 +43,15 @@ namespace GMTKEngine {
 
         glViewport(0, 0, resolution.w, resolution.h);
     }
+
+    bool Window::should_close() {
+        return glfwWindowShouldClose(glfw_win);
+    }
+
+    void Window::update() {
+        glfwSwapBuffers(glfw_win);
+        glfwPollEvents();
+    }
     
     GLFWwindow* Window::get_glfw_window() {
         return glfw_win;

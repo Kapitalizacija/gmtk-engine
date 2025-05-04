@@ -26,7 +26,9 @@ namespace GMTKEngine {
     
             ~Window();
     
-    
+            bool should_close();
+            void update();
+
             Resolution get_resolution();
             GLFWwindow* get_glfw_window();
     

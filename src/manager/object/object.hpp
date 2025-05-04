@@ -18,20 +18,21 @@ namespace GMTKEngine {
             Object();
             ~Object();
 
-            template<class T>
-            void create_component(T* comp) {
-                static_assert(std::is_base_of<Component, std::remove_pointer_t<T>>::value);
+            Object(const Object& other) = delete;
+            Object(Object&& other) = delete;
 
-                mComponents.insert((Component*)*comp);
-            }
-    
             template<class T>
-            void destroy_component(T* comp) {
-               
-                static_assert(std::is_base_of<Component, std::remove_pointer_t<T>>::value);
+            void create_component(T* component) {
+                typedef std::remove_pointer_t<T> deref_T;
+
+                static_assert(std::is_pointer<T>::value);
+                static_assert(std::is_base_of<Component, deref_T>::value);
+
+                *component = new deref_T;
             
-                mComponents.erase((Component*)*comp);
+                mComponents.insert((Component*)*component);
             }
+
     
         protected:
             virtual void start();
