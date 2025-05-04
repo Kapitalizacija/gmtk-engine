@@ -2,6 +2,7 @@
 
 #include <glad/glad.h>
 
+
 namespace GMTKEngine {
     class GLTexture {
         public:
