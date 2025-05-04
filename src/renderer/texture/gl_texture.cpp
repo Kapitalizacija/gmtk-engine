@@ -10,6 +10,7 @@ namespace GMTKEngine {
 		unsigned int texture;
 		glGenTextures(1, &texture);
 		
-        exit(-1);
+        assert(0);
+        return 0;//TODO
 	}
 }
