@@ -2,19 +2,19 @@
 #include <stdfloat>
 
 #include "window/window.hpp"
-#include "manager/manager.hpp"
+#include "scene/scene.hpp"
 #include "renderer/util/buffer/gl_buffer.hpp"
 #include "renderer/util/shader/gl_shader.hpp"
 #include "renderer/util/vao/gl_vao.hpp"
 
-#include "manager/object/components/transform.hpp"
+#include "scene/object/components/transform.hpp"
 
 using namespace GMTKEngine;
 
 int main() {
-    Window window = Window("le backroome", {1280, 720});
+    Window window = Window("GMTKEngine", {1280, 720});
 
-    Manager manager = Manager();
+    Scene manager = Scene();
     
     //Create a test component and add it to a test object.
     Transform* transform;

@@ -3,14 +3,17 @@
 #include <memory>
 #include <stdfloat>
 #include <unordered_set>
+#include <unordered_map>
+#include <list>
 
 #include "object/object.hpp"
+#include "object/camera/camera.hpp"
 
 namespace GMTKEngine {
-    class Manager {
+    class Scene {
         public:
-            Manager();
-            ~Manager();
+            Scene();
+            ~Scene();
 
             //"Create" is a bit misleading, you have to create an instance of the class and then pass a pointer for it. Same goes for components in the Object 
             template<class T>
@@ -21,6 +24,7 @@ namespace GMTKEngine {
                 static_assert(std::is_base_of<Object, deref_T>::value);
 
                 *object = new deref_T;
+//                draw_batches_2d[typeid(deref_T).hash_code()].push_back(*object);
             
                 objects.insert((Object*)*object);
             }
@@ -33,6 +37,7 @@ namespace GMTKEngine {
                 static_assert(std::is_base_of<Object, deref_T>::value);
 
                 delete *object;
+ //               draw_batches_2d[typeid(deref_T).hash_code()].erase(*object);
             
                 objects.erase((Object*)*object);
 
@@ -44,5 +49,8 @@ namespace GMTKEngine {
     
         private:
             std::unordered_set<Object*> objects;
+            std::unordered_map<size_t, std::vector<std::vector<std::vector<Object*>>>> draw_batches_2d;
+
+            Camera camera;
     };
 }

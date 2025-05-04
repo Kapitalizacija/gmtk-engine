@@ -1,15 +1,23 @@
 #pragma once
 
-#include <glm/glm.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
 
-#include "manager/object/components/transform.hpp"
-#include "manager/object/object.hpp"
+#include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include <glad/glad.h>
+
+#include "scene/object/components/transform.hpp"
+#include "scene/object/object.hpp"
 
 namespace GMTKEngine {
 	class Camera : Object {
 		public:
 			Camera();
 			~Camera();
+
+			void apply_projection(GLuint location);
 
 		protected:
 
@@ -20,7 +28,6 @@ namespace GMTKEngine {
 
 		private:
 			Transform transform;
-
-			std::string mComponentName;
+			glm::mat4 projection;
 	};
 }

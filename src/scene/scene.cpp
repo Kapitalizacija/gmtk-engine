@@ -1,23 +1,23 @@
-#include "manager.hpp"
+#include "scene.hpp"
 
 namespace GMTKEngine {
-    Manager::Manager() {
+    Scene::Scene() {
 
     }
 
-    Manager::~Manager() {
+    Scene::~Scene() {
         for (auto &object : objects) {
             delete object;
         }
     }
 
-    void Manager::start() {
+    void Scene::start() {
         for (auto &object : objects) {
             object->start();
         }
     }
     
-    void Manager::update() {
+    void Scene::update() {
         for (auto& object: objects ) {
             object->early_update();
         }
