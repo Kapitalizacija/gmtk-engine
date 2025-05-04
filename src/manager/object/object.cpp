@@ -36,6 +36,8 @@ namespace GMTKEngine {
     }
     
     void Object::draw() {
-        std::cerr << "ERROR: draw not implemented\n";
+        // shoot me pls
+        
+        std::cerr << "ERROR: draw not implemented\n"; // skill issue honestly
     }
 }

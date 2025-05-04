@@ -45,23 +45,35 @@ namespace GMTKEngine {
     bool GLBuffer::is_valid() {
         return buff != 0;
     }
+    
+    GLuint GLBuffer::get_buffer() {
+        return buff;
+    }
+
+    size_t GLBuffer::get_size() {
+        return size;
+    }
+    
+    GLenum GLBuffer::get_type() {
+        return type;
+    }
 
     bool GLBuffer::assert_valid() {
         if ( !is_valid() ) {
             ERROR("Tried to use invalid buffer");
-            return true;
+            return false;
         }
 
-        return false;
+        return true;
     }
     
     void GLBuffer::match_type(GLBufferType buffer_type) {
         switch (buffer_type) {
             case VERTEX:
-                type = GL_VERTEX_ARRAY;
+                type = GL_ARRAY_BUFFER;
                 break;
             case INDEX:
-                type = GL_INDEX_ARRAY;
+                type = GL_ELEMENT_ARRAY_BUFFER;
                 break;
             case UNDEFINED:
                 UNDEFINED_WARN;

@@ -6,7 +6,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-
+#include "io/logging/logger.hpp"
 
 namespace GMTKEngine {
     struct Resolution {

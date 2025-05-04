@@ -6,11 +6,6 @@
 #include "components/component.hpp"
 
 namespace GMTKEngine {
-    template <typename T> class remove_all_pointers{
-        public:
-            typedef T type;
-    };
-
     class Object {
         friend class Manager;
 
@@ -33,7 +28,13 @@ namespace GMTKEngine {
                 mComponents.insert((Component*)*component);
             }
 
-    
+            std::string getName() { return mObjectName; }
+            void setName(std::string name) { mObjectName = name; }
+            
+            void addTag(std::string tag) { mTags.insert(tag); }
+            bool hasTag(std::string tag) { return mTags.count(tag); }
+            void removeTag(std::string tag) { mTags.erase(tag); }
+            
         protected:
             virtual void start();
             virtual void early_update();
@@ -41,7 +42,9 @@ namespace GMTKEngine {
             virtual void late_update();
             virtual void draw();
 
+            std::string mObjectName;
             std::unordered_set<Component*> mComponents;
+            std::unordered_set<std::string> mTags;
     
             bool enabled;
     };

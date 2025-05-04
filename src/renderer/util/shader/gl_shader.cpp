@@ -17,7 +17,7 @@ namespace GMTKEngine {
             return;
         }
 
-
+        create_program(vertex_shader, fragment_shader);
     }
     
     GLShader::GLShader(GLShader&& other) {

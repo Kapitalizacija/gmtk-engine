@@ -20,7 +20,7 @@ add_executable(engine ${SOURCES})
 # Add compile options based on build type
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     # -g flag for debugging symbols
-    target_compile_options(engine PRIVATE -g -DDEBUG)
+    target_compile_options(engine PRIVATE -g -DDEBUG -Wno-int-to-pointer-cast)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     # Optimization flag for release builds. You can change -O3 to other optimization levels if desired.
     target_compile_options(engine PRIVATE -O3)
@@ -33,7 +33,7 @@ include_directories(src)
 include_directories(glad)
 
 # Link libraries (assuming they are in the system linker path)
-target_link_libraries(engine PRIVATE glfw vulkan)
+target_link_libraries(engine PRIVATE glfw glm)
 
 # Output some informational messages
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
