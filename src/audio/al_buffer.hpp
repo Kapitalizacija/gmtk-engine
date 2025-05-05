@@ -5,9 +5,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
-
-#define MINIAUDIO_IMPLEMENTATION
-#include "miniaudio/miniaudio.h"
+#include <miniaudio.h>
 
 namespace GMTKEngine {
     class ALBuffer {

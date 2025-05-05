@@ -9,6 +9,8 @@ namespace GMTKEngine {
             return;
         }
 
+        DBG("Using OpenAL device: " << alcGetString(mDevice, ALC_DEVICE_SPECIFIER));
+
         mContext = alcCreateContext(mDevice, nullptr);
         if (!mContext || !alcMakeContextCurrent(mContext)) {
             ERROR("Failed to create or make current OpenAL context");

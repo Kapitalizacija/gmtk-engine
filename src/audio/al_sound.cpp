@@ -1,9 +1,12 @@
 #include "al_sound.hpp"
 
 namespace GMTKEngine {
-    ALSound::ALSound(ALBuffer &buf) {
+    ALSound::ALSound(ALBuffer &buf)
+        : mPosition(0.f, 0.f, 0.f)
+    {
         alGenSources(1, &mSource);
         alSourcei(mSource, AL_BUFFER, buf.getID());
+        alSource3f(mSource, AL_POSITION, 0.f, 0.f, 0.f); //Defualt position
     }
 
     ALSound::~ALSound() {
@@ -28,5 +31,10 @@ namespace GMTKEngine {
 
     void ALSound::setGain(float gain) {
         alSourcef(mSource, AL_GAIN, gain);
+    }
+
+    void ALSound::setPosition(const glm::vec3 &pos) {
+        mPosition = pos;
+        alSource3f(mSource, AL_POSITION, pos.x, pos.y, pos.z);
     }
 }

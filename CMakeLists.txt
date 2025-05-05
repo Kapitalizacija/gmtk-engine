@@ -34,6 +34,7 @@ include_directories($ENV{GLFW_INCLUDE_DIR})  # Optional, if GLFW headers are not
 include_directories(src)
 include_directories(glad)
 include_directories(stb_image)
+include_directories(miniaudio)
 
 # Link libraries (assuming they are in the system linker path)
 target_link_libraries(engine PRIVATE glfw glm OpenAL::OpenAL)

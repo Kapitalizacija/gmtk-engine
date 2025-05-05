@@ -1,4 +1,7 @@
 #include "al_buffer.hpp"
+#include <iostream>
+#include <vector>
+#include <miniaudio.h>
 
 namespace GMTKEngine {
     //Stolen code from different wikis and cobbled together - DcruBro
@@ -11,58 +14,51 @@ namespace GMTKEngine {
     }
 
     bool ALBuffer::loadFromFile(const std::string &fileName) {
-        ma_result res;
-        ma_decoder dec;
-        ma_decoder_config conf = ma_decoder_config_init(ma_format_f32, 0, 0);
+        ma_decoder decoder;
+        ma_decoder_config config = ma_decoder_config_init(ma_format_f32, 0, 0);
 
-        res = ma_decoder_init_file(fileName.c_str(), &conf, &dec);
-        if (res != MA_SUCCESS) {
-            ERROR("Failed to load audio file " + fileName);
+        if (ma_decoder_init_file(fileName.c_str(), &config, &decoder) != MA_SUCCESS) {
+            ERROR("Failed to initialize decoder for file: " << fileName);
             return false;
         }
-
-        ma_uint64 frameCount = 0;
-        res = ma_decoder_get_length_in_pcm_frames(&dec, &frameCount);
-        if (res != MA_SUCCESS || frameCount == 0) {
-            ERROR("Failed to get audio length");
-            ma_decoder_uninit(&dec);
+        
+        ma_uint64 totalFrameCount = 0;
+        if (ma_decoder_get_length_in_pcm_frames(&decoder, &totalFrameCount) != MA_SUCCESS || totalFrameCount == 0) {
+            ERROR("Failed to get frame length from file: " << fileName);
+            ma_decoder_uninit(&decoder);
             return false;
         }
-
-        std::vector<float> f32Data(frameCount * dec.outputChannels);
-        ma_uint64 framesRead = frameCount;
-        res = ma_decoder_read_pcm_frames(&dec, f32Data.data(), frameCount, &framesRead);
-        if (res != MA_SUCCESS || framesRead == 0) {
-            ERROR("Failed to read audio data");
-            ma_decoder_uninit(&dec);
+        
+        std::vector<float> floatBuffer(totalFrameCount * decoder.outputChannels);
+        ma_uint64 framesRead = totalFrameCount;
+        if (ma_decoder_read_pcm_frames(&decoder, floatBuffer.data(), totalFrameCount, &framesRead) != MA_SUCCESS) {
+            ERROR("Failed to read PCM frames from file: " << fileName);
+            ma_decoder_uninit(&decoder);
             return false;
         }
-
-        // Convert float to signed 16-bit PCM
-        std::vector<short> s16Data(framesRead * dec.outputChannels);
-        for (size_t i = 0; i < s16Data.size(); ++i) {
-            float sample = f32Data[i];
-            if (sample > 1.0f) sample = 1.0f;
-            if (sample < -1.0f) sample = -1.0f;
-            s16Data[i] = static_cast<short>(sample * 32767.0f);
+        
+        std::vector<short> s16Buffer(framesRead * decoder.outputChannels);
+        for (size_t i = 0; i < s16Buffer.size(); ++i) {
+            float clamped = std::max(-1.0f, std::min(1.0f, floatBuffer[i]));
+            s16Buffer[i] = static_cast<short>(clamped * 32767.0f);
         }
-
+        
         ALenum format;
-        if (dec.outputChannels == 1)
+        if (decoder.outputChannels == 1)
             format = AL_FORMAT_MONO16;
-        else if (dec.outputChannels == 2)
+        else if (decoder.outputChannels == 2)
             format = AL_FORMAT_STEREO16;
         else {
-            ERROR("Unsupported channel count: " + dec.outputChannels);
-            ma_decoder_uninit(&dec);
+            ERROR("Unsupported channel count: " << decoder.outputChannels);
+            ma_decoder_uninit(&decoder);
             return false;
         }
-
-        alBufferData(mBuffer, format, s16Data.data(),
-                     static_cast<ALsizei>(s16Data.size() * sizeof(short)),
-                     dec.outputSampleRate);
-
-        ma_decoder_uninit(&dec);
+        
+        alBufferData(mBuffer, format, s16Buffer.data(),
+                     static_cast<ALsizei>(s16Buffer.size() * sizeof(short)),
+                     decoder.outputSampleRate);
+        
+        ma_decoder_uninit(&decoder);
         return true;
     }
 }

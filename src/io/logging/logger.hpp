@@ -10,7 +10,7 @@
     std::cerr << "\033[31m(ERROR) \033[0m" << __PRETTY_FUNCTION__ << ": " << msg << "\n"
 
 #define DBG(msg) \
-    std::cerr << "\033[95m(DEBG) \033[0m" << #msg << " - " << __PRETTY_FUNCTION__ << ": " << msg << "\n"
+    std::cerr << "\033[95m(DEBUG) \033[0m" << #msg << " - " << __PRETTY_FUNCTION__ << ": " << msg << "\n"
 
 namespace GMTKEngine {
     
