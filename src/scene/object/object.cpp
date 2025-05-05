@@ -40,8 +40,4 @@ namespace GMTKEngine {
         
         std::cerr << "ERROR: draw not implemented\n"; // skill issue honestly
     }
-
-    GLuint Object::get_program() {
-        return program;
-    }
 }
