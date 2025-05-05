@@ -4,6 +4,14 @@
 #include <stb_image.h>
 
 namespace GMTKEngine {
+    GLTexture::GLTexture() {
+		tex = rand();
+	}
+    
+	GLuint GLTexture::get_texture(){
+		return tex;
+	}
+
 	GLuint GLTexture::load_texture() {
 		unsigned char *data = stbi_load("someImage.png", &width, &height, &channels, 0);
 

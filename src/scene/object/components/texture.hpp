@@ -7,11 +7,14 @@
 
 namespace GMTKEngine {
     class Texture : public Component {
+        friend class Scene;
+
         public:
             Texture();
             ~Texture();
         
             void set_texture(GLTexture& gl_texture);
+            GLuint get_raw_handle();
 
             virtual void start() { return; }
             virtual void early_update() { return; }

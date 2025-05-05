@@ -5,10 +5,14 @@
 #include "object.hpp"
 #include "components/texture.hpp"
 
+//TODO everything
 namespace GMTKEngine {
-    class Object2D : public Object, public Texture {
+    class Object3D : Object, Texture {
         public:
 
         protected:
+            GLuint get_texture();
+
+            GLuint texture;            
     };
 }

@@ -45,8 +45,6 @@ namespace GMTKEngine {
             virtual void late_update();
             virtual void draw();
 
-            GLuint get_program();
-
             std::string mObjectName;
             std::unordered_set<Component*> mComponents;
             std::unordered_set<std::string> mTags;
