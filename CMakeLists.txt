@@ -13,6 +13,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Collect source files
 file(GLOB_RECURSE SOURCES src/*.cpp)
 file(GLOB_RECURSE SOURCES ${SOURCES} glad/glad.c)
+
+find_package(OpenAL REQUIRED)
+
 # Add executable
 add_executable(engine ${SOURCES})
 
@@ -33,7 +36,7 @@ include_directories(glad)
 include_directories(stb_image)
 
 # Link libraries (assuming they are in the system linker path)
-target_link_libraries(engine PRIVATE glfw glm)
+target_link_libraries(engine PRIVATE glfw glm OpenAL::OpenAL)
 
 # Output some informational messages
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
