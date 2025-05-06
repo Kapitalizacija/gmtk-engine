@@ -48,7 +48,7 @@ int main() {
 
     };
 
-    GLShader shader = GLShader("test_shader", "test_shaders/tri.vert", "test_shaders/tri.frag"); // niggas in paris
+    GLShader shader = GLShader("test_shader", "test_shaders/tri.vert", "test_shaders/tri.frag"); // fellas in paris
     GLVAO vao = GLVAO(attributes, 1);
 
     //Test sound or smth
