@@ -5,7 +5,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
-#include <miniaudio.h>
+#include <cstdint>
 
 namespace GMTKEngine {
     class ALBuffer {
@@ -13,7 +13,9 @@ namespace GMTKEngine {
             ALBuffer();
             ~ALBuffer();
 
-            bool loadFromFile(const std::string &fileName);
+            bool loadFromFile(const std::string &filename);
+            bool loadWAV(const std::string &filename);
+            bool loadMP3(const std::string &filename);
             ALuint getID() const { return mBuffer; }
         
         private:

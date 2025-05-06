@@ -29,15 +29,16 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
 endif()
 
 # Include directories (assumes headers are in PATH-visible locations)
+include_directories(/usr/include) # Just in case :)
 include_directories($ENV{VULKAN_SDK}/Include)
 include_directories($ENV{GLFW_INCLUDE_DIR})  # Optional, if GLFW headers are not in a standard include path
 include_directories(src)
 include_directories(glad)
 include_directories(stb_image)
-include_directories(miniaudio)
+include_directories(drlibs)
 
 # Link libraries (assuming they are in the system linker path)
-target_link_libraries(engine PRIVATE glfw glm OpenAL::OpenAL)
+target_link_libraries(engine PRIVATE glfw OpenAL::OpenAL)
 
 # Output some informational messages
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
