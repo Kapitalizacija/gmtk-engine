@@ -90,7 +90,7 @@ namespace GMTKEngine {
             dstStartOffset = dstEndOffset + (srcEndOffset - srcStartOffset);
         }
 
-        if ( batch.clearQueue.size() & 1 == 1 ) {
+        if ( (batch.clearQueue.size() - 1) % 3 == 1 ) {
             // 2 elements remain
             size_t dstEndOffset = batch.clearQueue[batch.clearQueue.size() - 2] * batch.instanceDataSize;
 
