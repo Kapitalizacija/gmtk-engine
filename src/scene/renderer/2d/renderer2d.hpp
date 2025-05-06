@@ -7,7 +7,7 @@
 
 #include <glad/glad.h>
 
-#include "../../object/2d/object2d.hpp"
+#include "../../object/2d/object2D.hpp"
 
 #define RENDERER2D_BATCH_CLEARUP_TRESHOLD 65536 // 64kb
 

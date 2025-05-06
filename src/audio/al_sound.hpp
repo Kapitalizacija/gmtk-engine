@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 
 namespace GMTKEngine {
+    //Handler for the OpenAL sounds. Loaded via ALBuffers.
     class ALSound {
         public:
             ALSound(ALBuffer &buf);
@@ -20,6 +21,12 @@ namespace GMTKEngine {
             glm::vec3 getPosition() const { return mPosition; }
 
             ALuint getSourceID() const { return mSource; }
+
+            ALint getState() const {
+                ALint state;
+                alGetSourcei(mSource, AL_SOURCE_STATE, &state);
+                return state;
+            }
     
         private:
             ALuint mSource;

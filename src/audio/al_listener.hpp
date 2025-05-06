@@ -4,6 +4,7 @@
 #include <AL/al.h>
 
 namespace GMTKEngine {
+    //Abstraction for the OpenAL listener. It has methods for setting the position of the listener in 3D space.
     class ALListener {
         public:
             static void setPosition(const glm::vec3 &pos);

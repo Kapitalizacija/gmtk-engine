@@ -8,6 +8,7 @@
 #include <cstdint>
 
 namespace GMTKEngine {
+    //Handler for the OpenAL audio buffers. Used for loading audio and playing it in ALSound.
     class ALBuffer {
         public:
             ALBuffer();

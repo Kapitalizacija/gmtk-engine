@@ -110,7 +110,7 @@ namespace GMTKEngine {
         }
     }
     
-    void cleanupBatchSmall(RenderBatch2D& batch) {
+    void Renderer2D::cleanupBatchSmall(RenderBatch2D& batch) {
 
     }
 }

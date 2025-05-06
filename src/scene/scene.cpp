@@ -30,9 +30,9 @@ namespace GMTKEngine {
             object->lateUpdate();
         }
     
-        for (auto& object: objects ) {
+        /*for (auto& object: objects ) {
             object->draw();
-        }
+        }*/
     }
 
 

@@ -1,4 +1,4 @@
-#include "object2d.hpp"
+#include "object2D.hpp"
 
 namespace GMTKEngine {
     std::vector<float> Object2D::getDrawData() {

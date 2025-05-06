@@ -58,7 +58,8 @@ int main() {
         return 1;
     }
 
-    ALBuffer buffer;
+    //TODO: Test the Sound component abstraction here or something
+    /*ALBuffer buffer;
     if (!buffer.loadFromFile("file_example_WAV_10MG.wav")) {
         ERROR("Failed to load audio");
         return 1;
@@ -67,7 +68,7 @@ int main() {
     ALSound sound(buffer);
     sound.setLooping(false);
     sound.setGain(1.0f);
-    sound.play();
+    sound.play();*/
 
     while ( !window.should_close() ) {
         glBindVertexArray(vao.get_vao());
