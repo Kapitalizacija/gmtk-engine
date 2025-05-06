@@ -1,6 +1,6 @@
 #pragma once
 
-#include "component.hpp"
+#include "../component.hpp"
 
 #include <string>
 #include <vector>
@@ -34,7 +34,7 @@ namespace GMTKEngine {
             void addVertex(const Vertex vertex) { mVertices.push_back(vertex); }
 
             //void setPosition
-        private:
+        protected:
             glm::vec3 mPosition;
             glm::vec4 mRotation;
             glm::vec3 mScale;

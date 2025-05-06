@@ -3,6 +3,7 @@
 #include <stdfloat>
 #include <iostream>
 #include <unordered_set>
+#include <vector>
 
 #include <glad/glad.h>
 
@@ -11,6 +12,7 @@
 namespace GMTKEngine {
     class Object {
         friend class Scene;
+        friend class Renderer2D;
 
         public:
             Object();
@@ -20,7 +22,7 @@ namespace GMTKEngine {
             Object(Object&& other) = delete;
 
             template<class T>
-            void create_component(T* component) {
+            void createComponent(T* component) {
                 typedef std::remove_pointer_t<T> deref_T;
 
                 static_assert(std::is_pointer<T>::value);
@@ -37,13 +39,15 @@ namespace GMTKEngine {
             void addTag(std::string tag) { mTags.insert(tag); }
             bool hasTag(std::string tag) { return mTags.count(tag); }
             void removeTag(std::string tag) { mTags.erase(tag); }
+
+            bool isRendered();
             
         protected:
             virtual void start();
-            virtual void early_update();
+            virtual void earlyUpdate();
             virtual void update();
-            virtual void late_update();
-            virtual void draw();
+            virtual void lateUpdate();
+            virtual std::vector<float> getDrawData();
 
             std::string mObjectName;
             std::unordered_set<Component*> mComponents;
@@ -52,5 +56,6 @@ namespace GMTKEngine {
             GLuint program;
     
             bool enabled;
+            bool rendered;
     };
 }

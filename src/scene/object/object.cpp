@@ -17,7 +17,7 @@ namespace GMTKEngine {
         }
     }
 
-    void Object::early_update() {
+    void Object::earlyUpdate() {
         for (auto &comp : mComponents) {
             comp->early_update();
         }
@@ -29,15 +29,18 @@ namespace GMTKEngine {
         }
     }
     
-    void Object::late_update() {
+    void Object::lateUpdate() {
         for (auto &comp : mComponents) {
             comp->late_update();
         }
     }
     
-    void Object::draw() {
-        // shoot me pls
-        
-        std::cerr << "ERROR: draw not implemented\n"; // skill issue honestly
+    std::vector<float> Object::getDrawData() {
+        ERROR("get_draw_data method not implemented, object instances won't be able to be drawn");
+        return {};
+    }
+
+    bool Object::isRendered() {
+        return rendered;
     }
 }

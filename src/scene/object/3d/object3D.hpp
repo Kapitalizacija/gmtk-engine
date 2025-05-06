@@ -2,8 +2,8 @@
 
 #include <glad/glad.h>
 
-#include "object.hpp"
-#include "components/texture.hpp"
+#include "../object.hpp"
+#include "../components/texture/texture.hpp"
 
 //TODO everything
 namespace GMTKEngine {

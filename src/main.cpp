@@ -9,7 +9,7 @@
 #include "renderer/util/vao/gl_vao.hpp"
 #include "renderer/texture/gl_texture.hpp"
 
-#include "scene/object/components/transform.hpp"
+#include "scene/object/components/transform/transform.hpp"
 
 #include "audio/al_device.hpp"
 #include "audio/al_buffer.hpp"

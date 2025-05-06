@@ -8,7 +8,7 @@
 
 #include <glad/glad.h>
 
-#include "scene/object/components/transform.hpp"
+#include "scene/object/components/transform/transform.hpp"
 #include "scene/object/object.hpp"
 
 namespace GMTKEngine {
@@ -22,9 +22,9 @@ namespace GMTKEngine {
 		protected:
 
             virtual void start() { return; }
-            virtual void early_update() { return; }
+            virtual void earlyUpdate() { return; }
 			virtual void update() override;
-            virtual void late_update() { return; }
+            virtual void lateUpdate() { return; }
 
 		private:
 			Transform transform;

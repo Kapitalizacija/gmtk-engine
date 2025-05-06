@@ -7,9 +7,10 @@
 #include <vector>
 
 #include "object/object.hpp"
-#include "object/object2D.hpp"
-#include "object/object3D.hpp"
+#include "object/2d/object2D.hpp"
+#include "object/3d/object3D.hpp"
 #include "object/camera/camera.hpp"
+#include "renderer/2d/renderer2d.hpp"
 
 namespace GMTKEngine {
     class Scene {
@@ -26,11 +27,6 @@ namespace GMTKEngine {
                 static_assert(std::is_base_of<Object, deref_T>::value);
 
                 *object = new deref_T;
-
-                
-
-//                draw_batches_2d[typeid(deref_T).hash_code()].push_back(*object);
-
             
                 objects.insert((Object*)*object);
             }
@@ -43,15 +39,18 @@ namespace GMTKEngine {
                 static_assert(std::is_base_of<Object, deref_T>::value);
 
                 delete *object;
- //               draw_batches_2d[typeid(deref_T).hash_code()].erase(*object);
-            
+
+                
+                if (object->rendered) {
+                    renderer2d.removeObject2d((Object2D*)object);
+                }
                 objects.erase((Object*)*object);
 
                 *object = nullptr;
             }
 
             template <class T>
-            void enable_rendering(T object) {
+            void add_to_renderer(T object) {
                 if (objects.find(object) == objects.end()) {
                     ERROR("Tried to enable rendering on a nonexistant object");
                     return;
@@ -60,7 +59,7 @@ namespace GMTKEngine {
                 typedef std::remove_pointer_t<T> deref_T;
 
                 if(std::is_base_of<Object2D, deref_T>::value) {
-                    add_object2d(object);
+                    renderer2d.addObject2d(object);
                 } else if (std::is_base_of<Object3D, deref_T>::value)
                 {
                     throw new std::runtime_error("UNIMPLEMENTED");
@@ -70,7 +69,7 @@ namespace GMTKEngine {
             }
 
             template <class T>
-            void disable_rendering(T object) {
+            void remove_from_renderer(T object) {
                 if (objects.find(object) == objects.end()) {
                     ERROR("Tried to disable rendering on a nonexistant object");
                     return;
@@ -79,7 +78,7 @@ namespace GMTKEngine {
                 typedef std::remove_pointer_t<T> deref_T;
 
                 if(std::is_base_of<Object2D, deref_T>::value) {
-                    remove_object2d(object);
+                    renderer2d.removeObject2d(object);
                 } else if (std::is_base_of<Object3D, deref_T>::value)
                 {
                     throw new std::runtime_error("UNIMPLEMENTED");
@@ -92,24 +91,11 @@ namespace GMTKEngine {
             void update();
     
         private:
-            void add_object2d(Object2D* object);
-            void remove_object2d(Object2D* object);
-
-            uint64_t combine_hashes(uint64_t hash1, uint64_t hash2);
 
             std::unordered_set<Object*> objects;
 
-            /*
-            hash is made by combining the shader program id and 
-            the type hash so we can know what can be grouped together,
-             will be reordered as needeed
-            */ 
-
-            //think of this as a map, with all the hashes that as a value, has
-            //a vector of objects each with different sprites batched in groups of 32
-            //(the max OpenGL allows the bound at once)
-            std::unordered_map<size_t, std::vector<std::unordered_map<GLuint, std::unordered_set<Object2D*>>>> draw_batches_2d;
-
             Camera camera;
+
+            Renderer2D renderer2d;
     };
 }

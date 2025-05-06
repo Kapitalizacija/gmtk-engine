@@ -1,6 +1,6 @@
 #pragma once
 
-#include "component.hpp"
+#include "../component.hpp"
 #include <glad/glad.h>
 
 #include "renderer/texture/gl_texture.hpp"
@@ -8,6 +8,7 @@
 namespace GMTKEngine {
     class Texture : public Component {
         friend class Scene;
+        friend class Renderer2D;
 
         public:
             Texture();
