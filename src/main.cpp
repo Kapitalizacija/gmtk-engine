@@ -49,28 +49,15 @@ int main() {
         1, 2, 3
     };
 
-    std::vector<TestObj*> objs;
-
+    
     GLShader shader = GLShader("test_shader", "test_shaders/tri.vert", "test_shaders/tri.frag"); // fellas in paris
-    for ( int i = 0; i < 64; i++ ) {
-        TestObj *obj;
-        manager.create_object(&obj);
-        obj->setShader(shader);
-        obj->setTexture(tex);
-        manager.add_to_renderer(obj);
-        objs.push_back(obj);
-    }
 
-    for (int i = 0; i < 64; i++ ) {
-        manager.remove_from_renderer(objs[i]);
-    }
 
     GLBuffer buff = GLBuffer((uint8_t*)verts, sizeof(verts), GLBuffer::VERTEX, GLBuffer::RARELY);
     GLBuffer index_buff = GLBuffer((uint8_t*)indices, sizeof(indices), GLBuffer::INDEX, GLBuffer::RARELY);
 
     GLAttribPointer attributes[] = {
         {&buff, 0, 2, GL_FLOAT, 8, 0}
-
     };
 
     GLVAO vao = GLVAO(attributes, 1);

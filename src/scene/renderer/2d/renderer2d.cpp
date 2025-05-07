@@ -24,7 +24,7 @@ namespace GMTKEngine {
 
             RenderBatch2D& batch = object_group[object_group.size() - 1][object->mTextureID];
             batch.instanceCount = 0;
-            batch.instanceDataSize = sizeof(object->getDrawData());
+            batch.instanceDataSize = sizeof(std::float32_t) * object->getDrawData().size();
 
             appendObjectToBatch(batch, object);
         }
@@ -83,8 +83,6 @@ namespace GMTKEngine {
             cleanupBatchSmall(batch);
         }
 
-        DBG(batch.clearQueue.size() * batch.instanceDataSize / sizeof(std::float32_t) << " " << batch.objectData.size());
-
         batch.objectData.erase(batch.objectData.end() - (batch.clearQueue.size() * batch.instanceDataSize / sizeof(std::float32_t)), batch.objectData.end());
 
         batch.instanceCount -= batch.clearQueue.size();
@@ -92,7 +90,7 @@ namespace GMTKEngine {
     }
     
     void Renderer2D::cleanupBatchLarge(RenderBatch2D& batch) {
-        std::sort(batch.clearQueue.begin(), batch.clearQueue.end())
+        std::sort(batch.clearQueue.begin(), batch.clearQueue.end());
 
         size_t dstStartOffset = batch.clearQueue[0] * batch.instanceDataSize;
         for ( size_t i = 1; i < batch.clearQueue.size() - 2; i += 3) {
@@ -101,7 +99,7 @@ namespace GMTKEngine {
             size_t srcStartOffset = batch.clearQueue[i+1] * batch.instanceDataSize + batch.instanceDataSize;
             size_t srcEndOffset = batch.clearQueue[i+2] * batch.instanceDataSize;
 
-            if (srcEndOffset-srcStartOffset == 0) {
+            if (srcEndOffset - srcStartOffset == 0) {
                 continue;
             }
 
@@ -117,7 +115,7 @@ namespace GMTKEngine {
             size_t srcStartOffset = batch.clearQueue[batch.clearQueue.size() - 1] * batch.instanceDataSize + batch.instanceDataSize;
             size_t srcEndOffset = (batch.clearQueue.size() - 1) * sizeof(std::float32_t);
 
-            if (srcEndOffset-srcStartOffset == 0) {
+            if (srcEndOffset - srcStartOffset == 0) {
                return; 
             }
 
@@ -130,9 +128,7 @@ namespace GMTKEngine {
             size_t srcStartOffset = batch.clearQueue.back() * batch.instanceDataSize + batch.instanceDataSize;
             size_t srcEndOffset = batch.objectData.size() * sizeof(std::float32_t);
 
-            DBG(dstEndOffset << " " << srcStartOffset << " " << srcEndOffset << " " << batch.objectData.size());
-
-            if (srcEndOffset-srcStartOffset == 0) {
+            if (srcEndOffset - srcStartOffset == 0) {
                return; 
             }
 
