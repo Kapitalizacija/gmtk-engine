@@ -52,8 +52,6 @@ namespace GMTKEngine {
             std::string mObjectName;
             std::unordered_set<Component*> mComponents;
             std::unordered_set<std::string> mTags;
-
-            GLuint program;
     
             bool enabled;
             bool rendered;

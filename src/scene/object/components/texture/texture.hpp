@@ -3,7 +3,7 @@
 #include "../component.hpp"
 #include <glad/glad.h>
 
-#include "renderer/texture/gl_texture.hpp"
+#include "gl/texture/gl_texture.hpp"
 
 namespace GMTKEngine {
     class Texture : public Component {
@@ -14,7 +14,7 @@ namespace GMTKEngine {
             Texture();
             ~Texture();
         
-            void set_texture(GLTexture& gl_texture);
+            void setTexture(GLTexture& gl_texture);
             GLuint get_raw_handle();
 
             virtual void start() { return; }

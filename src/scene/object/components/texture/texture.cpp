@@ -9,7 +9,7 @@ namespace GMTKEngine {
         WARN("Nigga this shit ain't implemented");
     }
 
-    void Texture::set_texture(GLTexture& gl_texture) {
+    void Texture::setTexture(GLTexture& gl_texture) {
         mTextureID = gl_texture.get_texture();
     }
 

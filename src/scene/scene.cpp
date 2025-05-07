@@ -39,7 +39,7 @@ namespace GMTKEngine {
 
 /*    uint64_t Scene::combine_hashes(uint64_t hash1, uint64_t hash2) {
         hash1 ^= hash2 + 0x9e3779b9 + (hash1 << 6) + (hash1 >> 2); // stolen from boost
-        return hash1;
+        return hash1c
     } might need in the future 
      dount remove*/
 }

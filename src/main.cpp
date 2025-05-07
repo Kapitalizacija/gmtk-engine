@@ -4,10 +4,10 @@
 
 #include "window/window.hpp"
 #include "scene/scene.hpp"
-#include "renderer/util/buffer/gl_buffer.hpp"
-#include "renderer/util/shader/gl_shader.hpp"
-#include "renderer/util/vao/gl_vao.hpp"
-#include "renderer/texture/gl_texture.hpp"
+#include "gl/util/buffer/gl_buffer.hpp"
+#include "gl/util/shader/gl_shader.hpp"
+#include "gl/util/vao/gl_vao.hpp"
+#include "gl/texture/gl_texture.hpp"
 
 #include "scene/object/components/transform/transform.hpp"
 
@@ -20,6 +20,11 @@
 #include <thread>
 
 using namespace GMTKEngine;
+
+class TestObj : public Object2D {
+    private:
+        uint8_t buff[8192];
+};
 
 int main() {
     Window window = Window("GMTKEngine", {1280, 720});
@@ -39,6 +44,21 @@ int main() {
         1, 2, 3
     };
 
+    std::vector<TestObj*> objs;
+
+    GLShader shader = GLShader("test_shader", "test_shaders/tri.vert", "test_shaders/tri.frag"); // fellas in paris
+    for ( int i = 0; i < 64; i++ ) {
+        TestObj *obj;
+        manager.create_object(&obj);
+        obj->setShader(shader);
+        obj->setTexture(tex);
+        manager.add_to_renderer(obj);
+        objs.push_back(obj);
+    }
+
+    for (int i = 0; i < 64; i++ ) {
+        manager.remove_from_renderer(objs[i]);
+    }
 
     GLBuffer buff = GLBuffer((uint8_t*)verts, sizeof(verts), GLBuffer::VERTEX, GLBuffer::RARELY);
     GLBuffer index_buff = GLBuffer((uint8_t*)indices, sizeof(indices), GLBuffer::INDEX, GLBuffer::RARELY);
@@ -48,7 +68,6 @@ int main() {
 
     };
 
-    GLShader shader = GLShader("test_shader", "test_shaders/tri.vert", "test_shaders/tri.frag"); // fellas in paris
     GLVAO vao = GLVAO(attributes, 1);
 
     //Test sound or smth
