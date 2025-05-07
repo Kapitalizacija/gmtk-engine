@@ -2,16 +2,27 @@
 
 
 namespace GMTKEngine {
+
+    void Renderer2D::render() {
+        for (auto& shader_group : draw_batches_2d) {
+            glUseProgram(shader_group.first);
+
+            for (auto& texture_group : shader_group.second) {
+
+            }
+        }
+    }
+
     void Renderer2D::addObject2d(Object2D* object) {
-        auto& object_group = draw_batches_2d[object->program];
+        auto& shader_group = draw_batches_2d[object->program];
         
         bool found_group = false;
-        for (auto& tex_group : object_group) {
-            if (tex_group.find(object->mTextureID) == tex_group.end() && tex_group.size() >= 32) {
+        for (auto& tex_group : shader_group) {
+            if (tex_group.objects.find(object->mTextureID) == tex_group.objects.end() && tex_group.objects.size() >= 32) {
                 continue;
             } 
 
-            RenderBatch2D& batch = tex_group[object->mTextureID];
+            RenderBatch2D& batch = tex_group;
             appendObjectToBatch(batch, object);
 
             found_group = true;
@@ -20,9 +31,9 @@ namespace GMTKEngine {
         }
 
         if (!found_group) {
-            object_group.emplace_back();
+            shader_group.emplace_back();
 
-            RenderBatch2D& batch = object_group[object_group.size() - 1][object->mTextureID];
+            RenderBatch2D& batch = shader_group.back();
             batch.instanceCount = 0;
             batch.instanceDataSize = sizeof(std::float32_t) * object->getDrawData().size();
 
@@ -35,19 +46,20 @@ namespace GMTKEngine {
     void Renderer2D::removeObject2d(Object2D* object) {
         bool found = false;
 
-        auto& object_group = draw_batches_2d[object->program];
-        for (auto& tex_group : object_group) {
+        auto& shader_group = draw_batches_2d[object->program];
+        for (auto& tex_group : shader_group) {
 
-            if (tex_group.find(object->mTextureID) != tex_group.end()) {
-                RenderBatch2D& batch = tex_group[object->mTextureID];
+            if (tex_group.objects.find(object->mTextureID) != tex_group.objects.end()) {
+                RenderBatch2D& batch = tex_group;
 
-                batch.clearQueue.push_back(batch.objects[object]);
-                batch.objects.erase(object);
+                batch.clearQueue.push_back(batch.objects[object->mTextureID][object]);
+                batch.objects[object->mTextureID].erase(object);
 
                 if (batch.clearQueue.size() * batch.instanceDataSize > RENDERER2D_BATCH_CLEARUP_TRESHOLD
                     || batch.clearQueue.size() >= 64) {
                     cleanupBatch(batch);
                 }
+                object->rendered = false;
                 
                 found = true;
                 break;
@@ -59,11 +71,10 @@ namespace GMTKEngine {
             return;
         }
 
-        object->rendered = false;
     }
     
     void Renderer2D::appendObjectToBatch(RenderBatch2D& batch, Object2D* object) {
-        batch.objects[object] = batch.instanceCount;
+        batch.objects[object->mTextureID][object] = batch.instanceCount;
         batch.instanceCount++;
 
         object->rendered = true;
@@ -86,6 +97,13 @@ namespace GMTKEngine {
         batch.objectData.erase(batch.objectData.end() - (batch.clearQueue.size() * batch.instanceDataSize / sizeof(std::float32_t)), batch.objectData.end());
 
         batch.instanceCount -= batch.clearQueue.size();
+
+        for (auto& tex_group : batch.objects) {
+            for (auto& object : tex_group.second) {
+                object.second -= batch.clearQueue.size();
+            }
+        }
+
         batch.clearQueue.clear();
     }
     
@@ -93,38 +111,33 @@ namespace GMTKEngine {
         std::sort(batch.clearQueue.begin(), batch.clearQueue.end());
 
         size_t dstStartOffset = batch.clearQueue[0] * batch.instanceDataSize;
-        for ( size_t i = 1; i < batch.clearQueue.size() - 2; i += 3) {
-            size_t dstEndOffset = batch.clearQueue[i] * batch.instanceDataSize;
+        for ( size_t i = 1; i < batch.clearQueue.size() - 1; i += 3) {
+            size_t srcStartOffset = batch.clearQueue[i] * batch.instanceDataSize + batch.instanceDataSize;
+            size_t srcEndOffset = batch.clearQueue[i+1] * batch.instanceDataSize;
 
-            size_t srcStartOffset = batch.clearQueue[i+1] * batch.instanceDataSize + batch.instanceDataSize;
-            size_t srcEndOffset = batch.clearQueue[i+2] * batch.instanceDataSize;
+            dstStartOffset += (srcEndOffset - srcStartOffset);
 
             if (srcEndOffset - srcStartOffset == 0) {
                 continue;
             }
 
-            memcpy(batch.objectData.data() + dstEndOffset, batch.objectData.data() + srcStartOffset, srcEndOffset - srcStartOffset);
+            memcpy(batch.objectData.data() + dstStartOffset, batch.objectData.data() + srcStartOffset, srcEndOffset - srcStartOffset);
 
-            dstStartOffset = dstEndOffset + (srcEndOffset - srcStartOffset);
         }
 
-        if ( (batch.clearQueue.size() - 1) % 3 == 1 ) {
+        if ( (batch.clearQueue.size() - 1) % 3 == 2 ) {
             // 2 elements remain
-            size_t dstEndOffset = batch.clearQueue[batch.clearQueue.size() - 2] * batch.instanceDataSize;
-
-            size_t srcStartOffset = batch.clearQueue[batch.clearQueue.size() - 1] * batch.instanceDataSize + batch.instanceDataSize;
+            size_t srcStartOffset = batch.clearQueue.back() * batch.instanceDataSize + batch.instanceDataSize;
             size_t srcEndOffset = (batch.clearQueue.size() - 1) * sizeof(std::float32_t);
 
             if (srcEndOffset - srcStartOffset == 0) {
                return; 
             }
 
-            memcpy(batch.objectData.data() + dstEndOffset, batch.objectData.data() + srcStartOffset, srcEndOffset - srcStartOffset);
+            memcpy(batch.objectData.data() + dstStartOffset, batch.objectData.data() + srcStartOffset, srcEndOffset - srcStartOffset);
 
         } else {
             // 1 elements remains
-            size_t dstEndOffset = batch.clearQueue.back() * batch.instanceDataSize;
-
             size_t srcStartOffset = batch.clearQueue.back() * batch.instanceDataSize + batch.instanceDataSize;
             size_t srcEndOffset = batch.objectData.size() * sizeof(std::float32_t);
 
@@ -132,7 +145,8 @@ namespace GMTKEngine {
                return; 
             }
 
-            memcpy(batch.objectData.data() + dstEndOffset, batch.objectData.data() + srcStartOffset, srcEndOffset - srcStartOffset);
+            DBG(dstStartOffset << " " << " " << srcEndOffset << " " << srcStartOffset << " " << batch.objectData.size() * 4);
+            memcpy(batch.objectData.data() + dstStartOffset, batch.objectData.data() + srcStartOffset, srcEndOffset - srcStartOffset);
         }
     }
     

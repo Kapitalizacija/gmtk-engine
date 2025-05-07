@@ -10,7 +10,7 @@ namespace GMTKEngine {
     }
 
     void Texture::setTexture(GLTexture& gl_texture) {
-        mTextureID = gl_texture.get_texture();
+        mTextureID = gl_texture.getTexture();
     }
 
     GLuint Texture::get_raw_handle() {

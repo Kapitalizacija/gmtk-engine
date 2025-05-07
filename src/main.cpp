@@ -35,7 +35,7 @@ int main() {
     }
 
     Scene manager = Scene();
-    GLTexture tex = GLTexture();
+    GLTexture tex = GLTexture("image.png");
 
     std::float32_t verts[] = {
         0.0f, 0.0f,
@@ -51,6 +51,7 @@ int main() {
 
     
     GLShader shader = GLShader("test_shader", "test_shaders/tri.vert", "test_shaders/tri.frag"); // fellas in paris
+
 
 
     GLBuffer buff = GLBuffer((uint8_t*)verts, sizeof(verts), GLBuffer::VERTEX, GLBuffer::RARELY);

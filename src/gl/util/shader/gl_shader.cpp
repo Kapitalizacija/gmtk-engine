@@ -6,14 +6,12 @@ namespace GMTKEngine {
         GLuint fragment_shader = create_shader(fragment_path, GL_FRAGMENT_SHADER);
 
         if ( !vertex_shader ) {
-            std::string err = (std::ostringstream() << "Failed to generate vertex shader from: : " << vertex_path).str();
-            ERROR(err);
+            ERROR("Failed to generate vertex shader from: : " << vertex_path);
             return;
         }
 
         if ( !fragment_shader ) {
-            std::string err = (std::ostringstream() << "Failed to generate fragment shader from: : " << fragment_path).str();
-            ERROR(err);
+            ERROR("Failed to generate fragment shader from: : " << fragment_path);
             return;
         }
 
@@ -52,9 +50,7 @@ namespace GMTKEngine {
         std::fstream stream(path, std::ios_base::in | std::ios_base::ate);
 
         if ( !stream.is_open() ) {
-            std::string err = (std::ostringstream() << "Failed to open shader file for " << name.c_str() << ": " << path).str();
-
-            ERROR(err.c_str());
+            ERROR("Failed to open shader file for " << name.c_str() << ": " << path);
             return {};
         }
 
@@ -84,10 +80,7 @@ namespace GMTKEngine {
             char log[512];
             glGetShaderInfoLog(shader, 512, nullptr, log);
 
-            std::string err = (std::ostringstream() << "Failed to compile shader file for " << name.c_str() << ": " << shader_path << "\n\t"
-            << log).str();
-
-            ERROR(err.c_str());
+            ERROR("Failed to compile shader file for " << name.c_str() << ": " << shader_path << "\n\t" << log);
 
             glDeleteShader(shader);
 
@@ -116,7 +109,7 @@ namespace GMTKEngine {
             std::string err = (std::ostringstream() << "Failed to link program for shader " << name.c_str() << "\n\t"
             << log).str();
 
-            ERROR(err.c_str());
+            ERROR("Failed to link program for shader " << name.c_str() << "\n\t" << log);
             
             glDeleteProgram(program);
             program = 0;

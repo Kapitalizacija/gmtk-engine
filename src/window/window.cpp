@@ -7,11 +7,23 @@ MessageCallback( GLenum source,
                  GLenum severity,
                  GLsizei length,
                  const GLchar* message,
-                 const void* userParam )
-{
-  fprintf( stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
-           ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
-            type, severity, message );
+                 const void* userParam ) {
+
+    if (severity <= GL_DEBUG_SEVERITY_NOTIFICATION) {
+        return;
+    }
+
+    switch (severity) {
+        case GL_DEBUG_SEVERITY_LOW:
+           LOG(message); 
+           break;
+        case GL_DEBUG_SEVERITY_MEDIUM:
+           WARN(message); 
+           break;
+        case GL_DEBUG_SEVERITY_HIGH:
+           ERROR(message); 
+           break;
+    }
 }
 
 // During init, enable debug output

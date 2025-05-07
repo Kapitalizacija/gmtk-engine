@@ -2,19 +2,32 @@
 
 #include <glad/glad.h>
 
-#include <cstdlib>
+#include <cstdint>
+#include <string>
 
+#include "io/logging/logger.hpp"
 
 namespace GMTKEngine {
+    struct GLTextureData {
+
+    };
+
     class GLTexture {
         public:
             GLTexture();
+            GLTexture(std::string imagePath);
 
-            GLuint get_texture();
-            GLuint load_texture();
+            GLTexture(const GLTexture& other) = delete; 
 
+            GLTexture(GLTexture&& other); 
+            void operator=(GLTexture&& other);
+
+            ~GLTexture();
+
+            GLuint getTexture();
+            bool isValid();
         private:
-            int width, height, channels;
+            void createTexture(std::string path);
 
             GLuint tex;
     };

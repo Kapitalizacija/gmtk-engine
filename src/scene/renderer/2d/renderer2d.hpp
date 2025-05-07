@@ -15,7 +15,7 @@
 namespace GMTKEngine {
 
     struct RenderBatch2D {
-        std::unordered_map<Object2D*, size_t> objects;
+        std::unordered_map<GLuint, std::unordered_map<Object2D*, size_t>> objects;
 
         std::vector<std::float32_t> objectData;
         std::vector<size_t> clearQueue;
@@ -26,8 +26,9 @@ namespace GMTKEngine {
 
     class Renderer2D {
         public:
-            void addObject2d(Object2D* object);
+            void render();
 
+            void addObject2d(Object2D* object);
             void removeObject2d(Object2D* object);
         private:
             void appendObjectToBatch(RenderBatch2D& batch, Object2D* object);
@@ -45,6 +46,6 @@ namespace GMTKEngine {
             //think of this as a map, with all the hashes that as a value, has
             //a vector of objects each with different sprites batched in groups of 32
             //(the max OpenGL allows the bound at once)
-            std::unordered_map<size_t, std::vector<std::unordered_map<GLuint, RenderBatch2D>>> draw_batches_2d;
+            std::unordered_map<GLuint, std::vector<RenderBatch2D>> draw_batches_2d;
     };
 }
