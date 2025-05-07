@@ -16,6 +16,8 @@
 #include "audio/al_sound.hpp"
 #include "audio/al_listener.hpp"
 
+#include "memory/memorypool.hpp"
+
 #include <cmath>
 #include <thread>
 
