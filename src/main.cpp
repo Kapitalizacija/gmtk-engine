@@ -28,6 +28,11 @@ class TestObj : public Object2D {
 
 int main() {
     Window window = Window("GMTKEngine", {1280, 720});
+    ALDevice audio;
+    if (!audio.isValid()) {
+        ERROR("OpenAL Device Error, exiting");
+        return 1;
+    }
 
     Scene manager = Scene();
     GLTexture tex = GLTexture();
@@ -69,13 +74,6 @@ int main() {
     };
 
     GLVAO vao = GLVAO(attributes, 1);
-
-    //Test sound or smth
-    ALDevice audio;
-    if (!audio.isValid()) {
-        ERROR("OpenAL Device Error, exiting");
-        return 1;
-    }
 
     //TODO: Test the Sound component abstraction here or something
     /*ALBuffer buffer;
