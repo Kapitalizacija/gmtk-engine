@@ -7,10 +7,26 @@ namespace GMTKEngine {
         for (auto& shader_group : draw_batches_2d) {
             glUseProgram(shader_group.first);
 
-            for (auto& texture_group : shader_group.second) {
+            for (RenderBatch2D& batch : shader_group.second) {
+                batch.batchData.upload_data(batch.objectData.data(), batch.objectData.size() * sizeof(std::float32_t), GLBuffer::OFTEN);
 
+                auto it = batch.objects.begin();
+                for ( size_t i = 0; i < batch.objects.size(); i++) {
+                    glBindTexture(GL_TEXTURE0 + i, it->first);
+                    it++;
+                }
+
+                glBindVertexArray(batch.vao.getVAO());
+
+                glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr, batch.instanceCount);
             }
         }
+
+        for (size_t i = 0; i < 32; i++) {
+            glBindTexture(GL_TEXTURE0 + i, 0);
+        }
+        glUseProgram(0);
+        glBindVertexArray(0);
     }
 
     void Renderer2D::addObject2d(Object2D* object) {
@@ -37,6 +53,8 @@ namespace GMTKEngine {
             batch.instanceCount = 0;
             batch.instanceDataSize = sizeof(std::float32_t) * object->getDrawData().size();
 
+            initBatch(batch);
+
             appendObjectToBatch(batch, object);
         }
 
@@ -47,10 +65,10 @@ namespace GMTKEngine {
         bool found = false;
 
         auto& shader_group = draw_batches_2d[object->program];
-        for (auto& tex_group : shader_group) {
+        for (auto& batch : shader_group) {
 
-            if (tex_group.objects.find(object->mTextureID) != tex_group.objects.end()) {
-                RenderBatch2D& batch = tex_group;
+            if (batch.objects.find(object->mTextureID) != batch.objects.end()) {
+                RenderBatch2D& batch = batch;
 
                 batch.clearQueue.push_back(batch.objects[object->mTextureID][object]);
                 batch.objects[object->mTextureID].erase(object);
@@ -159,5 +177,34 @@ namespace GMTKEngine {
                 batch.objectData.begin() + start_offset + (batch.instanceDataSize / sizeof(std::float32_t))
             );
         }
+    }
+
+    void Renderer2D::initBatch(RenderBatch2D& batch) {
+        batch.batchData = GLBuffer(GLBuffer::VERTEX);
+
+        GLAttribPointer ptr1;
+        ptr1.buff = &batch.batchData;
+        ptr1.component_count = 3;
+        ptr1.type = GL_FLOAT;
+        ptr1.stride = batch.instanceDataSize;
+        ptr1.offset = 0;
+
+        GLAttribPointer ptr2;
+        ptr2.buff = &batch.batchData;
+        ptr2.component_count = 4;
+        ptr2.type = GL_FLOAT;
+        ptr2.stride = batch.instanceDataSize;
+        ptr2.offset = 12;
+
+        GLAttribPointer ptr3;
+        ptr3.buff = &batch.batchData;
+        ptr3.component_count = 3;
+        ptr3.type = GL_FLOAT;
+        ptr3.stride = batch.instanceDataSize;
+        ptr3.offset = 28;
+
+        GLAttribPointer ptrs[] = {ptr1, ptr2, ptr3};
+
+        batch.vao = GLVAO(ptrs, 3);
     }
 }

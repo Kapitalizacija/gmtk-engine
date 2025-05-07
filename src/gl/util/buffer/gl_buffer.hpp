@@ -23,6 +23,7 @@ namespace GMTKEngine {
                 RARELY
             };
 
+            GLBuffer();
             GLBuffer(GLBufferType buffer_type);
 
             template<typename T>

@@ -2,9 +2,12 @@
 
 namespace GMTKEngine {
 
+    GLVAO::GLVAO(): vao(0){
+
+    }
     GLVAO::GLVAO(GLAttribPointer* attrib_pointers, size_t attrib_pointer_count) {
-        create_vao();
-        create_attrib_pointers(attrib_pointers, attrib_pointer_count);
+        createVAO();
+        createAttribPointers(attrib_pointers, attrib_pointer_count);
     }
 
     GLVAO::GLVAO(GLVAO&& other) {
@@ -16,26 +19,26 @@ namespace GMTKEngine {
     }
 
     GLVAO::~GLVAO() {
-        if ( !is_valid() ) {
+        if ( !isValid() ) {
             return;
         }
 
         glDeleteVertexArrays(1, &vao);
     }
 
-    bool GLVAO::is_valid() {
+    bool GLVAO::isValid() {
         return vao != 0;
     }
 
-    GLuint GLVAO::get_vao() {
+    GLuint GLVAO::getVAO() {
         return vao;
     }
     
-    void GLVAO::create_vao() {
+    void GLVAO::createVAO() {
         glCreateVertexArrays(1, &vao);
     }
     
-    void GLVAO::create_attrib_pointers(GLAttribPointer* attrib_pointers, size_t attrib_pointer_count) {
+    void GLVAO::createAttribPointers(GLAttribPointer* attrib_pointers, size_t attrib_pointer_count) {
         glBindVertexArray(vao);
 
         for (size_t i = 0; i < attrib_pointer_count; i++) {
@@ -51,6 +54,12 @@ namespace GMTKEngine {
 
         glBindVertexArray(0);
     } 
+
+    void GLVAO::addEBO(GLBuffer& buff) {
+        if (buff.get_type() != GLBuffer::INDEX) {
+            ERROR("Tried to set the index buffer in VAO with non index buffer");
+        }
+    }
 
     void GLVAO::move(GLVAO& other) {
         vao = other.vao;

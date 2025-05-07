@@ -3,6 +3,10 @@
 #define UNDEFINED_WARN WARN("Tried to create a buffer of UNDEFINED type")
 
 namespace GMTKEngine {
+    GLBuffer::GLBuffer() {
+        type = UNDEFINED; 
+    }
+
     GLBuffer::GLBuffer(GLBufferType buffer_type): buff(0) {
         if (buffer_type == UNDEFINED) {
             UNDEFINED_WARN;

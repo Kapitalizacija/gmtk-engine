@@ -78,7 +78,7 @@ int main() {
     sound.play();*/
 
     while ( !window.should_close() ) {
-        glBindVertexArray(vao.get_vao());
+        glBindVertexArray(vao.getVAO());
         glUseProgram(shader.get_program());
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buff.get_buffer());

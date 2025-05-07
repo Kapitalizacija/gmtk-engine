@@ -9,19 +9,24 @@
 #include <glad/glad.h>
 
 #include "../../object/2d/object2D.hpp"
+#include "gl/util/buffer/gl_buffer.hpp"
+#include "gl/util/vao/gl_vao.hpp"
 
 #define RENDERER2D_BATCH_CLEARUP_TRESHOLD 65536 // 64kb
 
 namespace GMTKEngine {
 
     struct RenderBatch2D {
-        std::unordered_map<GLuint, std::unordered_map<Object2D*, size_t>> objects;
+        std::unordered_map<GLuint, std::unordered_map<Object2D*, GLuint>> objects;
 
         std::vector<std::float32_t> objectData;
         std::vector<size_t> clearQueue;
 
         size_t instanceCount;
         size_t instanceDataSize;
+
+        GLVAO vao;
+        GLBuffer batchData;
     };
 
     class Renderer2D {
@@ -36,6 +41,8 @@ namespace GMTKEngine {
             void cleanupBatch(RenderBatch2D& batch);
             void cleanupBatchLarge(RenderBatch2D& batch);
             void cleanupBatchSmall(RenderBatch2D& batch);
+
+            void initBatch(RenderBatch2D& batch);
 
             /*
             hash is made by combining the shader program id and 

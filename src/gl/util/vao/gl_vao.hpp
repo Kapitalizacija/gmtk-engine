@@ -18,6 +18,7 @@ namespace GMTKEngine {
     class GLVAO {
 
         public:
+            GLVAO();
             GLVAO(GLAttribPointer* attrib_pointers, size_t attrib_pointer_count);
 
             GLVAO(const GLVAO& other) = delete;
@@ -27,11 +28,13 @@ namespace GMTKEngine {
 
             ~GLVAO();
 
-            bool is_valid();
-            GLuint get_vao();
+            void addEBO(GLBuffer& buff);
+
+            bool isValid();
+            GLuint getVAO();
         private:
-            void create_vao();
-            void create_attrib_pointers(GLAttribPointer* attrib_pointers, size_t attrib_pointer_count);
+            void createVAO();
+            void createAttribPointers(GLAttribPointer* attrib_pointers, size_t attrib_pointer_count);
 
             void move(GLVAO& other);
 
