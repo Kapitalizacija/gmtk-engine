@@ -22,7 +22,7 @@ add_executable(engine ${SOURCES})
 # Add compile options based on build type
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     # -g flag for debugging symbols
-    target_compile_options(engine PRIVATE -g -DDEBUG -Wno-int-to-pointer-cast)
+    target_compile_options(engine PRIVATE -g -DDEBUG -Wno-int-to-pointer-cast -O0)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     # Optimization flag for release builds. You can change -O3 to other optimization levels if desired.
     target_compile_options(engine PRIVATE -O3)

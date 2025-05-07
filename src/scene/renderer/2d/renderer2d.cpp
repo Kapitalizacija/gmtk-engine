@@ -7,13 +7,14 @@ namespace GMTKEngine {
         
         bool found_group = false;
         for (auto& tex_group : object_group) {
-            DBG(object->mTextureID << " " << tex_group.size());
             if (tex_group.find(object->mTextureID) == tex_group.end() && tex_group.size() >= 32) {
                 continue;
             } 
 
             RenderBatch2D& batch = tex_group[object->mTextureID];
             appendObjectToBatch(batch, object);
+
+            found_group = true;
 
             break;
         }
@@ -35,15 +36,16 @@ namespace GMTKEngine {
         bool found = false;
 
         auto& object_group = draw_batches_2d[object->program];
-        for (auto& shader_group : object_group) {
+        for (auto& tex_group : object_group) {
 
-            if (shader_group.find(object->mTextureID) != shader_group.end()) {
-                RenderBatch2D& batch = shader_group[object->mTextureID];
+            if (tex_group.find(object->mTextureID) != tex_group.end()) {
+                RenderBatch2D& batch = tex_group[object->mTextureID];
 
                 batch.clearQueue.push_back(batch.objects[object]);
                 batch.objects.erase(object);
 
-                if (batch.clearQueue.size() * batch.instanceDataSize > RENDERER2D_BATCH_CLEARUP_TRESHOLD) {
+                if (batch.clearQueue.size() * batch.instanceDataSize > RENDERER2D_BATCH_CLEARUP_TRESHOLD
+                    || batch.clearQueue.size() >= 64) {
                     cleanupBatch(batch);
                 }
                 
@@ -61,8 +63,10 @@ namespace GMTKEngine {
     }
     
     void Renderer2D::appendObjectToBatch(RenderBatch2D& batch, Object2D* object) {
-        batch.objects[object] = batch.instanceDataSize;
+        batch.objects[object] = batch.instanceCount;
         batch.instanceCount++;
+
+        object->rendered = true;
 
         std::vector<float> new_dat = object->getDrawData();
         batch.objectData.insert(batch.objectData.end(), new_dat.begin(), new_dat.end());
@@ -73,18 +77,23 @@ namespace GMTKEngine {
     }
     
     void Renderer2D::cleanupBatch(RenderBatch2D& batch) {
-        DBG("cleanup");
         if (batch.clearQueue.size() > 2) {
             cleanupBatchLarge(batch);
         } else {
             cleanupBatchSmall(batch);
         }
 
+        DBG(batch.clearQueue.size() * batch.instanceDataSize / sizeof(std::float32_t) << " " << batch.objectData.size());
+
+        batch.objectData.erase(batch.objectData.end() - (batch.clearQueue.size() * batch.instanceDataSize / sizeof(std::float32_t)), batch.objectData.end());
+
         batch.instanceCount -= batch.clearQueue.size();
         batch.clearQueue.clear();
     }
     
     void Renderer2D::cleanupBatchLarge(RenderBatch2D& batch) {
+        std::sort(batch.clearQueue.begin(), batch.clearQueue.end())
+
         size_t dstStartOffset = batch.clearQueue[0] * batch.instanceDataSize;
         for ( size_t i = 1; i < batch.clearQueue.size() - 2; i += 3) {
             size_t dstEndOffset = batch.clearQueue[i] * batch.instanceDataSize;
@@ -92,7 +101,11 @@ namespace GMTKEngine {
             size_t srcStartOffset = batch.clearQueue[i+1] * batch.instanceDataSize + batch.instanceDataSize;
             size_t srcEndOffset = batch.clearQueue[i+2] * batch.instanceDataSize;
 
-            memcpy(batch.clearQueue.data() + dstEndOffset, batch.clearQueue.data() + srcStartOffset, srcEndOffset - srcStartOffset);
+            if (srcEndOffset-srcStartOffset == 0) {
+                continue;
+            }
+
+            memcpy(batch.objectData.data() + dstEndOffset, batch.objectData.data() + srcStartOffset, srcEndOffset - srcStartOffset);
 
             dstStartOffset = dstEndOffset + (srcEndOffset - srcStartOffset);
         }
@@ -104,16 +117,26 @@ namespace GMTKEngine {
             size_t srcStartOffset = batch.clearQueue[batch.clearQueue.size() - 1] * batch.instanceDataSize + batch.instanceDataSize;
             size_t srcEndOffset = (batch.clearQueue.size() - 1) * sizeof(std::float32_t);
 
-            memcpy(batch.clearQueue.data() + dstEndOffset, batch.clearQueue.data() + srcStartOffset, srcEndOffset - srcStartOffset);
+            if (srcEndOffset-srcStartOffset == 0) {
+               return; 
+            }
+
+            memcpy(batch.objectData.data() + dstEndOffset, batch.objectData.data() + srcStartOffset, srcEndOffset - srcStartOffset);
 
         } else {
             // 1 elements remains
-            size_t dstEndOffset = batch.clearQueue[batch.clearQueue.size() - 1] * batch.instanceDataSize;
+            size_t dstEndOffset = batch.clearQueue.back() * batch.instanceDataSize;
 
-            size_t srcStartOffset = batch.clearQueue[batch.clearQueue.size() - 1] * batch.instanceDataSize + batch.instanceDataSize;
-            size_t srcEndOffset = (batch.clearQueue.size() - 1) * sizeof(std::float32_t);
+            size_t srcStartOffset = batch.clearQueue.back() * batch.instanceDataSize + batch.instanceDataSize;
+            size_t srcEndOffset = batch.objectData.size() * sizeof(std::float32_t);
 
-            memcpy(batch.clearQueue.data() + dstEndOffset, batch.clearQueue.data() + srcStartOffset, srcEndOffset - srcStartOffset);
+            DBG(dstEndOffset << " " << srcStartOffset << " " << srcEndOffset << " " << batch.objectData.size());
+
+            if (srcEndOffset-srcStartOffset == 0) {
+               return; 
+            }
+
+            memcpy(batch.objectData.data() + dstEndOffset, batch.objectData.data() + srcStartOffset, srcEndOffset - srcStartOffset);
         }
     }
     
