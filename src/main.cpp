@@ -94,10 +94,7 @@ int main() {
     scene.addToRenderer(obj1);
 
     while ( !window.should_close() ) {
-        glClear(GL_COLOR_BUFFER_BIT);
-
         scene.update();
-
         window.update();
     }
 

@@ -28,6 +28,8 @@ namespace GMTKEngine {
             texture_indices[i] = i;
         }
 
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 
         for (auto& shaderGroup : draw_batches_2d) {
             glUseProgram(shaderGroup.first);

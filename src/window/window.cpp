@@ -80,10 +80,11 @@ namespace GMTKEngine {
         }
 
         glViewport(0, 0, resolution.w, resolution.h);
-//        glEnable(GL_DEPTH_TEST);
-
+        
+        glEnable(GL_DEPTH_TEST);
         glEnable(GL_DEBUG_OUTPUT);
         glDebugMessageCallback(MessageCallback, 0);
+
     }
 
     bool Window::should_close() {
