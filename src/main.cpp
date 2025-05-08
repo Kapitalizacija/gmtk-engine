@@ -16,6 +16,8 @@
 #include "audio/al_sound.hpp"
 #include "audio/al_listener.hpp"
 
+#include "scene/object/components/sound/sound.hpp"
+
 #include "memory/memorypool.hpp"
 
 #include <cmath>
@@ -76,6 +78,18 @@ int main() {
     sound.setLooping(false);
     sound.setGain(1.0f);
     sound.play();*/
+
+    //The update() method needs to be impemented fully before this will work :(
+    Object2D *obj = new Object2D();
+    manager.create_object(&obj);
+    obj->setName("AudioObject");
+    obj->addTag("AudioObject");
+    Transform *transform = new Transform();
+    Sound *sound = new Sound();
+    obj->createComponent(&transform);
+    obj->createComponent(&sound);
+    sound->loadSound("test", "example.mp3");
+    sound->playSound("test");
 
     while ( !window.should_close() ) {
         glBindVertexArray(vao.getVAO());
