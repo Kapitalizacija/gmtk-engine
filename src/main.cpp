@@ -79,18 +79,23 @@ int main() {
     sound.play();*/
 
     //The update() method needs to be impemented fully before this will work :(
-    Object2D *obj = new Object2D();
+    Object2D *obj;
     scene.create_object(&obj);
-    obj->setName("AudioObject");
-    obj->addTag("AudioObject");
-    Transform *transform = new Transform();
-    Sound *sound = new Sound();
-    obj->createComponent(&transform);
-    obj->createComponent(&sound);
-    sound->loadSound("test", "example.mp3");
-    sound->playSound("test");
+    obj->setShader(shader);
+    obj->setTexture(tex);
+    scene.addToRenderer(obj);
+    
+
+    Object2D* obj1;
+    scene.create_object(&obj1);
+    obj1->setShader(shader);
+    obj1->setTexture(tex1);
+    obj1->setPosition(glm::vec3(-0.5, -0.5, -0.5));
+    scene.addToRenderer(obj1);
 
     while ( !window.should_close() ) {
+        glClear(GL_COLOR_BUFFER_BIT);
+
         scene.update();
 
         window.update();

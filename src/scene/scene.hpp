@@ -18,6 +18,8 @@ namespace GMTKEngine {
             Scene();
             ~Scene();
 
+            void freeUnusedMemory();
+
             //"Create" is a bit misleading, you have to create an instance of the class and then pass a pointer for it. Same goes for components in the Object 
             template<class T>
             void create_object(T* object) {
@@ -50,7 +52,7 @@ namespace GMTKEngine {
             }
 
             template <class T>
-            void add_to_renderer(T object) {
+            void addToRenderer(T object) {
                 if (objects.find(object) == objects.end()) {
                     ERROR("Tried to enable rendering on a nonexistant object");
                     return;
@@ -69,7 +71,7 @@ namespace GMTKEngine {
             }
 
             template <class T>
-            void remove_from_renderer(T object) {
+            void removeFromRenderer(T object) {
                 if (objects.find(object) == objects.end()) {
                     ERROR("Tried to disable rendering on a nonexistant object");
                     return;

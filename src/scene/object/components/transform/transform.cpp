@@ -9,6 +9,30 @@ namespace GMTKEngine {
         mVertices = vertices;
     }
 
+    glm::vec3 Transform::getPosition() {
+        return mPosition;
+    }
+
+    void Transform::setPosition(glm::vec3 newPos) {
+        mPosition = newPos;
+    }
+
+    glm::vec3 Transform::getScale() {
+        return mScale;
+    }
+
+    void Transform::setScale(glm::vec3 newScale) {
+        mScale = newScale;
+    }
+
+    glm::vec4 Transform::getRotation() {
+        return mRotation;
+    }
+
+    void Transform::setRotation(glm::vec4 newRotation) {
+        mRotation = newRotation;
+    }
+
     Transform::~Transform() {
         WARN("Nigga this shit ain't implemented");
     }

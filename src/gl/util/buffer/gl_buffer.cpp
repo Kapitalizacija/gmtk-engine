@@ -37,8 +37,10 @@ namespace GMTKEngine {
     void GLBuffer::move(GLBuffer& other) {
         buff = other.buff;
         type = other.type;
+        glType = other.glType;
         
         other.buff = 0;
+        other.glType = 0;
         other.type = Type::UNDEFINED;
     }
 

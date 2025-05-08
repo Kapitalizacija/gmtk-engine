@@ -9,10 +9,11 @@ namespace GMTKEngine {
         GLBuffer* buff;
 
         GLuint index;
-        GLuint component_count;
+        GLuint componentCount;
         GLenum type;
         GLsizei stride;
         GLuint offset;
+        bool isInstanced;
     };
 
     class GLVAO {

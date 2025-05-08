@@ -22,6 +22,7 @@ MessageCallback( GLenum source,
            break;
         case GL_DEBUG_SEVERITY_HIGH:
            ERROR(message); 
+           throw new std::runtime_error("problem izkusenj");
            break;
     }
 }
@@ -62,6 +63,8 @@ namespace GMTKEngine {
     }
     
     void Window::init_glfw() {
+        glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
+
         if ( glfwInit() == GLFW_FALSE ) {
             throw new std::runtime_error("Failed to init GLFW");
         }
@@ -69,7 +72,6 @@ namespace GMTKEngine {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
     }
     
     void Window::init_glad() {

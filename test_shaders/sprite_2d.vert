@@ -11,6 +11,6 @@ layout (location = 1) out flat int instanceID;
 void main() {
     gl_Position = vec4(aPos.xy + aVert, 0.0, 1.0);
 
-    texCoords = vec2(1, 1) - aVert;
+    texCoords = vec2(0.5, 0.5) - aVert;
     instanceID = gl_InstanceID;
 }

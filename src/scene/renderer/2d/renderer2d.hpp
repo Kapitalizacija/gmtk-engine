@@ -38,6 +38,8 @@ namespace GMTKEngine {
 
             void addObject2d(Object2D* object);
             void removeObject2d(Object2D* object);
+
+            void freeUnusedMemory();
         private:
             void createGLBuffers();
 

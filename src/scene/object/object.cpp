@@ -3,7 +3,6 @@
 namespace GMTKEngine {
     Object::Object() {
         rendered = false;
-        LOG("Object Awoke");
     }
 
     Object::~Object() {

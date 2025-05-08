@@ -55,8 +55,12 @@ namespace GMTKEngine {
 
             glBindBuffer(GL_ARRAY_BUFFER, attrib->buff->get_buffer());
 
+            glVertexAttribPointer(attrib->index, attrib->componentCount, attrib->type, GL_FALSE, attrib->stride, (const void*)attrib->offset);
             glEnableVertexAttribArray(attrib->index);
-            glVertexAttribPointer(attrib->index, attrib->component_count, attrib->type, GL_FALSE, attrib->stride, (const void*)attrib->offset);
+
+            if(attrib->isInstanced) {
+                glVertexAttribDivisor(attrib->index, 1);
+            }
 
             glBindBuffer(GL_ARRAY_BUFFER, 0);
         }

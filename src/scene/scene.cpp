@@ -37,7 +37,9 @@ namespace GMTKEngine {
         }*/
     }
 
-
+    void Scene::freeUnusedMemory() {
+        renderer2d.freeUnusedMemory();
+    }
 
 /*    uint64_t Scene::combine_hashes(uint64_t hash1, uint64_t hash2) {
         hash1 ^= hash2 + 0x9e3779b9 + (hash1 << 6) + (hash1 >> 2); // stolen from boost

@@ -23,15 +23,15 @@ namespace GMTKEngine {
             virtual void update() { return; }
             virtual void late_update() { return; }
 
-            glm::vec3 &position() { return mPosition; }
-            void position(const glm::vec3 &newPosition) { mPosition = newPosition; }
-            glm::vec4 &rotation() { return mRotation; }
-            void rotation(const glm::vec4 &newRotation) { mRotation = newRotation; }
-            glm::vec3 &scale() { return mScale; }
-            void scale(const glm::vec3 &newScale) { mScale = newScale; }
-            std::vector<Vertex> &vertices() { return mVertices; }
-            void vertices(const std::vector<Vertex> &newVertices) { mVertices = newVertices; }
-            void addVertex(const Vertex vertex) { mVertices.push_back(vertex); }
+            
+            glm::vec3 getPosition();
+            void setPosition(glm::vec3 newPos);
+
+            glm::vec3 getScale();
+            void setScale(glm::vec3 newScale);
+
+            glm::vec4 getRotation();
+            void setRotation(glm::vec4 newRotation);
 
             //void setPosition
         protected:
