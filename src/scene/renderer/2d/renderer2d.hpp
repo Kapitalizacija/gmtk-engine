@@ -31,11 +31,15 @@ namespace GMTKEngine {
 
     class Renderer2D {
         public:
+            Renderer2D();
+
             void render();
 
             void addObject2d(Object2D* object);
             void removeObject2d(Object2D* object);
         private:
+            void createGLBuffers();
+
             void appendObjectToBatch(RenderBatch2D& batch, Object2D* object);
 
             void cleanupBatch(RenderBatch2D& batch);
@@ -43,6 +47,10 @@ namespace GMTKEngine {
             void cleanupBatchSmall(RenderBatch2D& batch);
 
             void initBatch(RenderBatch2D& batch);
+
+            GLBuffer ebo;
+            GLBuffer vbo;
+            
 
             /*
             hash is made by combining the shader program id and 

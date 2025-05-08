@@ -39,25 +39,25 @@ int main() {
     }
 
     Scene manager = Scene();
-    GLTexture tex = GLTexture("image.png");
-
+    
     std::float32_t verts[] = {
         0.0f, 0.0f,
         0.0f, 1.0f,
         1.0f, 0.0f,
         1.0f, 1.0f
     };
-
+    
     uint32_t indices[] = {
         0, 1, 2,
         1, 2, 3
     };
-
     
-    GLShader shader = GLShader("test_shader", "test_shaders/tri.vert", "test_shaders/tri.frag"); // fellas in paris
+    
+    GLTexture tex = GLTexture("image.png");
+    GLShader shader = GLShader("test_shader", "test_shaders/sprite_2d.vert", "test_shaders/sprite_2d.frag"); // fellas in paris
 
-    GLBuffer buff = GLBuffer((uint8_t*)verts, sizeof(verts), GLBuffer::VERTEX, GLBuffer::RARELY);
-    GLBuffer index_buff = GLBuffer((uint8_t*)indices, sizeof(indices), GLBuffer::INDEX, GLBuffer::RARELY);
+    GLBuffer buff = GLBuffer(GLBuffer::Type::VERTEX, (uint8_t*)verts, sizeof(verts), GLBuffer::Usage::RARELY);
+    GLBuffer index_buff = GLBuffer(GLBuffer::Type::INDEX, (uint8_t*)indices, sizeof(indices), GLBuffer::Usage::RARELY);
 
     GLAttribPointer attributes[] = {
         {&buff, 0, 2, GL_FLOAT, 8, 0}

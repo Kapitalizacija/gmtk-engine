@@ -1,14 +1,42 @@
 #include "renderer2d.hpp"
 
+const uint32_t indices[] = { // the most barebones indices needed for a square, therefore I feel comfortable making it a global cosntant
+    0, 1, 2,
+    1, 2, 3
+};
+
+const std::float32_t vertices[] = {
+    -0.5f, -0.5f,
+    -0.5f,  0.5f,
+     0.5f, -0.5f,
+     0.5f,  0.5f    
+};
 
 namespace GMTKEngine {
+    Renderer2D::Renderer2D() {
+        createGLBuffers();
+    }
+
+    void Renderer2D::createGLBuffers(){
+        ebo = GLBuffer(GLBuffer::Type::INDEX, indices, sizeof(indices), GLBuffer::Usage::RARELY);
+        vbo = GLBuffer(GLBuffer::Type::VERTEX, vertices, sizeof(vertices), GLBuffer::Usage::RARELY);
+    }
 
     void Renderer2D::render() {
+        GLint texture_indices[32];
+        for (size_t i = 0; i < 32; i++) {
+            texture_indices[i] = i;
+        }
+
+
         for (auto& shader_group : draw_batches_2d) {
             glUseProgram(shader_group.first);
 
+            GLint textures_uniform_loc = glGetUniformLocation(shader_group.first, "textures");
+            glUniform1iv(textures_uniform_loc, 32, texture_indices);
+
             for (RenderBatch2D& batch : shader_group.second) {
-                batch.batchData.upload_data(batch.objectData.data(), batch.objectData.size() * sizeof(std::float32_t), GLBuffer::OFTEN);
+                batch.batchData.upload_data(batch.objectData.data(), batch.objectData.size() * sizeof(std::float32_t), GLBuffer::Usage::STREAM);
 
                 auto it = batch.objects.begin();
                 for ( size_t i = 0; i < batch.objects.size(); i++) {
@@ -17,6 +45,7 @@ namespace GMTKEngine {
                 }
 
                 glBindVertexArray(batch.vao.getVAO());
+
 
                 glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr, batch.instanceCount);
             }
@@ -180,10 +209,19 @@ namespace GMTKEngine {
     }
 
     void Renderer2D::initBatch(RenderBatch2D& batch) {
-        batch.batchData = GLBuffer(GLBuffer::VERTEX);
+        batch.batchData = GLBuffer(GLBuffer::Type::VERTEX);
+
+        GLAttribPointer ptr0;
+        ptr0.buff = &vbo;
+        ptr0.index = 0;
+        ptr0.component_count = 2;
+        ptr0.type = GL_FLOAT;
+        ptr0.stride = sizeof(std::float32_t) * 2;
+        ptr0.offset = 0;
 
         GLAttribPointer ptr1;
         ptr1.buff = &batch.batchData;
+        ptr1.index = 1;
         ptr1.component_count = 3;
         ptr1.type = GL_FLOAT;
         ptr1.stride = batch.instanceDataSize;
@@ -191,6 +229,7 @@ namespace GMTKEngine {
 
         GLAttribPointer ptr2;
         ptr2.buff = &batch.batchData;
+        ptr1.index = 2;
         ptr2.component_count = 4;
         ptr2.type = GL_FLOAT;
         ptr2.stride = batch.instanceDataSize;
@@ -198,13 +237,15 @@ namespace GMTKEngine {
 
         GLAttribPointer ptr3;
         ptr3.buff = &batch.batchData;
+        ptr1.index = 3;
         ptr3.component_count = 3;
         ptr3.type = GL_FLOAT;
         ptr3.stride = batch.instanceDataSize;
         ptr3.offset = 28;
 
-        GLAttribPointer ptrs[] = {ptr1, ptr2, ptr3};
+        GLAttribPointer ptrs[] = {ptr0, ptr1, ptr2, ptr3};
 
         batch.vao = GLVAO(ptrs, 3);
+        batch.vao.addEBO(ebo);
     }
 }

@@ -4,11 +4,11 @@
 
 namespace GMTKEngine {
     GLBuffer::GLBuffer() {
-        type = UNDEFINED; 
+        type = Type::UNDEFINED; 
     }
 
-    GLBuffer::GLBuffer(GLBufferType buffer_type): buff(0) {
-        if (buffer_type == UNDEFINED) {
+    GLBuffer::GLBuffer(Type buffer_type): buff(0), type(buffer_type) {
+        if (buffer_type == Type::UNDEFINED) {
             UNDEFINED_WARN;
         }
 
@@ -39,7 +39,7 @@ namespace GMTKEngine {
         type = other.type;
         
         other.buff = 0;
-        other.type = UNDEFINED;
+        other.type = Type::UNDEFINED;
     }
 
     void GLBuffer::create_buffer() {
@@ -58,7 +58,7 @@ namespace GMTKEngine {
         return size;
     }
     
-    GLenum GLBuffer::get_type() {
+    GLBuffer::Type GLBuffer::get_type() {
         return type;
     }
 
@@ -71,15 +71,15 @@ namespace GMTKEngine {
         return true;
     }
     
-    void GLBuffer::match_type(GLBufferType buffer_type) {
+    void GLBuffer::match_type(Type buffer_type) {
         switch (buffer_type) {
-            case VERTEX:
-                type = GL_ARRAY_BUFFER;
+            case Type::VERTEX:
+                glType = GL_ARRAY_BUFFER;
                 break;
-            case INDEX:
-                type = GL_ELEMENT_ARRAY_BUFFER;
+            case Type::INDEX:
+                glType = GL_ELEMENT_ARRAY_BUFFER;
                 break;
-            case UNDEFINED:
+            case Type::UNDEFINED:
                 UNDEFINED_WARN;
                 
                 glDeleteBuffers(1, &buff);

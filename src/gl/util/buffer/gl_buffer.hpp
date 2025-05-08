@@ -11,23 +11,23 @@ namespace GMTKEngine {
 
     class GLBuffer {
         public:
-            enum GLBufferType {
+            enum class Type {
                 UNDEFINED,
                 VERTEX,
                 INDEX
             };
 
-            enum GLBufferUsage {
+            enum class Usage {
                 STREAM,
                 OFTEN,
                 RARELY
             };
 
             GLBuffer();
-            GLBuffer(GLBufferType buffer_type);
+            GLBuffer(Type buffer_type);
 
             template<typename T>
-            GLBuffer(T data, size_t size, GLBufferType buffer_type, GLBufferUsage buffer_usage);
+            GLBuffer(Type buffer_type, T data, size_t size, Usage buffer_usage);
             
             GLBuffer(const GLBuffer& other) = delete;
 
@@ -37,27 +37,29 @@ namespace GMTKEngine {
             ~GLBuffer();
 
             template<typename T>
-            void upload_data(T data, size_t size, GLBufferUsage buffer_usage);
+            void upload_data(T data, size_t size, Usage buffer_usage);
 
             bool is_valid();
             size_t get_size();
             GLuint get_buffer();
-            GLenum get_type();
+            Type get_type();
         private:
             bool assert_valid();
             void create_buffer();
-            void match_type(GLBufferType buffer_type);
+            void match_type(Type buffer_type);
 
             void move(GLBuffer& other);
 
-            GLuint type;
+            Type type;
+            GLenum glType;
+
             GLuint buff;
             size_t size;
     };
 
     template<typename T>
-    GLBuffer::GLBuffer(T data, size_t size, GLBufferType buffer_type, GLBufferUsage buffer_usage): size(0) {
-        if (buffer_type == UNDEFINED) {
+    GLBuffer::GLBuffer(Type buffer_type, T data, size_t size, Usage buffer_usage): size(0), type(buffer_type) {
+        if (buffer_type == Type::UNDEFINED) {
             WARN("Tried to create a buffer of undefined type");
         }
         
@@ -68,7 +70,7 @@ namespace GMTKEngine {
     }
 
     template<typename T>
-    void GLBuffer::upload_data(T data, size_t size, GLBufferUsage buffer_usage) {
+    void GLBuffer::upload_data(T data, size_t size, Usage buffer_usage) {
         static_assert(std::is_pointer<T>::value);
 
         if ( !assert_valid() ) {
@@ -79,20 +81,20 @@ namespace GMTKEngine {
 
         GLuint usage;
         switch (buffer_usage) {
-            case STREAM:
+            case Usage::STREAM:
                 usage = GL_STREAM_DRAW;
                 break;
-            case OFTEN:
+            case Usage::OFTEN:
                 usage = GL_DYNAMIC_DRAW;
                 break;
-            case RARELY:
+            case Usage::RARELY:
                 usage = GL_STATIC_DRAW;
                 break;
         }
 
-        glBindBuffer(type, buff);
-        glBufferData(type, size, data, usage);
-        glBindBuffer(type, 0);
+        glBindBuffer(glType, buff);
+        glBufferData(glType, size, data, usage);
+        glBindBuffer(glType, 0);
     }
 
 }
