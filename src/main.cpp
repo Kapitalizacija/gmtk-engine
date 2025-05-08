@@ -38,7 +38,7 @@ int main() {
         return 1;
     }
 
-    Scene manager = Scene();
+    Scene scene = Scene();
     
     std::float32_t verts[] = {
         0.0f, 0.0f,
@@ -54,6 +54,7 @@ int main() {
     
     
     GLTexture tex = GLTexture("image.png");
+    GLTexture tex1 = GLTexture("bombardino.jpg");
     GLShader shader = GLShader("test_shader", "test_shaders/sprite_2d.vert", "test_shaders/sprite_2d.frag"); // fellas in paris
 
     GLBuffer buff = GLBuffer(GLBuffer::Type::VERTEX, (uint8_t*)verts, sizeof(verts), GLBuffer::Usage::RARELY);
@@ -79,7 +80,7 @@ int main() {
 
     //The update() method needs to be impemented fully before this will work :(
     Object2D *obj = new Object2D();
-    manager.create_object(&obj);
+    scene.create_object(&obj);
     obj->setName("AudioObject");
     obj->addTag("AudioObject");
     Transform *transform = new Transform();
@@ -90,12 +91,7 @@ int main() {
     sound->playSound("test");
 
     while ( !window.should_close() ) {
-        glBindVertexArray(vao.getVAO());
-        glUseProgram(shader.get_program());
-
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buff.get_buffer());
-
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+        scene.update();
 
         window.update();
     }

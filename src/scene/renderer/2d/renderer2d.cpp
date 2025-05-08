@@ -29,20 +29,28 @@ namespace GMTKEngine {
         }
 
 
-        for (auto& shader_group : draw_batches_2d) {
-            glUseProgram(shader_group.first);
+        for (auto& shaderGroup : draw_batches_2d) {
+            glUseProgram(shaderGroup.first);
 
-            GLint textures_uniform_loc = glGetUniformLocation(shader_group.first, "textures");
-            glUniform1iv(textures_uniform_loc, 32, texture_indices);
+            GLint texturesUniformLoc = glGetUniformLocation(shaderGroup.first, "textures");
+            GLint textureOffsetsLoc = glGetUniformLocation(shaderGroup.first, "offsets");
 
-            for (RenderBatch2D& batch : shader_group.second) {
-                batch.batchData.upload_data(batch.objectData.data(), batch.objectData.size() * sizeof(std::float32_t), GLBuffer::Usage::STREAM);
+            glUniform1iv(texturesUniformLoc, 32, texture_indices);
 
+            for (RenderBatch2D& batch : shaderGroup.second) {
+                std::vector<GLint> textureBatchOffsets;
+                textureBatchOffsets.reserve(32);
+
+                batch.objectDataGLBuffer.upload_data(batch.objectData.data(), batch.objectData.size() * sizeof(std::float32_t), GLBuffer::Usage::STREAM);
+                
                 auto it = batch.objects.begin();
                 for ( size_t i = 0; i < batch.objects.size(); i++) {
                     glBindTexture(GL_TEXTURE0 + i, it->first);
+                    textureBatchOffsets.push_back(it->second.size());
                     it++;
                 }
+
+                glUniform1iv(textureOffsetsLoc, 32, textureBatchOffsets.data());
 
                 glBindVertexArray(batch.vao.getVAO());
 
@@ -51,9 +59,6 @@ namespace GMTKEngine {
             }
         }
 
-        for (size_t i = 0; i < 32; i++) {
-            glBindTexture(GL_TEXTURE0 + i, 0);
-        }
         glUseProgram(0);
         glBindVertexArray(0);
     }
@@ -209,7 +214,7 @@ namespace GMTKEngine {
     }
 
     void Renderer2D::initBatch(RenderBatch2D& batch) {
-        batch.batchData = GLBuffer(GLBuffer::Type::VERTEX);
+        batch.objectDataGLBuffer = GLBuffer(GLBuffer::Type::VERTEX);
 
         GLAttribPointer ptr0;
         ptr0.buff = &vbo;
@@ -220,7 +225,7 @@ namespace GMTKEngine {
         ptr0.offset = 0;
 
         GLAttribPointer ptr1;
-        ptr1.buff = &batch.batchData;
+        ptr1.buff = &batch.objectDataGLBuffer;
         ptr1.index = 1;
         ptr1.component_count = 3;
         ptr1.type = GL_FLOAT;
@@ -228,7 +233,7 @@ namespace GMTKEngine {
         ptr1.offset = 0;
 
         GLAttribPointer ptr2;
-        ptr2.buff = &batch.batchData;
+        ptr2.buff = &batch.objectDataGLBuffer;
         ptr1.index = 2;
         ptr2.component_count = 4;
         ptr2.type = GL_FLOAT;
@@ -236,7 +241,7 @@ namespace GMTKEngine {
         ptr2.offset = 12;
 
         GLAttribPointer ptr3;
-        ptr3.buff = &batch.batchData;
+        ptr3.buff = &batch.objectDataGLBuffer;
         ptr1.index = 3;
         ptr3.component_count = 3;
         ptr3.type = GL_FLOAT;

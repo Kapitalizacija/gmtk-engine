@@ -20,13 +20,14 @@ namespace GMTKEngine {
         std::unordered_map<GLuint, std::unordered_map<Object2D*, GLuint>> objects;
 
         std::vector<std::float32_t> objectData;
+
         std::vector<size_t> clearQueue;
 
         size_t instanceCount;
         size_t instanceDataSize;
 
         GLVAO vao;
-        GLBuffer batchData;
+        GLBuffer objectDataGLBuffer;
     };
 
     class Renderer2D {

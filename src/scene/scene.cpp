@@ -29,6 +29,8 @@ namespace GMTKEngine {
         for (auto& object: objects ) {
             object->lateUpdate();
         }
+
+        renderer2d.render();
     
         /*for (auto& object: objects ) {
             object->draw();

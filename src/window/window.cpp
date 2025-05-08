@@ -26,6 +26,11 @@ MessageCallback( GLenum source,
     }
 }
 
+void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
+    glViewport(0, 0, width, height);
+}
+
+
 // During init, enable debug output
 
 namespace GMTKEngine {
@@ -52,6 +57,8 @@ namespace GMTKEngine {
         }
 
         glfwMakeContextCurrent(glfw_win);
+
+        glfwSetWindowSizeCallback(glfw_win, framebufferSizeCallback);
     }
     
     void Window::init_glfw() {
@@ -62,6 +69,7 @@ namespace GMTKEngine {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
     }
     
     void Window::init_glad() {
