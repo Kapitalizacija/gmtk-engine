@@ -69,7 +69,7 @@ namespace GMTKEngine {
     void Renderer2D::addObject2d(Object2D* object) {
         auto& shader_group = draw_batches_2d[object->program];
         
-        GLuint textureID = ((Texture*)(object->getComponent("Texture")))->getRawHandle();
+        GLuint textureID = (object->getComponent<Texture>())->getRawHandle();
 
         bool found_group = false;
         for (auto& tex_group : shader_group) {
@@ -103,7 +103,7 @@ namespace GMTKEngine {
     void Renderer2D::removeObject2d(Object2D* object) {
         bool found = false;
 
-        GLuint textureID = ((Texture*)(object->getComponent("Texture")))->getRawHandle();
+        GLuint textureID = (object->getComponent<Texture>())->getRawHandle();
 
         auto& shader_group = draw_batches_2d[object->program];
         for (auto& batch : shader_group) {
@@ -134,7 +134,7 @@ namespace GMTKEngine {
     
     void Renderer2D::appendObjectToBatch(RenderBatch2D& batch, Object2D* object) {
 
-        GLuint textureID = ((Texture*)object->getComponent("Texture"))->getRawHandle();
+        GLuint textureID = (object->getComponent<Texture>())->getRawHandle();
 
         batch.objects[textureID][object] = batch.instanceCount;
         batch.instanceCount++;

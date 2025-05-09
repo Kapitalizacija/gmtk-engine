@@ -48,7 +48,7 @@ namespace GMTKEngine {
 
                 
                 if (object->rendered) {
-                    renderer2d.removeObject2d((Object2D*)object);
+                    renderer2d.removeObject2d((Object2D*)*object);
                 }
                 objects.erase((Object*)*object);
 

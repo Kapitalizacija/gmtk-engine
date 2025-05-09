@@ -21,8 +21,7 @@ namespace GMTKEngine {
     }
 
     std::vector<float> Object2D::getDrawData() {
-        auto x = std::string("ew");
-        Transform* transform = (Transform*)mComponents[x];
+        Transform* transform = getComponent<Transform>();
         return {
             transform->getPosition().x, transform->getPosition().y, transform->getPosition().z,
             transform->getRotation().x, transform->getRotation().y, transform->getRotation().z, transform->getRotation().w,

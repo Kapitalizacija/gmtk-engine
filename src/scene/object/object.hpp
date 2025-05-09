@@ -31,14 +31,17 @@ namespace GMTKEngine {
 
                 *component = new deref_T();
 
-                mComponents[(*component)->getComponentName()] = *component;
+                mComponents[typeid(deref_T).hash_code()] = *component;
                 
             }
 
             std::string getName() { return mObjectName; }
             void setName(std::string name) { mObjectName = name; }
 
-            Component* getComponent(std::string componentName);
+            template <typename T>
+            T* getComponent() {
+                return (T*)mComponents[typeid(T).hash_code()];
+            }
             
             void addTag(std::string tag) { mTags.insert(tag); }
             bool hasTag(std::string tag) { return mTags.count(tag); }
@@ -56,7 +59,7 @@ namespace GMTKEngine {
             bool changedSinceLastUpdate();
 
             std::string mObjectName;
-            std::unordered_map<std::string, Component*> mComponents;
+            std::unordered_map<size_t, Component*> mComponents;
             std::unordered_set<std::string> mTags;
     
             bool enabled;

@@ -2,6 +2,7 @@
 
 namespace GMTKEngine {
     Object::Object() {
+        mComponents = {};
         rendered = false;
     }
 
@@ -52,8 +53,4 @@ namespace GMTKEngine {
         }
     }
     
-    Component* Object::getComponent(std::string componentName) {
-        DBG(mComponents.at(componentName));
-        return mComponents.at(componentName);
-    }
 }

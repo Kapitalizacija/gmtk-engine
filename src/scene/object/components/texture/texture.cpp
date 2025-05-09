@@ -3,7 +3,6 @@
 namespace GMTKEngine {
     Texture::Texture() {
         mComponentName = "Texture";
-        DBG(mComponentName);;
     }
 
     void Texture::setTexture(GLTexture& gl_texture) {
