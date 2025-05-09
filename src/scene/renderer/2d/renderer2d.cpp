@@ -69,9 +69,11 @@ namespace GMTKEngine {
     void Renderer2D::addObject2d(Object2D* object) {
         auto& shader_group = draw_batches_2d[object->program];
         
+        GLuint textureID = ((Texture*)(object->getComponent("Texture")))->getRawHandle();
+
         bool found_group = false;
         for (auto& tex_group : shader_group) {
-            if (tex_group.objects.find(object->mTextureID) == tex_group.objects.end() && tex_group.objects.size() >= 32) {
+            if (tex_group.objects.find(textureID) == tex_group.objects.end() && tex_group.objects.size() >= 32) {
                 continue;
             } 
 
@@ -101,14 +103,16 @@ namespace GMTKEngine {
     void Renderer2D::removeObject2d(Object2D* object) {
         bool found = false;
 
+        GLuint textureID = ((Texture*)(object->getComponent("Texture")))->getRawHandle();
+
         auto& shader_group = draw_batches_2d[object->program];
         for (auto& batch : shader_group) {
 
-            if (batch.objects.find(object->mTextureID) != batch.objects.end()) {
+            if (batch.objects.find(textureID) != batch.objects.end()) {
          
 
-                batch.clearQueue.push_back(batch.objects[object->mTextureID][object]);
-                batch.objects[object->mTextureID].erase(object);
+                batch.clearQueue.push_back(batch.objects[textureID][object]);
+                batch.objects[textureID].erase(object);
 
                 if (batch.clearQueue.size() * batch.instanceDataSize > RENDERER2D_BATCH_CLEARUP_TRESHOLD
                     || batch.clearQueue.size() >= 64) {
@@ -129,7 +133,10 @@ namespace GMTKEngine {
     }
     
     void Renderer2D::appendObjectToBatch(RenderBatch2D& batch, Object2D* object) {
-        batch.objects[object->mTextureID][object] = batch.instanceCount;
+
+        GLuint textureID = ((Texture*)object->getComponent("Texture"))->getRawHandle();
+
+        batch.objects[textureID][object] = batch.instanceCount;
         batch.instanceCount++;
 
         object->rendered = true;

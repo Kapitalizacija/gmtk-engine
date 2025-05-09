@@ -31,10 +31,11 @@ namespace GMTKEngine {
         }
 
         renderer2d.render();
+
+        for (auto& object: objects ) {
+            object->changed = false;
+        }
     
-        /*for (auto& object: objects ) {
-            object->draw();
-        }*/
     }
 
     void Scene::freeUnusedMemory() {

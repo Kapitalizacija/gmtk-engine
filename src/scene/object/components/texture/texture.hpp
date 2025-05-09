@@ -12,18 +12,17 @@ namespace GMTKEngine {
 
         public:
             Texture();
-            ~Texture();
         
             void setTexture(GLTexture& gl_texture);
-            GLuint get_raw_handle();
+            GLuint getRawHandle();
 
             virtual void start() { return; }
             virtual void early_update() { return; }
             virtual void update() { return; }
             virtual void late_update() { return; }
+            virtual bool changedSinceLastUpdate() override;
 
         private:
             GLuint mTextureID;
-            std::string mComponentName;
     };
 }

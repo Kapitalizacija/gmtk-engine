@@ -15,6 +15,7 @@ namespace GMTKEngine {
 
     void Transform::setPosition(glm::vec3 newPos) {
         mPosition = newPos;
+        changed = true;
     }
 
     glm::vec3 Transform::getScale() {
@@ -23,6 +24,7 @@ namespace GMTKEngine {
 
     void Transform::setScale(glm::vec3 newScale) {
         mScale = newScale;
+        changed = true;
     }
 
     glm::vec4 Transform::getRotation() {
@@ -31,9 +33,15 @@ namespace GMTKEngine {
 
     void Transform::setRotation(glm::vec4 newRotation) {
         mRotation = newRotation;
+        changed = true;
     }
+    
+    bool Transform::changedSinceLastUpdate() {
+        if (changed) {
+            changed = false;
+            return true;
+        }
 
-    Transform::~Transform() {
-        WARN("Nigga this shit ain't implemented");
+        return false;
     }
 }

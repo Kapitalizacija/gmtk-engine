@@ -9,7 +9,7 @@ namespace GMTKEngine {
             return;
         }
 
-        DBG("Using OpenAL device: " << alcGetString(mDevice, ALC_DEVICE_SPECIFIER));
+        LOG("Using OpenAL device: " << alcGetString(mDevice, ALC_DEVICE_SPECIFIER));
 
         mContext = alcCreateContext(mDevice, nullptr);
         if (!mContext || !alcMakeContextCurrent(mContext)) {

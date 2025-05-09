@@ -16,6 +16,10 @@ namespace GMTKEngine {
     class Scene {
         public:
             Scene();
+
+            Scene(const Scene& other) = delete;
+            Scene(Scene&& other) = delete;
+
             ~Scene();
 
             void freeUnusedMemory();

@@ -8,13 +8,16 @@
 #include "gl/util/shader/gl_shader.hpp"
 
 namespace GMTKEngine {
-    class Object2D : public Object, public Texture, public Transform {
+    class Object2D : public Object {
         friend class Renderer2D;
 
         public:
+            Object2D();
+
             void setShader(GLShader& shader);
 
         protected:
+            bool changedSinceLastCheck();
             std::vector<float> getDrawData() override;
 
             GLuint program;

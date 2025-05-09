@@ -7,31 +7,31 @@ namespace GMTKEngine {
 
     Object::~Object() {
         for (auto &comp : mComponents) {
-            delete comp;
+            delete comp.second;
         }
     }
 
     void Object::start() {
         for (auto &comp : mComponents) {
-            comp->start();
+            comp.second->start();
         }
     }
 
     void Object::earlyUpdate() {
         for (auto &comp : mComponents) {
-            comp->early_update();
+            comp.second->early_update();
         }
     }
     
     void Object::update() {
         for (auto &comp : mComponents) {
-            comp->update();
+            comp.second->update();
         }
     }
     
     void Object::lateUpdate() {
         for (auto &comp : mComponents) {
-            comp->late_update();
+            comp.second->late_update();
         }
     }
     
@@ -42,5 +42,18 @@ namespace GMTKEngine {
 
     bool Object::isRendered() {
         return rendered;
+    }
+
+    bool Object::changedSinceLastUpdate() {
+        for (auto& comp : mComponents) {
+            if (comp.second->changedSinceLastUpdate()) {
+                return true;
+            }
+        }
+    }
+    
+    Component* Object::getComponent(std::string componentName) {
+        DBG(mComponents.at(componentName));
+        return mComponents.at(componentName);
     }
 }

@@ -35,7 +35,6 @@ int main() {
     ALDevice audio;
     if (!audio.isValid()) {
         ERROR("OpenAL Device Error, exiting");
-        return 1;
     }
 
     Scene scene = Scene();
@@ -79,18 +78,20 @@ int main() {
     sound.play();*/
 
     //The update() method needs to be impemented fully before this will work :(
+    DBG(sizeof(std::unordered_map<std::string, Component*> ));
     Object2D *obj;
     scene.create_object(&obj);
     obj->setShader(shader);
-    obj->setTexture(tex);
+    DBG(obj->getComponent("Texture"));
+    ((Texture*)obj->getComponent("Texture"))->setTexture(tex);
     scene.addToRenderer(obj);
     
 
     Object2D* obj1;
     scene.create_object(&obj1);
     obj1->setShader(shader);
-    obj1->setTexture(tex1);
-    obj1->setPosition(glm::vec3(-0.5, -0.5, -0.5));
+    ((Texture*)obj1->getComponent("Texture"))->setTexture(tex);
+    ((Transform*)obj1)->setPosition(glm::vec3(-0.5, -0.5, -0.5));
     scene.addToRenderer(obj1);
 
     while ( !window.should_close() ) {
