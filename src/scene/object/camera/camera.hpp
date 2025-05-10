@@ -8,7 +8,7 @@
 
 #include <glad/glad.h>
 
-#include "scene/object/components/transform/transform.hpp"
+#include "scene/object/components/transform/3d/transform3d.hpp"
 #include "scene/object/object.hpp"
 
 namespace GMTKEngine {

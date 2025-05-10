@@ -9,7 +9,7 @@
 #include "gl/util/vao/gl_vao.hpp"
 #include "gl/texture/gl_texture.hpp"
 
-#include "scene/object/components/transform/transform.hpp"
+#include "scene/object/components/transform/2d/transform2d.hpp"
 
 #include "audio/al_device.hpp"
 #include "audio/al_buffer.hpp"
@@ -89,10 +89,12 @@ int main() {
     scene.create_object(&obj1);
     obj1->setShader(shader);
     (obj1->getComponent<Texture>())->setTexture(tex1);
-    obj1->getComponent<Transform>()->setPosition(glm::vec3(-0.5, -0.5, -0.5));
+    obj1->getComponent<Transform2D>()->setPosition(glm::vec2(-0.5, -0.5));
     scene.addToRenderer(obj1);
 
     while ( !window.should_close() ) {
+        obj1->getComponent<Transform2D>()->setPosition(glm::vec2(glfwGetTime() / 10 - 1, -0.5));
+        obj1->getComponent<Transform2D>()->setRotation(glfwGetTime());
         scene.update();
         window.update();
     }

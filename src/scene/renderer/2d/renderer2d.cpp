@@ -23,6 +23,8 @@ namespace GMTKEngine {
     }
 
     void Renderer2D::render() {
+        updateInstanceData();
+
         GLint texture_indices[32];
         for (size_t i = 0; i < 32; i++) {
             texture_indices[i] = i;
@@ -210,6 +212,26 @@ namespace GMTKEngine {
         }
     }
 
+    void Renderer2D::updateInstanceData() { 
+        for (auto& shader_group : draw_batches_2d) {
+            for(RenderBatch2D& batch : shader_group.second) {
+                for (auto& texture_group : batch.objects) {
+                    for (auto& object : texture_group.second) {
+                        
+                        if ( !object.first->changedSinceLastUpdate() ) {
+                            continue;
+                        }
+
+                        std::vector<float> newData = object.first->getDrawData();
+                        memcpy((char*)batch.objectData.data() + object.second * batch.instanceDataSize, newData.data(), batch.instanceDataSize); 
+                    }
+                }
+            }
+        }
+    }
+
+
+
     void Renderer2D::initBatch(RenderBatch2D& batch) {
         batch.objectDataGLBuffer = GLBuffer(GLBuffer::Type::VERTEX);
 
@@ -225,7 +247,7 @@ namespace GMTKEngine {
         GLAttribPointer ptr1;
         ptr1.buff = &batch.objectDataGLBuffer;
         ptr1.index = 1;
-        ptr1.componentCount = 3;
+        ptr1.componentCount = 2;
         ptr1.type = GL_FLOAT;
         ptr1.stride = batch.instanceDataSize;
         ptr1.offset = 0;
@@ -234,24 +256,33 @@ namespace GMTKEngine {
         GLAttribPointer ptr2;
         ptr2.buff = &batch.objectDataGLBuffer;
         ptr2.index = 2;
-        ptr2.componentCount = 4;
+        ptr2.componentCount = 1;
         ptr2.type = GL_FLOAT;
         ptr2.stride = batch.instanceDataSize;
-        ptr2.offset = 12;
+        ptr2.offset = 8;
         ptr2.isInstanced = true;
 
         GLAttribPointer ptr3;
         ptr3.buff = &batch.objectDataGLBuffer;
         ptr3.index = 3;
-        ptr3.componentCount = 3;
+        ptr3.componentCount = 1;
         ptr3.type = GL_FLOAT;
         ptr3.stride = batch.instanceDataSize;
-        ptr3.offset = 28;
+        ptr3.offset = 12;
         ptr3.isInstanced = true;
 
-        GLAttribPointer ptrs[] = {ptr0, ptr1, ptr2, ptr3};
+        GLAttribPointer ptr4;
+        ptr4.buff = &batch.objectDataGLBuffer;
+        ptr4.index = 4;
+        ptr4.componentCount = 2;
+        ptr4.type = GL_FLOAT;
+        ptr4.stride = batch.instanceDataSize;
+        ptr4.offset = 16;
+        ptr4.isInstanced = true;
 
-        batch.vao = GLVAO(ptrs, 4);
+        GLAttribPointer ptrs[] = {ptr0, ptr1, ptr2, ptr3, ptr4};
+
+        batch.vao = GLVAO(ptrs, sizeof(ptrs) / sizeof(GLAttribPointer));
         batch.vao.addEBO(ebo);
     }
     

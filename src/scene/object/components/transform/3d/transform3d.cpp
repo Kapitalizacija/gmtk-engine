@@ -1,4 +1,4 @@
-#include "transform.hpp"
+#include "transform3d.hpp"
 
 namespace GMTKEngine {
     Transform::Transform(glm::vec3 position, glm::vec4 rotation, glm::vec3 scale, std::vector<Vertex> vertices) {
@@ -7,6 +7,7 @@ namespace GMTKEngine {
         mRotation = rotation;
         mScale = scale;
         mVertices = vertices;
+        changed = false;
     }
 
     glm::vec3 Transform::getPosition() {

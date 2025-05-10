@@ -7,8 +7,8 @@
 #include <vector>
 
 #include "object/object.hpp"
-#include "object/2d/object2D.hpp"
-#include "object/3d/object3D.hpp"
+#include "object/2d/object2d.hpp"
+#include "object/3d/object3d.hpp"
 #include "object/camera/camera.hpp"
 #include "renderer/2d/renderer2d.hpp"
 

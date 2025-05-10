@@ -14,7 +14,6 @@ namespace GMTKEngine {
     }
 
     bool Texture::changedSinceLastUpdate() {
-        DBG("TODO");
         return false;
     }
   

@@ -4,7 +4,7 @@
 
 #include "../object.hpp"
 #include "../components/texture/texture.hpp"
-#include "../components/transform/transform.hpp"
+#include "../components/transform/2d/transform2d.hpp"
 #include "gl/util/shader/gl_shader.hpp"
 
 namespace GMTKEngine {
@@ -17,7 +17,6 @@ namespace GMTKEngine {
             void setShader(GLShader& shader);
 
         protected:
-            bool changedSinceLastCheck();
             std::vector<float> getDrawData() override;
 
             GLuint program;

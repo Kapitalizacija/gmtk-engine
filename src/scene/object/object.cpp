@@ -51,6 +51,7 @@ namespace GMTKEngine {
                 return true;
             }
         }
+        return false;
     }
     
 }

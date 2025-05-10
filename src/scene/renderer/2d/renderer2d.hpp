@@ -8,7 +8,7 @@
 
 #include <glad/glad.h>
 
-#include "../../object/2d/object2D.hpp"
+#include "../../object/2d/object2d.hpp"
 #include "gl/util/buffer/gl_buffer.hpp"
 #include "gl/util/vao/gl_vao.hpp"
 
@@ -50,6 +50,8 @@ namespace GMTKEngine {
             void cleanupBatchSmall(RenderBatch2D& batch);
 
             void initBatch(RenderBatch2D& batch);
+
+            void updateInstanceData();
 
             GLBuffer ebo;
             GLBuffer vbo;
