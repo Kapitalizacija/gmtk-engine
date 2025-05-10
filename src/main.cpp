@@ -78,22 +78,31 @@ int main() {
     sound.play();*/
 
     //The update() method needs to be impemented fully before this will work :(
-    Object2D *obj;
-    scene.create_object(&obj);
+    Object2D *obj = scene.create_object<Object2D>();
     obj->setShader(shader);
-    ((Texture*)obj->getComponent<Texture>())->setTexture(tex);
+    ((Texture*)obj->getComponent<Texture>())->setTexture(tex1);
+    obj->getComponent<Transform2D>()->setPosition(glm::vec2(500, 500));
+    obj->getComponent<Transform2D>()->setScale(glm::vec2(400, 400));
+    obj->getComponent<Transform2D>()->setDepth(0.0);
     scene.addToRenderer(obj);
     
 
-    Object2D* obj1;
-    scene.create_object(&obj1);
+    Object2D* obj1 = scene.create_object<Object2D>();
     obj1->setShader(shader);
-    (obj1->getComponent<Texture>())->setTexture(tex1);
-    obj1->getComponent<Transform2D>()->setPosition(glm::vec2(-0.5, -0.5));
+    (obj1->getComponent<Texture>())->setTexture(tex);
+    obj1->getComponent<Transform2D>()->setPosition(glm::vec2(500, 500));
+    obj1->getComponent<Transform2D>()->setScale(glm::vec2(400, 400));
+    obj1->getComponent<Transform2D>()->setDepth(1.0);
     scene.addToRenderer(obj1);
 
+
+
+
+    Camera* cam = scene.getCamera();
+    cam->setProjectionType(Camera::ProjectionType::ORTHOGRAPHIC);
+
     while ( !window.should_close() ) {
-        obj1->getComponent<Transform2D>()->setPosition(glm::vec2(glfwGetTime() / 10 - 1, -0.5));
+        obj1->getComponent<Transform2D>()->setPosition(glm::vec2(glfwGetTime() * 100 - 1, 500));
         obj1->getComponent<Transform2D>()->setRotation(glfwGetTime());
         scene.update();
         window.update();

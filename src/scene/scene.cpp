@@ -18,6 +18,8 @@ namespace GMTKEngine {
     }
     
     void Scene::update() {
+        camera.update();
+
         for (auto& object: objects ) {
             object->earlyUpdate();
         }
@@ -30,7 +32,7 @@ namespace GMTKEngine {
             object->lateUpdate();
         }
 
-        renderer2d.render();
+        renderer2d.render(camera);
 
         for (auto& object: objects ) {
             object->changed = false;
@@ -40,6 +42,10 @@ namespace GMTKEngine {
 
     void Scene::freeUnusedMemory() {
         renderer2d.freeUnusedMemory();
+    }
+    
+    Camera* Scene::getCamera() {
+        return &camera;
     }
 
 /*    uint64_t Scene::combine_hashes(uint64_t hash1, uint64_t hash2) {

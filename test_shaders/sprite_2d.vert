@@ -9,14 +9,16 @@ layout (location = 4) in vec2 scale;
 layout (location = 0) out vec2 texCoords;
 layout (location = 1) out flat int instanceID;
 
+uniform mat4 projection;
+
 void main() {
     mat2 rotationMatrix = mat2(
         vec2(cos(rotation), -sin(rotation)),
         vec2(sin(rotation), cos(rotation))
     );
 
-    gl_Position = vec4(aPos.xy + aVert * scale * rotationMatrix, depth, 1.0);
+    gl_Position = projection * vec4(aPos.xy + aVert * scale * rotationMatrix, depth, 1.0);
 
-    texCoords = vec2(0.5, 0.5) - aVert;
+    texCoords = vec2(0.5, 0.5) + aVert;
     instanceID = gl_InstanceID;
 }

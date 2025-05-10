@@ -21,18 +21,18 @@ namespace GMTKEngine {
             
             glm::vec2 getPosition();
             void setPosition(glm::vec2 newPos);
+            void translate(glm::vec2 vec);
 
             glm::vec2 getScale();
             void setScale(glm::vec2 newScale);
 
             float getRotation();
             void setRotation(float newRotation);
+            void rotate(float amount);
 
             float getDepth();
             void setDepth(float newDepth);
 
-
-            //void setPosition
         protected:
             bool changed;
 

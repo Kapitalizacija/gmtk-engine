@@ -1,7 +1,7 @@
 #include "transform3d.hpp"
 
 namespace GMTKEngine {
-    Transform::Transform(glm::vec3 position, glm::vec4 rotation, glm::vec3 scale, std::vector<Vertex> vertices) {
+    Transform3D::Transform3D(glm::vec3 position, glm::vec4 rotation, glm::vec3 scale, std::vector<Vertex> vertices) {
         mComponentName = "Transform";
         mPosition = position;
         mRotation = rotation;
@@ -10,34 +10,34 @@ namespace GMTKEngine {
         changed = false;
     }
 
-    glm::vec3 Transform::getPosition() {
+    glm::vec3 Transform3D::getPosition() {
         return mPosition;
     }
 
-    void Transform::setPosition(glm::vec3 newPos) {
+    void Transform3D::setPosition(glm::vec3 newPos) {
         mPosition = newPos;
         changed = true;
     }
 
-    glm::vec3 Transform::getScale() {
+    glm::vec3 Transform3D::getScale() {
         return mScale;
     }
 
-    void Transform::setScale(glm::vec3 newScale) {
+    void Transform3D::setScale(glm::vec3 newScale) {
         mScale = newScale;
         changed = true;
     }
 
-    glm::vec4 Transform::getRotation() {
+    glm::vec4 Transform3D::getRotation() {
         return mRotation;
     }
 
-    void Transform::setRotation(glm::vec4 newRotation) {
+    void Transform3D::setRotation(glm::vec4 newRotation) {
         mRotation = newRotation;
         changed = true;
     }
     
-    bool Transform::changedSinceLastUpdate() {
+    bool Transform3D::changedSinceLastUpdate() {
         if (changed) {
             changed = false;
             return true;

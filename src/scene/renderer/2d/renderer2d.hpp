@@ -1,6 +1,7 @@
 #pragma once
 
 #include <unordered_map>
+#include <map>
 #include <algorithm>
 #include <vector>
 #include <cstring>
@@ -9,6 +10,7 @@
 #include <glad/glad.h>
 
 #include "../../object/2d/object2d.hpp"
+#include "../../object/camera/camera.hpp"
 #include "gl/util/buffer/gl_buffer.hpp"
 #include "gl/util/vao/gl_vao.hpp"
 
@@ -18,6 +20,7 @@ namespace GMTKEngine {
 
     struct RenderBatch2D {
         std::unordered_map<GLuint, std::unordered_map<Object2D*, GLuint>> objects;
+        std::unordered_map<GLuint, size_t> textureInsertionIndex;
 
         std::vector<std::float32_t> objectData;
 
@@ -34,7 +37,7 @@ namespace GMTKEngine {
         public:
             Renderer2D();
 
-            void render();
+            void render(Camera& camera);
 
             void addObject2d(Object2D* object);
             void removeObject2d(Object2D* object);

@@ -22,7 +22,7 @@ namespace GMTKEngine {
         vbo = GLBuffer(GLBuffer::Type::VERTEX, vertices, sizeof(vertices), GLBuffer::Usage::RARELY);
     }
 
-    void Renderer2D::render() {
+    void Renderer2D::render(Camera& camera) {
         updateInstanceData();
 
         GLint texture_indices[32];
@@ -38,6 +38,9 @@ namespace GMTKEngine {
 
             GLint texturesUniformLoc = glGetUniformLocation(shaderGroup.first, "textures");
             GLint textureOffsetsLoc = glGetUniformLocation(shaderGroup.first, "offsets");
+            GLuint projectionLoc = glGetUniformLocation(shaderGroup.first, "projection");
+
+            camera.applyProjection(projectionLoc);
 
             glUniform1iv(texturesUniformLoc, 32, texture_indices);
 
@@ -49,9 +52,11 @@ namespace GMTKEngine {
                 
                 auto it = batch.objects.begin();
                 for ( size_t i = 0; i < batch.objects.size(); i++) {
-                    glActiveTexture(GL_TEXTURE0 + i);
+                    size_t texIndex = batch.textureInsertionIndex[it->first];
+
+                    glActiveTexture(GL_TEXTURE0 + texIndex);
                     glBindTexture(GL_TEXTURE_2D, it->first);
-                    textureBatchOffsets[i] = it->second.size();
+                    textureBatchOffsets[texIndex] = it->second.size();
                     it++;
                 }
 
@@ -75,8 +80,13 @@ namespace GMTKEngine {
 
         bool found_group = false;
         for (auto& tex_group : shader_group) {
-            if (tex_group.objects.find(textureID) == tex_group.objects.end() && tex_group.objects.size() >= 32) {
-                continue;
+            auto it = tex_group.objects.find(textureID);
+            if (it == tex_group.objects.end()) {
+                if(tex_group.objects.size() >= 32) {
+                    continue;
+                }
+
+                tex_group.textureInsertionIndex[textureID] = tex_group.textureInsertionIndex.size();
             } 
 
             RenderBatch2D& batch = tex_group;
@@ -95,6 +105,9 @@ namespace GMTKEngine {
             batch.instanceDataSize = sizeof(std::float32_t) * object->getDrawData().size();
 
             initBatch(batch);
+
+            batch.textureInsertionIndex[textureID] = batch.textureInsertionIndex.size();
+
 
             appendObjectToBatch(batch, object);
         }

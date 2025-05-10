@@ -10,6 +10,8 @@ namespace GMTKEngine {
         public:
             std::string getComponentName();
 
+            virtual ~Component() = default;
+
         protected:
             virtual void start() = 0;
             virtual void early_update() = 0;

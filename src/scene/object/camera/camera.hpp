@@ -9,25 +9,39 @@
 #include <glad/glad.h>
 
 #include "scene/object/components/transform/3d/transform3d.hpp"
+#include "scene/object/components/transform/2d/transform2d.hpp"
 #include "scene/object/object.hpp"
 
 namespace GMTKEngine {
-	class Camera : Object {
+	class Camera : public Object {
+		friend class Renderer2D;
+		friend class Scene;
+
 		public:
+			enum class ProjectionType {
+				ORTHOGRAPHIC,
+				PERPSECTIVE
+			};
+
 			Camera();
-			~Camera();
 
-			void apply_projection(GLuint location);
-
-		protected:
-
+			void setProjectionType(ProjectionType newType);
+			
+			
+			protected:
+			void applyProjection(GLuint location);
+			
             virtual void start() { return; }
             virtual void earlyUpdate() { return; }
 			virtual void update() override;
             virtual void lateUpdate() { return; }
 
 		private:
-			Transform transform;
+			void updateOrtho();
+			void updatePerspective();
+
+			ProjectionType projectionType;
+
 			glm::mat4 projection;
 	};
 }

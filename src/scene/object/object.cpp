@@ -2,7 +2,6 @@
 
 namespace GMTKEngine {
     Object::Object() {
-        mComponents = {};
         rendered = false;
     }
 

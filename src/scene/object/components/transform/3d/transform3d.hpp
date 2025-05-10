@@ -13,9 +13,9 @@ namespace GMTKEngine {
         glm::vec2 texCoord;
     };
 
-    class Transform : public Component {
+    class Transform3D : public Component {
         public:
-            Transform(glm::vec3 position = glm::vec3(0.f, 0.f, 0.f), glm::vec4 rotation = glm::vec4(0.f, 0.f, 0.f, 0.f), glm::vec3 scale = glm::vec3(0.f, 0.f, 0.f), std::vector<Vertex> vertices = {});
+            Transform3D(glm::vec3 position = glm::vec3(0.f, 0.f, 0.f), glm::vec4 rotation = glm::vec4(0.f, 0.f, 0.f, 0.f), glm::vec3 scale = glm::vec3(0.f, 0.f, 0.f), std::vector<Vertex> vertices = {});
 
             virtual void start() { return; }
             virtual void early_update() { return; }
@@ -32,7 +32,6 @@ namespace GMTKEngine {
             glm::vec4 getRotation();
             void setRotation(glm::vec4 newRotation);
 
-            //void setPosition
         protected:
             bool changed;
 

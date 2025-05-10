@@ -3,11 +3,9 @@
 namespace GMTKEngine {
     
     Object2D::Object2D() {
-        Transform2D* transform;
-        Texture* texture;
 
-        createComponent(&transform);
-        createComponent(&texture);
+        createComponent<Transform2D>();
+        createComponent<Texture>();
     }
 
 

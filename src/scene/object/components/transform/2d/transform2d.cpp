@@ -19,6 +19,11 @@ namespace GMTKEngine {
         mPosition = newPos;
     }
 
+    void Transform2D::translate(glm::vec2 vec) {
+        changed = true;
+        mPosition += vec;
+    }
+
     glm::vec2 Transform2D::getScale() {
         return mScale;
     }
@@ -36,6 +41,11 @@ namespace GMTKEngine {
         changed = true;
         rotation = newRotation;
     }
+    
+    void Transform2D::rotate(float amount) {
+        rotation += amount;
+    }
+
 
     float Transform2D::getDepth() {
         return depth;

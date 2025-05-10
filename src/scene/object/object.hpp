@@ -23,16 +23,14 @@ namespace GMTKEngine {
             Object(Object&& other) = delete;
 
             template<class T>
-            void createComponent(T* component) {
-                typedef std::remove_pointer_t<T> deref_T;
+            T* createComponent() {
+                static_assert(std::is_base_of<Component, T>::value);
 
-                static_assert(std::is_pointer<T>::value);
-                static_assert(std::is_base_of<Component, deref_T>::value);
+                T* component = new T;
 
-                *component = new deref_T();
-
-                mComponents[typeid(deref_T).hash_code()] = *component;
+                mComponents[typeid(T).hash_code()] = (Component*)component;
                 
+                return component;
             }
 
             std::string getName() { return mObjectName; }
