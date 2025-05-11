@@ -20,9 +20,12 @@ namespace GMTKEngine {
             virtual void early_update() { return; }
             virtual void update() { return; }
             virtual void late_update() { return; }
-            virtual bool changedSinceLastUpdate() override;
+            virtual void frameCleanup() override;
+            virtual bool hasChanged() override;
 
         private:
+            bool changed;
+
             GLuint mTextureID;
     };
 }

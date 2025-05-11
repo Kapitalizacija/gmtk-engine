@@ -37,12 +37,11 @@ namespace GMTKEngine {
         changed = true;
     }
     
-    bool Transform3D::changedSinceLastUpdate() {
-        if (changed) {
-            changed = false;
-            return true;
-        }
+    bool Transform3D::hasChanged() {
+        return changed;
+    }
 
-        return false;
+    void Transform3D::frameCleanup() {
+        changed = false;
     }
 }

@@ -32,42 +32,21 @@ class TestObj : public Object2D {
 
 int main() {
     Window window = Window("GMTKEngine", {1280, 720});
-    ALDevice audio;
-    if (!audio.isValid()) {
-        ERROR("OpenAL Device Error, exiting");
-    }
+    //ALDevice audio;
+    //if (!audio.isValid()) {
+    //    ERROR("OpenAL Device Error, exiting");
+    //}
 
     Scene scene = Scene();
-    
-    std::float32_t verts[] = {
-        0.0f, 0.0f,
-        0.0f, 1.0f,
-        1.0f, 0.0f,
-        1.0f, 1.0f
-    };
-    
-    uint32_t indices[] = {
-        0, 1, 2,
-        1, 2, 3
-    };
-    
     
     GLTexture tex = GLTexture("image.png");
     GLTexture tex1 = GLTexture("bombardino.jpg");
     GLShader shader = GLShader("test_shader", "test_shaders/sprite_2d.vert", "test_shaders/sprite_2d.frag"); // fellas in paris
 
-    GLBuffer buff = GLBuffer(GLBuffer::Type::VERTEX, (uint8_t*)verts, sizeof(verts), GLBuffer::Usage::RARELY);
-    GLBuffer index_buff = GLBuffer(GLBuffer::Type::INDEX, (uint8_t*)indices, sizeof(indices), GLBuffer::Usage::RARELY);
-
-    GLAttribPointer attributes[] = {
-        {&buff, 0, 2, GL_FLOAT, 8, 0}
-    };
-
-    GLVAO vao = GLVAO(attributes, 1);
-
     //TODO: Test the Sound component abstraction here or something
-    /*ALBuffer buffer;
-    if (!buffer.loadFromFile("file_example_WAV_10MG.wav")) {
+    /*
+    ALBuffer buffer;
+    if (!buffer.loadFromFile("example.mp3")) {
         ERROR("Failed to load audio");
         return 1;
     }
@@ -95,15 +74,17 @@ int main() {
     obj1->getComponent<Transform2D>()->setDepth(1.0);
     scene.addToRenderer(obj1);
 
-
-
-
     Camera* cam = scene.getCamera();
     cam->setProjectionType(Camera::ProjectionType::ORTHOGRAPHIC);
 
     while ( !window.should_close() ) {
-        obj1->getComponent<Transform2D>()->setPosition(glm::vec2(glfwGetTime() * 100 - 1, 500));
+        obj1->getComponent<Transform2D>()->setPosition(glm::vec2(sin(glfwGetTime() )* 1000, 400) );
         obj1->getComponent<Transform2D>()->setRotation(glfwGetTime());
+
+        if (glfwGetTime() > 1) {
+            obj1->getComponent<Texture>()->setTexture(tex1);
+        }
+
         scene.update();
         window.update();
     }

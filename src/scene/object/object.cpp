@@ -39,18 +39,22 @@ namespace GMTKEngine {
         ERROR("get_draw_data method not implemented, object instances won't be able to be drawn");
         return {};
     }
+    
+    void Object::frameCleanup() {
+        for (auto& comp : mComponents) {
+            comp.second->frameCleanup();
+        }
+
+        changed = false;
+    }
+
 
     bool Object::isRendered() {
         return rendered;
     }
 
-    bool Object::changedSinceLastUpdate() {
-        for (auto& comp : mComponents) {
-            if (comp.second->changedSinceLastUpdate()) {
-                return true;
-            }
-        }
-        return false;
+    bool Object::hasChanged() {
+        return changed;
     }
     
 }

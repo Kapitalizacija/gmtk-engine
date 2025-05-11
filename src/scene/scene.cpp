@@ -35,7 +35,7 @@ namespace GMTKEngine {
         renderer2d.render(camera);
 
         for (auto& object: objects ) {
-            object->changed = false;
+            object->frameCleanup();
         }
     
     }

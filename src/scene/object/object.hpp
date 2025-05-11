@@ -9,6 +9,7 @@
 #include <glad/glad.h>
 
 #include "components/component.hpp"
+#include "io/logging/logger.hpp"
 
 namespace GMTKEngine {
     class Object {
@@ -25,7 +26,14 @@ namespace GMTKEngine {
             template<class T>
             T* createComponent() {
                 static_assert(std::is_base_of<Component, T>::value);
+                
+                if (mComponents.find(typeid(T).hash_code()) != mComponents.end()) {
+                    WARN("Tried to add a preexisting component to object");
+                    return nullptr; 
+                }
 
+                changed = true;
+                
                 T* component = new T;
 
                 mComponents[typeid(T).hash_code()] = (Component*)component;
@@ -40,6 +48,11 @@ namespace GMTKEngine {
             T* getComponent() {
                 return (T*)mComponents[typeid(T).hash_code()];
             }
+
+            template <typename T>
+            bool changedComponent() {
+                return mComponents[typeid(T).hash_code()]->hasChanged();
+            }
             
             void addTag(std::string tag) { mTags.insert(tag); }
             bool hasTag(std::string tag) { return mTags.count(tag); }
@@ -53,8 +66,9 @@ namespace GMTKEngine {
             virtual void update();
             virtual void lateUpdate();
             virtual std::vector<float> getDrawData();
+            virtual void frameCleanup();
 
-            bool changedSinceLastUpdate();
+            bool hasChanged();
 
             std::string mObjectName;
             std::unordered_map<size_t, Component*> mComponents;

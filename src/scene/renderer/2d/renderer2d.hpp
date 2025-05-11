@@ -16,6 +16,8 @@
 
 #define RENDERER2D_BATCH_CLEARUP_TRESHOLD 65536 // 64kb
 
+typedef uint32_t bool32_t;
+
 namespace GMTKEngine {
 
     struct RenderBatch2D {
@@ -23,6 +25,7 @@ namespace GMTKEngine {
         std::unordered_map<GLuint, size_t> textureInsertionIndex;
 
         std::vector<std::float32_t> objectData;
+        std::vector<bool32_t> shouldDraw;
 
         std::vector<size_t> clearQueue;
 
@@ -31,6 +34,7 @@ namespace GMTKEngine {
 
         GLVAO vao;
         GLBuffer objectDataGLBuffer;
+        GLBuffer shouldDrawGLBuffer;
     };
 
     class Renderer2D {
@@ -40,7 +44,7 @@ namespace GMTKEngine {
             void render(Camera& camera);
 
             void addObject2d(Object2D* object);
-            void removeObject2d(Object2D* object);
+            std::unordered_map<Object2D*, GLuint>::iterator removeObject2d(Object2D* object, GLuint oldTex = 0);
 
             void freeUnusedMemory();
         private:
@@ -59,16 +63,6 @@ namespace GMTKEngine {
             GLBuffer ebo;
             GLBuffer vbo;
             
-
-            /*
-            hash is made by combining the shader program id and 
-            the type hash so we can know what can be grouped together,
-             will be reordered as needeed
-            */ 
-
-            //think of this as a map, with all the hashes that as a value, has
-            //a vector of objects each with different sprites batched in groups of 32
-            //(the max OpenGL allows the bound at once)
             std::unordered_map<GLuint, std::vector<RenderBatch2D>> draw_batches_2d;
     };
 }

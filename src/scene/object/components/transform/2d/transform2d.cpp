@@ -56,12 +56,11 @@ namespace GMTKEngine {
         depth = newDepth;
     }
 
-    bool Transform2D::changedSinceLastUpdate() {
-        if (changed) {
-            changed = false;
-            return true;
-        }
+    bool Transform2D::hasChanged() {
+        return changed;
+    }
 
-        return false;
+    void Transform2D::frameCleanup() {
+        changed = false;
     }
 }

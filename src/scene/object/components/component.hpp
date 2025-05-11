@@ -17,7 +17,8 @@ namespace GMTKEngine {
             virtual void early_update() = 0;
             virtual void update() = 0;
             virtual void late_update() = 0;
-            virtual bool changedSinceLastUpdate() = 0; 
+            virtual void frameCleanup() = 0;
+            virtual bool hasChanged() = 0; 
             
             std::string mComponentName;
 
