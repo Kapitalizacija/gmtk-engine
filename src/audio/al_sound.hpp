@@ -1,5 +1,6 @@
 #pragma once
 
+#include "util/utilities.h"
 #include "al_buffer.hpp"
 #include <AL/al.h>
 #include <glm/glm.hpp>
@@ -9,6 +10,8 @@ namespace GMTKEngine {
     class ALSound {
         public:
             ALSound(ALBuffer &buf);
+            DISABLE_COPY_AND_MOVE(ALSound);
+
             ~ALSound();
 
             void play();

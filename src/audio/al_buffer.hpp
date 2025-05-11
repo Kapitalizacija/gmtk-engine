@@ -1,6 +1,7 @@
 #pragma once
 
 #include "io/logging/logger.hpp"
+#include "util/utilities.h"
 #include <AL/al.h>
 #include <string>
 #include <iostream>
@@ -12,6 +13,8 @@ namespace GMTKEngine {
     class ALBuffer {
         public:
             ALBuffer();
+            DISABLE_COPY_AND_MOVE(ALBuffer);
+
             ~ALBuffer();
 
             bool loadFromFile(const std::string &filename);

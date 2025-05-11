@@ -1,5 +1,6 @@
 #pragma once
 
+#include "util/utilities.h"
 #include <AL/al.h>
 #include <AL/alc.h>
 #include <string>
@@ -9,6 +10,8 @@ namespace GMTKEngine {
     class ALDevice {
         public:
             ALDevice(const std::string &deviceName = "");
+            DISABLE_COPY_AND_MOVE(ALDevice);
+
             ~ALDevice();
 
             bool isValid() const;
