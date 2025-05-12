@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stdfloat>
 #include <chrono>
+#include <array>
 
 #include "window/window.hpp"
 #include "scene/scene.hpp"
@@ -62,6 +63,8 @@ int main() {
     Camera* cam = scene.getCamera();
     cam->setProjectionType(Camera::ProjectionType::ORTHOGRAPHIC);
 
+    std::array<Object2D*, 1280*720> objs;
+
     for(int x = 0; x < 128; x++) {
         for (int y = 0; y < 72; y++) {
             Object2D* obj;
@@ -73,14 +76,22 @@ int main() {
             obj->getComponent<Transform2D>()->setScale(glm::vec2(10.0f, 10.0f));
             scene.addToRenderer(obj);
 
+            objs[x + y * 128] = obj;
         }
     }
     
+    int i = 0;
     while ( !window.shouldClose() ) {
         cam->getComponent<Transform2D>()->setRotation(glfwGetTime());
 
         scene.update();
         window.update();
+
+        scene.removeFromRenderer(objs[i]);
+        i++;
+        if (i == 128 * 72) {
+            return 0;
+        }
     }
 
 }

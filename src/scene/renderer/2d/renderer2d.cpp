@@ -1,5 +1,8 @@
 #include "renderer2d.hpp"
 
+#define SHOULD_CLEANUP(batch) batch.clearQueue.size() * batch.instanceDataSize > RENDERER2D_BATCH_CLEARUP_TRESHOLD_MEMORY \
+                    || batch.clearQueue.size() >= RENDERER2D_BATCH_CLEARUP_TRESHOLD_OBJECT_COUNT
+
 const uint32_t indices[] = { // the most barebones indices needed for a square, therefore I feel comfortable making it a global cosntant
     0, 1, 2,
     1, 2, 3
@@ -45,6 +48,8 @@ namespace GMTKEngine {
 
 
             for (RenderBatch2D& batch : shaderGroup.second) {
+                std::lock_guard lock(*batch.cleanupMutex.get());
+
                 std::vector<uint32_t> textureOffsets;
                 textureOffsets.resize(32);
 
@@ -76,6 +81,7 @@ namespace GMTKEngine {
     }
 
     void Renderer2D::addObject2d(Object2D* object) {
+
         auto& shader_group = draw_batches_2d[object->program];
         
         GLuint textureID = (object->getComponent<Texture>())->getRawHandle();
@@ -91,7 +97,11 @@ namespace GMTKEngine {
                 tex_group.textureInsertionIndex[textureID] = tex_group.textureInsertionIndex.size();
             } 
 
+            
             RenderBatch2D& batch = tex_group;
+
+            std::lock_guard lock(*batch.cleanupMutex.get());
+
             appendObjectToBatch(batch, object);
 
             found_group = true;
@@ -105,11 +115,11 @@ namespace GMTKEngine {
             RenderBatch2D& batch = shader_group.back();
             batch.instanceCount = 0;
             batch.instanceDataSize = sizeof(std::float32_t) * object->getDrawData().size();
+            batch.cleanupMutex.reset(new std::mutex);
 
             initBatch(batch);
 
             batch.textureInsertionIndex[textureID] = batch.textureInsertionIndex.size();
-
 
             appendObjectToBatch(batch, object);
         }
@@ -139,12 +149,12 @@ namespace GMTKEngine {
 
                 it = batch.objects[textureID].erase(batch.objects[textureID].find(object));
 
-                if (batch.clearQueue.size() * batch.instanceDataSize > RENDERER2D_BATCH_CLEARUP_TRESHOLD
-                    || batch.clearQueue.size() >= 64) {
-                    cleanupBatch(batch);
-                }
                 if (oldTex != 0) {
                     object->rendered = false;
+                }
+
+                if (SHOULD_CLEANUP(batch)) {
+                    cleanupBatch(batch);
                 }
                 found = true;
 
@@ -176,30 +186,36 @@ namespace GMTKEngine {
         std::vector<float> new_dat = object->getDrawData();
         batch.objectData.insert(batch.objectData.end(), new_dat.begin(), new_dat.end());
 
-        if (batch.clearQueue.size() * batch.instanceDataSize >= RENDERER2D_BATCH_CLEARUP_TRESHOLD) {
+        if (SHOULD_CLEANUP(batch)) {
             cleanupBatch(batch);
         }
     }
     
     void Renderer2D::cleanupBatch(RenderBatch2D& batch) {
-        if (batch.clearQueue.size() > 2) {
-            cleanupBatchLarge(batch);
+        auto cleanup = [](RenderBatch2D& batch, Renderer2D* renderer) {
+            std::lock_guard lock(*batch.cleanupMutex.get());
 
-            batch.objectData.erase(batch.objectData.end() - (batch.clearQueue.size() * batch.instanceDataSize / sizeof(std::float32_t)), batch.objectData.end());
-            batch.extraDrawInfo.erase(batch.extraDrawInfo.end() - batch.clearQueue.size() * 2, batch.extraDrawInfo.end());
-        } else {
-            cleanupBatchSmall(batch);
-        }
+            if (batch.clearQueue.size() > 2) {
+                renderer->cleanupBatchLarge(batch);
 
-        batch.instanceCount -= batch.clearQueue.size();
-
-        for (auto& tex_group : batch.objects) {
-            for (auto& object : tex_group.second) {
-                object.second -= batch.clearQueue.size();
+                batch.objectData.erase(batch.objectData.end() - (batch.clearQueue.size() * batch.instanceDataSize / sizeof(std::float32_t)), batch.objectData.end());
+                batch.extraDrawInfo.erase(batch.extraDrawInfo.end() - batch.clearQueue.size() * 2, batch.extraDrawInfo.end());
+            } else {
+                renderer->cleanupBatchSmall(batch);
             }
-        }
 
-        batch.clearQueue.clear();
+            batch.instanceCount -= batch.clearQueue.size();
+
+            for (auto& tex_group : batch.objects) {
+                for (auto& object : tex_group.second) {
+                    object.second -= batch.clearQueue.size();
+                }
+            }
+
+            batch.clearQueue.clear();
+        };
+
+        cleanupThread = std::thread(cleanup, std::ref(batch), this);
     }
     
     void Renderer2D::cleanupBatchLarge(RenderBatch2D& batch) {
