@@ -57,33 +57,27 @@ int main() {
     sound.play();*/
 
     //The update() method needs to be impemented fully before this will work :(
-    Object2D *obj = scene.create_object<Object2D>();
-    obj->setShader(shader);
-    ((Texture*)obj->getComponent<Texture>())->setTexture(tex1);
-    obj->getComponent<Transform2D>()->setPosition(glm::vec2(500, 500));
-    obj->getComponent<Transform2D>()->setScale(glm::vec2(400, 400));
-    obj->getComponent<Transform2D>()->setDepth(0.0);
-    scene.addToRenderer(obj);
     
-
-    Object2D* obj1 = scene.create_object<Object2D>();
-    obj1->setShader(shader);
-    (obj1->getComponent<Texture>())->setTexture(tex);
-    obj1->getComponent<Transform2D>()->setPosition(glm::vec2(500, 500));
-    obj1->getComponent<Transform2D>()->setScale(glm::vec2(400, 400));
-    obj1->getComponent<Transform2D>()->setDepth(1.0);
-    scene.addToRenderer(obj1);
 
     Camera* cam = scene.getCamera();
     cam->setProjectionType(Camera::ProjectionType::ORTHOGRAPHIC);
 
-    while ( !window.should_close() ) {
-        obj1->getComponent<Transform2D>()->setPosition(glm::vec2(sin(glfwGetTime() )* 1000, 400) );
-        obj1->getComponent<Transform2D>()->setRotation(glfwGetTime());
+    for(int x = 0; x < 128; x++) {
+        for (int y = 0; y < 72; y++) {
+            Object2D* obj;
 
-        if (glfwGetTime() > 1) {
-            obj1->getComponent<Texture>()->setTexture(tex1);
+            obj = scene.createObject<Object2D>();
+            obj->setShader(shader);
+            obj->getComponent<Texture>()->setTexture(tex);
+            obj->getComponent<Transform2D>()->setPosition(glm::vec2((float)x * 10 - 640, (float)y * 10 - 360));
+            obj->getComponent<Transform2D>()->setScale(glm::vec2(10.0f, 10.0f));
+            scene.addToRenderer(obj);
+
         }
+    }
+    
+    while ( !window.shouldClose() ) {
+        cam->getComponent<Transform2D>()->setRotation(glfwGetTime());
 
         scene.update();
         window.update();

@@ -26,8 +26,9 @@ namespace GMTKEngine {
 
             //"Create" is a bit misleading, you have to create an instance of the class and then pass a pointer for it. Same goes for components in the Object 
             template<class T>
-            T* create_object() {
+            T* createObject() {
 
+                static_assert(!std::is_pointer<T>::value);
                 static_assert(std::is_base_of<Object, T>::value);
 
                 T* object = new T;

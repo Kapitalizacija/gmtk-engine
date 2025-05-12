@@ -26,6 +26,7 @@ namespace GMTKEngine {
             template<class T>
             T* createComponent() {
                 static_assert(std::is_base_of<Component, T>::value);
+                static_assert(!std::is_pointer<T>::value);
                 
                 if (mComponents.find(typeid(T).hash_code()) != mComponents.end()) {
                     WARN("Tried to add a preexisting component to object");

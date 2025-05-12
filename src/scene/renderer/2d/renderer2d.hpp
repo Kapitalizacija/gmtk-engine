@@ -27,7 +27,7 @@ namespace GMTKEngine {
         std::unordered_map<GLuint, size_t> textureInsertionIndex;
 
         std::vector<std::float32_t> objectData;
-        std::vector<int32_t> shouldDraw;
+        std::vector<int32_t> extraDrawInfo;
 
         std::vector<size_t> clearQueue;
 
@@ -36,7 +36,7 @@ namespace GMTKEngine {
 
         GLVAO vao;
         GLBuffer objectDataGLBuffer;
-        GLBuffer shouldDrawGLBuffer;
+        GLBuffer extraDrawDataGLBuffer;
     };
 
     class Renderer2D {

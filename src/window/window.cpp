@@ -87,7 +87,7 @@ namespace GMTKEngine {
 
     }
 
-    bool Window::should_close() {
+    bool Window::shouldClose() {
         return glfwWindowShouldClose(glfw_win);
     }
 

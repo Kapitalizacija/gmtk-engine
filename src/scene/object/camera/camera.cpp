@@ -5,6 +5,7 @@ namespace GMTKEngine {
 		createComponent<Transform2D>();
 		createComponent<Transform3D>();
 		projectionType = ProjectionType::ORTHOGRAPHIC;
+		dimensions = glm::ivec2(1280, 720);
 	}
 
     void Camera::update() {
@@ -18,9 +19,9 @@ namespace GMTKEngine {
 	void Camera::updateOrtho() {
 		Transform2D *transform = getComponent<Transform2D>();
 
-		projection = glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f); // TODO make these not hardcoded
-//		projection = glm::translate(projection, glm::vec3(transform->getPosition(), 0.0));
-//		projection = glm::rotate(projection, transform->getRotation(), glm::vec3(0, 0, 1));
+		projection = glm::ortho(-(float)dimensions.x / 2, (float)dimensions.x / 2, -(float)dimensions.y / 2, (float)dimensions.y / 2); 
+		projection = glm::translate(projection, glm::vec3(transform->getPosition(), 0.0));
+		projection = glm::rotate(projection, transform->getRotation(), glm::vec3(0, 0, 1));
 	}
 
 	void Camera::updatePerspective() {
@@ -40,6 +41,10 @@ namespace GMTKEngine {
 	
 	void Camera::setProjectionType(ProjectionType newType) {
 		projectionType = newType;
+	}
+	
+	void Camera::setDimensions(glm::ivec2 newDimensions) {
+		dimensions = newDimensions;
 	}
 
 }

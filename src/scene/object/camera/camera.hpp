@@ -26,6 +26,7 @@ namespace GMTKEngine {
 			Camera();
 
 			void setProjectionType(ProjectionType newType);
+			void setDimensions(glm::ivec2 newDimensions);
 			
 			
 			protected:
@@ -43,5 +44,6 @@ namespace GMTKEngine {
 			ProjectionType projectionType;
 
 			glm::mat4 projection;
+			glm::ivec2 dimensions;
 	};
 }

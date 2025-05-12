@@ -26,7 +26,7 @@ namespace GMTKEngine {
     
             ~Window();
     
-            bool should_close();
+            bool shouldClose();
             void update();
 
             Resolution get_resolution();
