@@ -4,6 +4,7 @@ namespace GMTKEngine {
     Texture::Texture() {
         mComponentName = "Texture";
         mTextureID = 0;
+        changed = false;
     }
 
     void Texture::setTexture(GLTexture& glTexture) {

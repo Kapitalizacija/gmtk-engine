@@ -1,5 +1,6 @@
 #pragma once
 
+
 #include <unordered_map>
 #include <map>
 #include <algorithm>
@@ -8,6 +9,7 @@
 #include <stdfloat>
 
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 #include "../../object/2d/object2d.hpp"
 #include "../../object/camera/camera.hpp"
@@ -21,11 +23,11 @@ typedef uint32_t bool32_t;
 namespace GMTKEngine {
 
     struct RenderBatch2D {
-        std::unordered_map<GLuint, std::unordered_map<Object2D*, GLuint>> objects;
+        std::map<GLuint, std::unordered_map<Object2D*, GLuint>> objects;
         std::unordered_map<GLuint, size_t> textureInsertionIndex;
 
         std::vector<std::float32_t> objectData;
-        std::vector<bool32_t> shouldDraw;
+        std::vector<int32_t> shouldDraw;
 
         std::vector<size_t> clearQueue;
 

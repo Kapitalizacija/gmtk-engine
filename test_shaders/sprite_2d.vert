@@ -6,9 +6,10 @@ layout (location = 2) in float depth;
 layout (location = 3) in float rotation;
 layout (location = 4) in vec2 scale;
 layout (location = 5) in int shouldDraw;
+layout (location = 6) in int texOffset;
 
 layout (location = 0) out vec2 texCoords;
-layout (location = 1) out flat int instanceID;
+layout (location = 1) out flat int offset;
 
 uniform mat4 projection;
 
@@ -26,5 +27,6 @@ void main() {
     gl_Position = projection * vec4(aPos.xy + aVert * scale * rotationMatrix, depth, 1.0);
 
     texCoords = vec2(0.5, 0.5) + aVert;
-    instanceID = gl_InstanceID;
+
+    offset = texOffset;
 }
