@@ -5,6 +5,7 @@
 #include <map>
 #include <algorithm>
 #include <vector>
+#include <list>
 #include <cstring>
 #include <thread>
 #include <mutex>
@@ -53,6 +54,7 @@ namespace GMTKEngine {
             Renderer2D(Renderer2D& yes) = delete;
 
             void render(Camera& camera);
+            void update();
 
             void addObject2d(Object2D* object);
             std::unordered_map<Object2D*, GLuint>::iterator removeObject2d(Object2D* object, GLuint oldTex = 0);
@@ -76,6 +78,6 @@ namespace GMTKEngine {
             
             std::unordered_map<GLuint, std::vector<RenderBatch2D>> draw_batches_2d;
 
-            std::thread cleanupThread;
+            std::list<std::thread> cleanupThreads;
     };
 }

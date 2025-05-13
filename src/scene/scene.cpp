@@ -32,6 +32,8 @@ namespace GMTKEngine {
             object->lateUpdate();
         }
 
+        renderer2d.update();
+
         renderer2d.render(camera);
 
         for (auto& object: objects ) {

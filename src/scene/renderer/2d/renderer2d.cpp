@@ -25,6 +25,21 @@ namespace GMTKEngine {
         vbo = GLBuffer(GLBuffer::Type::VERTEX, vertices, sizeof(vertices), GLBuffer::Usage::RARELY);
     }
 
+    void Renderer2D::update() {
+        for (std::list<std::thread>::iterator it = cleanupThreads.begin(); it != cleanupThreads.end();) {
+            DBG("ii");
+            if (it->joinable()) {
+                it->join();
+
+                auto old_it = it;
+                it++;
+                cleanupThreads.erase(old_it);
+                continue;
+            }
+            it++;
+        }
+    }
+
     void Renderer2D::render(Camera& camera) {
         updateInstanceData();
 
@@ -192,7 +207,7 @@ namespace GMTKEngine {
     }
     
     void Renderer2D::cleanupBatch(RenderBatch2D& batch) {
-        auto cleanup = [](RenderBatch2D& batch, Renderer2D* renderer) {
+        auto cleanup = [](Renderer2D* renderer, RenderBatch2D& batch) {
             std::lock_guard lock(*batch.cleanupMutex.get());
 
             if (batch.clearQueue.size() > 2) {
@@ -215,7 +230,7 @@ namespace GMTKEngine {
             batch.clearQueue.clear();
         };
 
-        cleanupThread = std::thread(cleanup, std::ref(batch), this);
+        cleanupThreads.emplace_back(cleanup, this, std::ref(batch));
     }
     
     void Renderer2D::cleanupBatchLarge(RenderBatch2D& batch) {
