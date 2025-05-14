@@ -5,12 +5,6 @@ namespace GMTKEngine {
         rendered = false;
     }
 
-    Object::~Object() {
-        for (auto &comp : mComponents) {
-            delete comp.second;
-        }
-    }
-
     void Object::start() {
         for (auto &comp : mComponents) {
             comp.second->start();

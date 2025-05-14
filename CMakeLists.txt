@@ -22,7 +22,7 @@ add_executable(engine ${SOURCES})
 # Add compile options based on build type
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     # -g flag for debugging symbols
-    target_compile_options(engine PRIVATE -g -DDEBUG -Wno-int-to-pointer-cast -Wno-cpp -O0)
+    target_compile_options(engine PRIVATE -g -DDEBUG -Wno-int-to-pointer-cast -Wno-cpp -Og)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     # Optimization flag for release builds. You can change -O3 to other optimization levels if desired.
     target_compile_options(engine PRIVATE -O3)
@@ -34,7 +34,9 @@ include_directories($ENV{VULKAN_SDK}/Include)
 include_directories($ENV{GLFW_INCLUDE_DIR})  # Optional, if GLFW headers are not in a standard include path
 include_directories(src)
 include_directories(glad)
-include_directories(stb_image)
+include_directories(stb/stb_image)
+include_directories(stb/stb_truetype)
+include_directories(stb)
 include_directories(drlibs)
 
 # Link libraries (assuming they are in the system linker path)

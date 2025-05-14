@@ -99,7 +99,7 @@ namespace GMTKEngine {
 
         auto& shader_group = draw_batches_2d[shared->program];
         
-        GLuint textureID = (shared->getComponent<Texture>())->getRawHandle();
+        GLuint textureID = (shared->getComponentLock<Texture>()).value()->getRawHandle();
 
         bool found_group = false;
         for (auto& tex_group : shader_group) {
@@ -148,7 +148,7 @@ namespace GMTKEngine {
 
         std::shared_ptr<Object2D> shared = object.lock();
 
-        GLuint textureID = (shared->getComponent<Texture>())->getRawHandle();
+        GLuint textureID = (shared->getComponentLock<Texture>()).value()->getRawHandle();
 
         if (oldTex != 0) {
             textureID = oldTex;
@@ -166,7 +166,7 @@ namespace GMTKEngine {
                 auto objectIt = texIt->second.find(object);
                 if (objectIt == texIt->second.end()) {
                     ERROR("Tried to remove nonexistant object: " << shared.get());
-                    return {};
+                    return std::nullopt;
                 }
 
                 std::lock_guard lock(*batch.cleanupMutex.get());
@@ -201,7 +201,7 @@ namespace GMTKEngine {
     
     void Renderer2D::appendObjectToBatch(RenderBatch2D& batch, std::weak_ptr<Object2D> object, std::shared_ptr<Object2D> shared) {
 
-        GLuint textureID = (shared->getComponent<Texture>())->getRawHandle();
+        GLuint textureID = (shared->getComponentLock<Texture>()).value()->getRawHandle();
 
         batch.objects[textureID][object] = batch.instanceCount;
         
@@ -262,26 +262,26 @@ namespace GMTKEngine {
             size_t srcStartOffset = batch.clearQueue[i] + 1;
             size_t srcEndOffset = batch.clearQueue[i+1];
 
-            dstStartOffset += (srcEndOffset - srcStartOffset);
             
             if (srcEndOffset - srcStartOffset == 0) {
+                dstStartOffset += (srcEndOffset - srcStartOffset);
                 continue;
             }
 
             std::copy(batch.objectData.begin() + srcStartOffset * batch.instanceDataCount, batch.objectData.begin() + srcEndOffset * batch.instanceDataCount, batch.objectData.begin() + dstStartOffset *  batch.instanceDataCount);
             std::copy(batch.extraDrawInfo.begin() + srcStartOffset * 2, batch.extraDrawInfo.begin() + srcEndOffset * 2, batch.extraDrawInfo.begin() + dstStartOffset *  2);
+            
+            dstStartOffset += (srcEndOffset - srcStartOffset);
         }
 
-        if ( batch.clearQueue.size() & 1 == 1 ){
-            size_t srcStartOffset = batch.clearQueue.back() + 1;
+        size_t srcStartOffset = batch.clearQueue.back() + 1;
 
-            if (srcStartOffset * 2 + 2 == batch.extraDrawInfo.size()) {
-               return; 
-            }
-
-            std::copy(batch.objectData.begin() + srcStartOffset * batch.instanceDataCount, batch.objectData.end(), batch.objectData.begin() + dstStartOffset *  batch.instanceDataCount);
-            std::copy(batch.extraDrawInfo.begin() + srcStartOffset * 2, batch.extraDrawInfo.end(), batch.extraDrawInfo.begin() + dstStartOffset *  2);
+        if (srcStartOffset * 2 + 2 == batch.extraDrawInfo.size()) {
+           return; 
         }
+
+        std::copy(batch.objectData.begin() + srcStartOffset * batch.instanceDataCount, batch.objectData.end(), batch.objectData.begin() + dstStartOffset *  batch.instanceDataCount);
+        std::copy(batch.extraDrawInfo.begin() + srcStartOffset * 2, batch.extraDrawInfo.end(), batch.extraDrawInfo.begin() + dstStartOffset *  2);
     }
     
     void Renderer2D::cleanupBatchSmall(RenderBatch2D& batch) {
@@ -313,7 +313,7 @@ namespace GMTKEngine {
 
                             addObject2d((*it).first);
                             
-                            shared->getComponent<Texture>()->frameCleanup();
+                            shared->getComponentLock<Texture>().value()->frameCleanup();
                             continue;
                         }
 

@@ -4,6 +4,8 @@
 #include <iostream>
 #include <unordered_set>
 #include <unordered_map>
+#include <memory>
+#include <optional>
 #include <vector>
 
 #include <glad/glad.h>
@@ -18,26 +20,26 @@ namespace GMTKEngine {
 
         public:
             Object();
-            virtual ~Object();
+            virtual ~Object() = default;
 
-            Object(const Object& other) = delete;
-            Object(Object&& other) = delete;
+            Object(const Object&) = delete;
+            Object(Object&&) = delete;
 
             template<class T>
-            T* createComponent() {
+            std::optional<std::weak_ptr<T>> createComponent() {
                 static_assert(std::is_base_of<Component, T>::value);
                 static_assert(!std::is_pointer<T>::value);
                 
                 if (mComponents.find(typeid(T).hash_code()) != mComponents.end()) {
                     WARN("Tried to add a preexisting component to object");
-                    return nullptr; 
+                    return std::nullopt; 
                 }
 
                 changed = true;
                 
-                T* component = new T;
+                std::shared_ptr<T> component = std::make_shared<T>();
 
-                mComponents[typeid(T).hash_code()] = (Component*)component;
+                mComponents[typeid(T).hash_code()] = component;
                 
                 return component;
             }
@@ -46,8 +48,25 @@ namespace GMTKEngine {
             void setName(std::string name) { mObjectName = name; }
 
             template <typename T>
-            T* getComponent() {
-                return (T*)mComponents[typeid(T).hash_code()];
+            std::optional<std::weak_ptr<T>> getComponent() {
+                auto it = mComponents.find(typeid(T).hash_code());
+
+                if (it == mComponents.end()) {
+                    return std::nullopt;
+                }
+
+                return std::weak_ptr<T>(std::static_pointer_cast<T>(it->second));
+            }
+
+            template <typename T>
+            std::optional<std::shared_ptr<T>> getComponentLock() {
+                std::optional<std::weak_ptr<T>> weakPtr = getComponent<T>();
+
+                if (weakPtr.has_value()) {
+                    return weakPtr.value().lock();
+                }
+
+                return std::nullopt;
             }
 
             template <typename T>
@@ -72,7 +91,7 @@ namespace GMTKEngine {
             bool hasChanged();
 
             std::string mObjectName;
-            std::unordered_map<size_t, Component*> mComponents;
+            std::unordered_map<size_t, std::shared_ptr<Component>> mComponents;
             std::unordered_set<std::string> mTags;
     
             bool enabled;

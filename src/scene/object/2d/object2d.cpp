@@ -19,7 +19,7 @@ namespace GMTKEngine {
     }
 
     std::vector<float> Object2D::getDrawData() {
-        Transform2D* transform = getComponent<Transform2D>();
+        std::shared_ptr<Transform2D> transform = getComponentLock<Transform2D>().value();
         return {
             transform->getPosition().x, transform->getPosition().y,
             transform->getDepth(),

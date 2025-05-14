@@ -1,12 +1,23 @@
 #include "gl_texture.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
+#include <stb_image/stb_image.h>
 
 namespace GMTKEngine {
 	GLTexture::GLTexture() {}
+
     GLTexture::GLTexture(std::string imagePath): tex(0) {
-		createTexture(imagePath);
+		stbi_set_flip_vertically_on_load(true);
+
+		int width, height, channels;
+		unsigned char *data = stbi_load(imagePath.c_str(), &width, &height, &channels, 0);
+
+		if (data == nullptr) {
+			ERROR("Failed to load texture from path " << imagePath);
+			return;
+		}
+
+		createTexture(data, width, height, channels);
 	}
 
     GLTexture::GLTexture(GLTexture&& other) {
@@ -29,16 +40,7 @@ namespace GMTKEngine {
 		glDeleteTextures(1, &tex);
 	}
 
-	void GLTexture::createTexture(std::string path){
-		stbi_set_flip_vertically_on_load(true);
-
-		int width, height, channels;
-		unsigned char *data = stbi_load(path.c_str(), &width, &height, &channels, 0);
-
-		if (data == nullptr) {
-			ERROR("Failed to load texture from path " << path);
-			return;
-		}
+    void GLTexture::createTexture(uint8_t* data, int width, int height, int channels) {
 
 		glGenTextures(1, &tex);
 		glBindTexture(GL_TEXTURE_2D, tex);

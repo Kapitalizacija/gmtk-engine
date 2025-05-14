@@ -72,9 +72,9 @@ int main() {
             obj = scene.createObject<Object2D>();
             auto obj_shared = obj.lock();
             obj_shared->setShader(shader);
-            obj_shared->getComponent<Texture>()->setTexture(tex);
-            obj_shared->getComponent<Transform2D>()->setPosition(glm::vec2((float)x * 10 - 640, (float)y * 10 - 360));
-            obj_shared->getComponent<Transform2D>()->setScale(glm::vec2(10.0f, 10.0f));
+            obj_shared->getComponentLock<Texture>().value()->setTexture(tex);
+            obj_shared->getComponentLock<Transform2D>().value()->setPosition(glm::vec2((float)x * 10 - 640, (float)y * 10 - 360));
+            obj_shared->getComponentLock<Transform2D>().value()->setScale(glm::vec2(10.0f, 10.0f));
             scene.addToRenderer(obj);
 
             objs[y * 128 + x] = obj;

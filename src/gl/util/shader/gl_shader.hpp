@@ -12,7 +12,7 @@ namespace GMTKEngine {
         public:
             GLShader(const std::string name, const std::string vertex_path, const std::string fragment_path);
 
-            GLShader(const GLShader& other) = delete;
+            GLShader(const GLShader&) = delete;
 
             GLShader(GLShader&& other);
             void operator=(GLShader&& other);
