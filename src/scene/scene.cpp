@@ -5,12 +5,6 @@ namespace GMTKEngine {
 
     }
 
-    Scene::~Scene() {
-        for (auto &object : objects) {
-            delete object;
-        }
-    }
-
     void Scene::start() {
         for (auto &object : objects) {
             object->start();
@@ -36,7 +30,7 @@ namespace GMTKEngine {
 
         renderer2d.render(camera);
 
-        for (auto& object: objects ) {
+        for (auto& object : objects ) {
             object->frameCleanup();
         }
     

@@ -63,35 +63,33 @@ int main() {
     Camera* cam = scene.getCamera();
     cam->setProjectionType(Camera::ProjectionType::ORTHOGRAPHIC);
 
-    std::array<Object2D*, 1280*720> objs;
+    std::array<std::weak_ptr<Object2D>, 128*72> objs;
 
-    for(int x = 0; x < 128; x++) {
-        for (int y = 0; y < 72; y++) {
-            Object2D* obj;
+    for(int y = 0; y < 72; y++) {
+        for (int x = 0; x < 128; x++) {
+            std::weak_ptr<Object2D> obj;
 
             obj = scene.createObject<Object2D>();
-            obj->setShader(shader);
-            obj->getComponent<Texture>()->setTexture(tex);
-            obj->getComponent<Transform2D>()->setPosition(glm::vec2((float)x * 10 - 640, (float)y * 10 - 360));
-            obj->getComponent<Transform2D>()->setScale(glm::vec2(10.0f, 10.0f));
+            auto obj_shared = obj.lock();
+            obj_shared->setShader(shader);
+            obj_shared->getComponent<Texture>()->setTexture(tex);
+            obj_shared->getComponent<Transform2D>()->setPosition(glm::vec2((float)x * 10 - 640, (float)y * 10 - 360));
+            obj_shared->getComponent<Transform2D>()->setScale(glm::vec2(10.0f, 10.0f));
             scene.addToRenderer(obj);
 
-            objs[x + y * 128] = obj;
+            objs[y * 128 + x] = obj;
         }
     }
     
     int i = 0;
     while ( !window.shouldClose() ) {
-        cam->getComponent<Transform2D>()->setRotation(glfwGetTime());
-
         scene.update();
         window.update();
 
-        scene.removeFromRenderer(objs[i]);
-        i++;
-        if (i == 128 * 72) {
-            return 0;
+        if (i < 128 * 72) {
+            scene.removeFromRenderer(objs[i]);
         }
+        i++;
     }
 
 }

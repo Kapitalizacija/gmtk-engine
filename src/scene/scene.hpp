@@ -5,6 +5,7 @@
 #include <unordered_set>
 #include <unordered_map>
 #include <vector>
+#include <memory>
 
 #include "object/object.hpp"
 #include "object/2d/object2d.hpp"
@@ -13,6 +14,8 @@
 #include "renderer/2d/renderer2d.hpp"
 
 namespace GMTKEngine {
+ 
+
     class Scene {
         public:
             Scene();
@@ -20,45 +23,38 @@ namespace GMTKEngine {
             Scene(const Scene& other) = delete;
             Scene(Scene&& other) = delete;
 
-            ~Scene();
-
             void freeUnusedMemory();
 
             //"Create" is a bit misleading, you have to create an instance of the class and then pass a pointer for it. Same goes for components in the Object 
             template<class T>
-            T* createObject() {
+            std::weak_ptr<T> createObject() {
 
                 static_assert(!std::is_pointer<T>::value);
                 static_assert(std::is_base_of<Object, T>::value);
 
-                T* object = new T;
+                std::shared_ptr<T> obj = std::make_shared<T>();
             
-                objects.insert((Object*)object);
+                objects.insert(obj);
 
-                return object;
+                return obj;
             }
     
             template<class T>
-            void destroy_object(T* object) {
-                typedef std::remove_pointer_t<T> deref_T;
-
+            void destroy_object(std::weak_ptr<T> object) {
                 static_assert(std::is_pointer<T>::value);
-                static_assert(std::is_base_of<Object, deref_T>::value);
+                static_assert(std::is_base_of<Object, T>::value);
 
-                delete *object;
+                std::shared_ptr<T> shared_obj = object.lock();
 
-                
                 if (object->rendered) {
-                    renderer2d.removeObject2d((Object2D*)*object);
+                    renderer2d.removeObject2d(object);
                 }
-                objects.erase((Object*)*object);
-
-                *object = nullptr;
+                objects.erase(shared_obj);
             }
 
             template <class T>
-            void addToRenderer(T object) {
-                if (objects.find(object) == objects.end()) {
+            void addToRenderer(std::weak_ptr<T> object) {
+                if (objects.find(object.lock()) == objects.end()) {
                     ERROR("Tried to enable rendering on a nonexistant object");
                     return;
                 }
@@ -76,17 +72,16 @@ namespace GMTKEngine {
             }
 
             template <class T>
-            void removeFromRenderer(T object) {
-                if (objects.find(object) == objects.end()) {
+            void removeFromRenderer(std::weak_ptr<T> object) {
+                if (objects.find(object.lock()) == objects.end()) {
                     ERROR("Tried to disable rendering on a nonexistant object");
                     return;
                 }
 
-                typedef std::remove_pointer_t<T> deref_T;
 
-                if(std::is_base_of<Object2D, deref_T>::value) {
+                if(std::is_base_of<Object2D, T>::value) {
                     renderer2d.removeObject2d(object);
-                } else if (std::is_base_of<Object3D, deref_T>::value)
+                } else if (std::is_base_of<Object3D, T>::value)
                 {
                     throw new std::runtime_error("UNIMPLEMENTED");
                 } else {
@@ -101,7 +96,7 @@ namespace GMTKEngine {
     
         private:
 
-            std::unordered_set<Object*> objects;
+            std::unordered_set<std::shared_ptr<Object>> objects;
 
             Camera camera;
 

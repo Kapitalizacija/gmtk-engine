@@ -27,7 +27,6 @@ namespace GMTKEngine {
 
     void Renderer2D::update() {
         for (std::list<std::thread>::iterator it = cleanupThreads.begin(); it != cleanupThreads.end();) {
-            DBG("ii");
             if (it->joinable()) {
                 it->join();
 
@@ -95,11 +94,12 @@ namespace GMTKEngine {
         glBindVertexArray(0);
     }
 
-    void Renderer2D::addObject2d(Object2D* object) {
+    void Renderer2D::addObject2d(std::weak_ptr<Object2D> object) {
+        std::shared_ptr<Object2D> shared = object.lock();
 
-        auto& shader_group = draw_batches_2d[object->program];
+        auto& shader_group = draw_batches_2d[shared->program];
         
-        GLuint textureID = (object->getComponent<Texture>())->getRawHandle();
+        GLuint textureID = (shared->getComponent<Texture>())->getRawHandle();
 
         bool found_group = false;
         for (auto& tex_group : shader_group) {
@@ -117,7 +117,7 @@ namespace GMTKEngine {
 
             std::lock_guard lock(*batch.cleanupMutex.get());
 
-            appendObjectToBatch(batch, object);
+            appendObjectToBatch(batch, object, shared);
 
             found_group = true;
 
@@ -129,43 +129,56 @@ namespace GMTKEngine {
 
             RenderBatch2D& batch = shader_group.back();
             batch.instanceCount = 0;
-            batch.instanceDataSize = sizeof(std::float32_t) * object->getDrawData().size();
-            batch.cleanupMutex.reset(new std::mutex);
+            batch.instanceDataSize = sizeof(std::float32_t) * shared->getDrawData().size();
+            batch.instanceDataCount = shared->getDrawData().size();
+            batch.cleanupMutex = std::make_shared<std::mutex>();
 
             initBatch(batch);
 
             batch.textureInsertionIndex[textureID] = batch.textureInsertionIndex.size();
 
-            appendObjectToBatch(batch, object);
+            appendObjectToBatch(batch, object, shared);
         }
 
-        object->rendered = true;
+        shared->rendered = true;
     }
     
-    std::unordered_map<Object2D*, GLuint>::iterator Renderer2D::removeObject2d(Object2D* object, GLuint oldTex) {
+    std::optional<ObjectMap::iterator> Renderer2D::removeObject2d(std::weak_ptr<Object2D> object, GLuint oldTex) {
         bool found = false;
 
-        GLuint textureID = (object->getComponent<Texture>())->getRawHandle();
+        std::shared_ptr<Object2D> shared = object.lock();
+
+        GLuint textureID = (shared->getComponent<Texture>())->getRawHandle();
 
         if (oldTex != 0) {
             textureID = oldTex;
         }
 
-        std::unordered_map<Object2D*, GLuint>::iterator it;
+        ObjectMap::iterator nextIt;
 
             
-        auto& shader_group = draw_batches_2d[object->program];
+        auto& shader_group = draw_batches_2d[shared->program];
         for (auto& batch : shader_group) {
 
-            if (batch.objects.find(textureID) != batch.objects.end()) {
-         
-                batch.clearQueue.push_back(batch.objects[textureID][object]);
-                batch.extraDrawInfo[batch.objects[textureID][object] * 2] = false;
+            auto texIt = batch.objects.find(textureID);
+            if (texIt != batch.objects.end())   {
+                
+                auto objectIt = texIt->second.find(object);
+                if (objectIt == texIt->second.end()) {
+                    ERROR("Tried to remove nonexistant object: " << shared.get());
+                    return {};
+                }
 
-                it = batch.objects[textureID].erase(batch.objects[textureID].find(object));
+                std::lock_guard lock(*batch.cleanupMutex.get());
+         
+                batch.clearQueue.push_back(objectIt->second);
+
+                batch.extraDrawInfo[objectIt->second * 2] = false;
+
+                nextIt = texIt->second.erase(objectIt);
 
                 if (oldTex != 0) {
-                    object->rendered = false;
+                    shared->rendered = false;
                 }
 
                 if (SHOULD_CLEANUP(batch)) {
@@ -179,16 +192,16 @@ namespace GMTKEngine {
 
         if (!found) {
             ERROR("Tried to remove nonexistant object");
-            return it;
+            return nextIt;
         }
 
-        return it;
+        return nextIt;
 
     }
     
-    void Renderer2D::appendObjectToBatch(RenderBatch2D& batch, Object2D* object) {
+    void Renderer2D::appendObjectToBatch(RenderBatch2D& batch, std::weak_ptr<Object2D> object, std::shared_ptr<Object2D> shared) {
 
-        GLuint textureID = (object->getComponent<Texture>())->getRawHandle();
+        GLuint textureID = (shared->getComponent<Texture>())->getRawHandle();
 
         batch.objects[textureID][object] = batch.instanceCount;
         
@@ -196,9 +209,9 @@ namespace GMTKEngine {
         batch.extraDrawInfo.push_back(batch.textureInsertionIndex[textureID]);
         batch.instanceCount++;
 
-        object->rendered = true;
+        shared->rendered = true;
 
-        std::vector<float> new_dat = object->getDrawData();
+        std::vector<float> new_dat = shared->getDrawData();
         batch.objectData.insert(batch.objectData.end(), new_dat.begin(), new_dat.end());
 
         if (SHOULD_CLEANUP(batch)) {
@@ -210,10 +223,10 @@ namespace GMTKEngine {
         auto cleanup = [](Renderer2D* renderer, RenderBatch2D& batch) {
             std::lock_guard lock(*batch.cleanupMutex.get());
 
-            if (batch.clearQueue.size() > 2) {
+            if (batch.clearQueue.size() > 3) {
                 renderer->cleanupBatchLarge(batch);
 
-                batch.objectData.erase(batch.objectData.end() - (batch.clearQueue.size() * batch.instanceDataSize / sizeof(std::float32_t)), batch.objectData.end());
+                batch.objectData.erase(batch.objectData.end() - batch.clearQueue.size() * batch.instanceDataCount, batch.objectData.end());
                 batch.extraDrawInfo.erase(batch.extraDrawInfo.end() - batch.clearQueue.size() * 2, batch.extraDrawInfo.end());
             } else {
                 renderer->cleanupBatchSmall(batch);
@@ -221,13 +234,21 @@ namespace GMTKEngine {
 
             batch.instanceCount -= batch.clearQueue.size();
 
-            for (auto& tex_group : batch.objects) {
-                for (auto& object : tex_group.second) {
-                    object.second -= batch.clearQueue.size();
+            batch.clearQueue.clear();
+
+            std::map<size_t, ObjectMap::iterator, std::less<GLuint>> indices;
+
+            for (auto texIt = batch.objects.begin(); texIt != batch.objects.end(); texIt++) {
+                for (auto objIt = texIt->second.begin(); objIt != texIt->second.end(); objIt++) {
+                    indices[objIt->second] = objIt;
                 }
             }
 
-            batch.clearQueue.clear();
+            size_t i = 0;
+            for (auto& index : indices) {
+                index.second->second = i;
+                i++;
+            }
         };
 
         cleanupThreads.emplace_back(cleanup, this, std::ref(batch));
@@ -236,46 +257,40 @@ namespace GMTKEngine {
     void Renderer2D::cleanupBatchLarge(RenderBatch2D& batch) {
         std::sort(batch.clearQueue.begin(), batch.clearQueue.end());
 
-        size_t dstStartOffset = batch.clearQueue[0] + 1;
+        size_t dstStartOffset = batch.clearQueue[0];
         for ( size_t i = 1; i < batch.clearQueue.size() - 1; i += 2) {
             size_t srcStartOffset = batch.clearQueue[i] + 1;
             size_t srcEndOffset = batch.clearQueue[i+1];
 
             dstStartOffset += (srcEndOffset - srcStartOffset);
-
+            
             if (srcEndOffset - srcStartOffset == 0) {
                 continue;
             }
 
-            memcpy(batch.objectData.data() + dstStartOffset * batch.instanceDataSize, batch.objectData.data() + srcStartOffset * batch.instanceDataSize,
-             (srcEndOffset - srcStartOffset) * batch.instanceDataSize);
-            memcpy(batch.extraDrawInfo.data() + dstStartOffset * 8, batch.extraDrawInfo.data() + srcStartOffset * 8,
-             (srcEndOffset - srcStartOffset) * 8);
-
+            std::copy(batch.objectData.begin() + srcStartOffset * batch.instanceDataCount, batch.objectData.begin() + srcEndOffset * batch.instanceDataCount, batch.objectData.begin() + dstStartOffset *  batch.instanceDataCount);
+            std::copy(batch.extraDrawInfo.begin() + srcStartOffset * 2, batch.extraDrawInfo.begin() + srcEndOffset * 2, batch.extraDrawInfo.begin() + dstStartOffset *  2);
         }
 
         if ( batch.clearQueue.size() & 1 == 1 ){
             size_t srcStartOffset = batch.clearQueue.back() + 1;
-            size_t srcEndOffset = batch.objectData.size();
 
-            if (srcEndOffset - srcStartOffset == 0) {
+            if (srcStartOffset * 2 + 2 == batch.extraDrawInfo.size()) {
                return; 
             }
 
-            memcpy(batch.objectData.data() + dstStartOffset * batch.instanceDataSize, batch.objectData.data() + srcStartOffset * batch.instanceDataSize,
-             (srcEndOffset - srcStartOffset) * batch.instanceDataSize);
-            memcpy(batch.extraDrawInfo.data() + dstStartOffset * 8, batch.extraDrawInfo.data() + srcStartOffset * 8,
-             (srcEndOffset - srcStartOffset) * 8);
+            std::copy(batch.objectData.begin() + srcStartOffset * batch.instanceDataCount, batch.objectData.end(), batch.objectData.begin() + dstStartOffset *  batch.instanceDataCount);
+            std::copy(batch.extraDrawInfo.begin() + srcStartOffset * 2, batch.extraDrawInfo.end(), batch.extraDrawInfo.begin() + dstStartOffset *  2);
         }
     }
     
     void Renderer2D::cleanupBatchSmall(RenderBatch2D& batch) {
         for (size_t i = 0; i < batch.clearQueue.size(); i++ ) {
-            size_t startOffset = batch.clearQueue[i] * batch.instanceDataSize / sizeof(std::float32_t);
+            size_t startOffset = batch.clearQueue[i] * batch.instanceCount;
 
             batch.objectData.erase(
                 batch.objectData.begin() + startOffset,
-                batch.objectData.begin() + startOffset + (batch.instanceDataSize / sizeof(std::float32_t))
+                batch.objectData.begin() + startOffset + batch.instanceCount
             );
 
             batch.extraDrawInfo.erase(
@@ -291,22 +306,24 @@ namespace GMTKEngine {
             for(RenderBatch2D& batch : shaderGroup.second) {
                 for (auto& textureGroup : batch.objects) {
                     for (auto it = textureGroup.second.begin(); it != textureGroup.second.end();) {
-                        if ( (*it).first->changedComponent<Texture>()) {
-                            Object2D* obj = (*it).first;
-                            it = removeObject2d(obj, textureGroup.first);
+                        if ( (*it).first.lock()->changedComponent<Texture>()) {
+                            std::shared_ptr<Object2D> shared = (*it).first.lock();
 
-                            addObject2d(obj);
+                            it = removeObject2d((*it).first, textureGroup.first).value();
+
+                            addObject2d((*it).first);
                             
-                            obj->getComponent<Texture>()->frameCleanup();
+                            shared->getComponent<Texture>()->frameCleanup();
                             continue;
                         }
 
-                        if ( !(*it).first->changedComponent<Transform2D>() ) {
+                        // I lock it in the if statement intentionally so no deadlock 
+                        if ( !(*it).first.lock()->changedComponent<Transform2D>() ) {
                             it++;
                             continue;
                         }
 
-                        std::vector<float> newData = (*it).first->getDrawData();
+                        std::vector<float> newData = (*it).first.lock()->getDrawData();
                         memcpy((char*)batch.objectData.data() + (*it).second * batch.instanceDataSize, newData.data(), batch.instanceDataSize); 
 
                         it++;

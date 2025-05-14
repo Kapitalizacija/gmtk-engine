@@ -60,10 +60,15 @@ namespace GMTKEngine {
         glfwMakeContextCurrent(glfw_win);
 
         glfwSetWindowSizeCallback(glfw_win, framebufferSizeCallback);
+        glfwSwapInterval(2);
     }
     
     void Window::init_glfw() {
+#ifdef __linux__
+#ifdef DEBUG
         glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
+#endif
+#endif
 
         if ( glfwInit() == GLFW_FALSE ) {
             throw new std::runtime_error("Failed to init GLFW");
@@ -72,6 +77,9 @@ namespace GMTKEngine {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#ifdef __APPLE__
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); 
+#endif
     }
     
     void Window::init_glad() {
@@ -83,7 +91,10 @@ namespace GMTKEngine {
         
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_DEBUG_OUTPUT);
+
+#ifdef DEBUG
         glDebugMessageCallback(MessageCallback, 0);
+#endif
 
     }
 
