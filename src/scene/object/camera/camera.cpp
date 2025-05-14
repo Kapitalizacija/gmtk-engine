@@ -20,7 +20,7 @@ namespace GMTKEngine {
 		std::shared_ptr<Transform2D> transform = getComponentLock<Transform2D>().value();
 
 		projection = glm::ortho(-(float)dimensions.x / 2, (float)dimensions.x / 2, -(float)dimensions.y / 2, (float)dimensions.y / 2); 
-		projection = glm::translate(projection, glm::vec3(transform->getPosition(), 0.0));
+		projection = glm::translate(projection, glm::vec3(transform->getPosition()));
 		projection = glm::rotate(projection, transform->getRotation(), glm::vec3(0, 0, 1));
 	}
 

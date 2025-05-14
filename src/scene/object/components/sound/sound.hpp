@@ -15,6 +15,8 @@ namespace GMTKEngine {
             virtual void early_update() { return; }
             virtual void update();
             virtual void late_update() { return; }
+            virtual void frameCleanup() { return; }
+            virtual bool hasChanged() { return false; }
 
             void setPosition(const glm::vec3 &pos) { mPosition = pos; }
             glm::vec3 getPosition() const { return mPosition; }

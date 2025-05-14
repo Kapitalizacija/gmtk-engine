@@ -25,6 +25,8 @@
 #include <cmath>
 #include <thread>
 
+#define TEST_SOUND 0 //Set to 1 to play the example sound (will create the sound components no matter what)
+
 using namespace GMTKEngine;
 
 class TestObj : public Object2D {
@@ -34,10 +36,10 @@ class TestObj : public Object2D {
 
 int main() {
     Window window = Window("GMTKEngine", {1280, 720});
-    //ALDevice audio;
-    //if (!audio.isValid()) {
-    //    ERROR("OpenAL Device Error, exiting");
-    //}
+    ALDevice audio;
+    if (!audio.isValid()) {
+        ERROR("OpenAL Device Error, exiting");
+    }
 
     Scene scene = Scene();
     
@@ -88,14 +90,25 @@ int main() {
     auto obj_shared = obj.lock();
     obj_shared->setShader(shader);
     obj_shared->getComponentLock<Texture>().value()->setTexture(font.getHandle());
-    obj_shared->getComponentLock<Transform2D>().value()->setScale(glm::vec2(1280, 720));
-    obj_shared->getComponentLock<Transform2D>().value()->setPosition(glm::vec2(-640, -360));
+    obj_shared->getComponentLock<Transform2D>().value()->setScale(glm::vec3(1280, 720, 0));
+    obj_shared->getComponentLock<Transform2D>().value()->setPosition(glm::vec3(-640, -360, 0));
+
+    obj_shared->createComponent<Sound>();
+    auto soundShared = obj_shared->getComponentLock<Sound>().value();
+    bool res = soundShared->loadSound("example", "example.mp3");
+    DBG("Sound load status: " << res);
+    if (TEST_SOUND) {
+        soundShared->setIsLooping(false);
+        soundShared->setGain(1.f);
+        soundShared->setPosition(obj_shared->getComponentLock<Transform2D>().value()->getPosition());
+        soundShared->playSound("example");
+    }
+    
     scene.addToRenderer(obj);
     
     while ( !window.shouldClose() ) {
         scene.update();
         window.update();
-
     }
 
 }

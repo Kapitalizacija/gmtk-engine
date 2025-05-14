@@ -2,7 +2,7 @@
 
 namespace GMTKEngine {
 
-    Transform2D::Transform2D(glm::vec2 position, float rotation, float depth, glm::vec2 scale) {
+    Transform2D::Transform2D(glm::vec3 position, float rotation, float depth, glm::vec3 scale) {
         this->mPosition = position;
         this->mScale = scale;
         this->rotation = rotation;
@@ -10,25 +10,25 @@ namespace GMTKEngine {
         this->changed = false;
     }
 
-    glm::vec2 Transform2D::getPosition() {
+    glm::vec3 Transform2D::getPosition() {
         return mPosition;
     }
 
-    void Transform2D::setPosition(glm::vec2 newPos) {
+    void Transform2D::setPosition(glm::vec3 newPos) {
         changed = true;
         mPosition = newPos;
     }
 
-    void Transform2D::translate(glm::vec2 vec) {
+    void Transform2D::translate(glm::vec3 vec) {
         changed = true;
         mPosition += vec;
     }
 
-    glm::vec2 Transform2D::getScale() {
+    glm::vec3 Transform2D::getScale() {
         return mScale;
     }
 
-    void Transform2D::setScale(glm::vec2 newScale){
+    void Transform2D::setScale(glm::vec3 newScale){
         changed = true;
         mScale = newScale;
     } 
