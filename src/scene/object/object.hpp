@@ -47,7 +47,7 @@ namespace GMTKEngine {
             std::string getName() { return mObjectName; }
             void setName(std::string name) { mObjectName = name; }
 
-            template <typename T>
+            template <class T>
             std::optional<std::weak_ptr<T>> getComponent() {
                 auto it = mComponents.find(typeid(T).hash_code());
 
@@ -69,7 +69,7 @@ namespace GMTKEngine {
                 return std::nullopt;
             }
 
-            template <typename T>
+            template <class T>
             bool changedComponent() {
                 return mComponents[typeid(T).hash_code()]->hasChanged();
             }

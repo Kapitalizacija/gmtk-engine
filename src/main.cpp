@@ -5,6 +5,7 @@
 
 #include "window/window.hpp"
 #include "scene/scene.hpp"
+#include "scene/object/2d/ui/text/font/font.hpp"
 #include "gl/util/buffer/gl_buffer.hpp"
 #include "gl/util/shader/gl_shader.hpp"
 #include "gl/util/vao/gl_vao.hpp"
@@ -44,6 +45,8 @@ int main() {
     GLTexture tex1 = GLTexture("bombardino.jpg");
     GLShader shader = GLShader("test_shader", "test_shaders/sprite_2d.vert", "test_shaders/sprite_2d.frag"); // fellas in paris
 
+    Font font = Font("fonts/font.ttf");
+
     //TODO: Test the Sound component abstraction here or something
     /*
     ALBuffer buffer;
@@ -63,33 +66,36 @@ int main() {
     Camera* cam = scene.getCamera();
     cam->setProjectionType(Camera::ProjectionType::ORTHOGRAPHIC);
 
-    std::array<std::weak_ptr<Object2D>, 128*72> objs;
+   // std::array<std::weak_ptr<Object2D>, 128*72> objs;
 
-    for(int y = 0; y < 72; y++) {
-        for (int x = 0; x < 128; x++) {
-            std::weak_ptr<Object2D> obj;
+   // for(int y = 0; y < 72; y++) {
+   //     for (int x = 0; x < 128; x++) {
+   //         std::weak_ptr<Object2D> obj;
 
-            obj = scene.createObject<Object2D>();
-            auto obj_shared = obj.lock();
-            obj_shared->setShader(shader);
-            obj_shared->getComponentLock<Texture>().value()->setTexture(tex);
-            obj_shared->getComponentLock<Transform2D>().value()->setPosition(glm::vec2((float)x * 10 - 640, (float)y * 10 - 360));
-            obj_shared->getComponentLock<Transform2D>().value()->setScale(glm::vec2(10.0f, 10.0f));
-            scene.addToRenderer(obj);
+   //         obj = scene.createObject<Object2D>();
+   //         auto obj_shared = obj.lock();
+   //         obj_shared->setShader(shader);
+   //         obj_shared->getComponentLock<Texture>().value()->setTexture(tex);
+   //         obj_shared->getComponentLock<Transform2D>().value()->setPosition(glm::vec2((float)x * 10 - 640, (float)y * 10 - 360));
+   //         obj_shared->getComponentLock<Transform2D>().value()->setScale(glm::vec2(10.0f, 10.0f));
+   //         scene.addToRenderer(obj);
 
-            objs[y * 128 + x] = obj;
-        }
-    }
+   //         objs[y * 128 + x] = obj;
+   //     }
+   // }
+
+    std::weak_ptr<Object2D> obj = scene.createObject<Object2D>();
+    auto obj_shared = obj.lock();
+    obj_shared->setShader(shader);
+    obj_shared->getComponentLock<Texture>().value()->setTexture(font.getHandle());
+    obj_shared->getComponentLock<Transform2D>().value()->setScale(glm::vec2(1280, 720));
+    obj_shared->getComponentLock<Transform2D>().value()->setPosition(glm::vec2(-640, -360));
+    scene.addToRenderer(obj);
     
-    int i = 0;
     while ( !window.shouldClose() ) {
         scene.update();
         window.update();
 
-        if (i < 128 * 72) {
-            scene.removeFromRenderer(objs[i]);
-        }
-        i++;
     }
 
 }

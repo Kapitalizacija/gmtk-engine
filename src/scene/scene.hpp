@@ -25,7 +25,7 @@ namespace GMTKEngine {
 
             void freeUnusedMemory();
 
-            //"Create" is a bit misleading, you have to create an instance of the class and then pass a pointer for it. Same goes for components in the Object 
+            //"Create" is a bit misleading, you have to create an instanc  the class and then pass a pointer for it. Same goes for components in the Object 
             template<class T>
             std::weak_ptr<T> createObject() {
 
