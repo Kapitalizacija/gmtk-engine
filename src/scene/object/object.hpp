@@ -25,8 +25,8 @@ namespace GMTKEngine {
             Object(const Object&) = delete;
             Object(Object&&) = delete;
 
-            template<class T>
-            std::optional<std::weak_ptr<T>> createComponent() {
+            template<class T, typename... Args>
+            std::optional<std::weak_ptr<T>> createComponent(Args... args) {
                 static_assert(std::is_base_of<Component, T>::value);
                 static_assert(!std::is_pointer<T>::value);
                 
@@ -37,7 +37,7 @@ namespace GMTKEngine {
 
                 changed = true;
                 
-                std::shared_ptr<T> component = std::make_shared<T>();
+                std::shared_ptr<T> component = std::make_shared<T>(args...);
 
                 mComponents[typeid(T).hash_code()] = component;
                 
