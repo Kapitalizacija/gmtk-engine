@@ -26,13 +26,13 @@ namespace GMTKEngine {
             void freeUnusedMemory();
 
             //"Create" is a bit misleading, you have to create an instance of the class and then pass a pointer for it. Same goes for components in the Object 
-            template<class T>
-            std::weak_ptr<T> createObject() {
+            template<class T, typename... Args>
+            std::weak_ptr<T> createObject(Args... args) {
 
                 static_assert(!std::is_pointer<T>::value);
                 static_assert(std::is_base_of<Object, T>::value);
 
-                std::shared_ptr<T> obj = std::make_shared<T>();
+                std::shared_ptr<T> obj = std::make_shared<T>(args...);
             
                 objects.insert(obj);
 
