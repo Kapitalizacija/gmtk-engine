@@ -22,6 +22,10 @@ namespace GMTKEngine {
             
             std::string mComponentName;
 
+<<<<<<< Updated upstream
+=======
+            std::string mComponentName;
+>>>>>>> Stashed changes
         private:
     };
 }

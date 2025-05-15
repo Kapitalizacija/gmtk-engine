@@ -4,9 +4,12 @@
 #include <iostream>
 #include <unordered_set>
 #include <unordered_map>
+<<<<<<< Updated upstream
 #include <memory>
 #include <optional>
 #include <vector>
+=======
+>>>>>>> Stashed changes
 
 #include <glad/glad.h>
 
@@ -39,9 +42,15 @@ namespace GMTKEngine {
                 
                 std::shared_ptr<T> component = std::make_shared<T>(args...);
 
+<<<<<<< Updated upstream
                 mComponents[typeid(T).hash_code()] = component;
                 
                 return component;
+=======
+                *component = new deref_T;
+            
+                mComponents[(*component)->mComponentName] = (Component*)*component;
+>>>>>>> Stashed changes
             }
 
             std::string getName() { return mObjectName; }
@@ -91,7 +100,11 @@ namespace GMTKEngine {
             bool hasChanged();
 
             std::string mObjectName;
+<<<<<<< Updated upstream
             std::unordered_map<size_t, std::shared_ptr<Component>> mComponents;
+=======
+            std::unordered_map<std::string, Component*> mComponents;
+>>>>>>> Stashed changes
             std::unordered_set<std::string> mTags;
     
             bool enabled;
