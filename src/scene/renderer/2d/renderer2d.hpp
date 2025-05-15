@@ -22,8 +22,6 @@
 #include "gl/util/buffer/gl_buffer.hpp"
 #include "gl/util/vao/gl_vao.hpp"
 
-#define RENDERER2D_BATCH_CLEARUP_TRESHOLD_MEMORY 65536 // 64kb
-#define RENDERER2D_BATCH_CLEARUP_TRESHOLD_OBJECT_COUNT 4
 
 
 
@@ -31,6 +29,7 @@ typedef uint32_t bool32_t;
 
 namespace GMTKEngine {
     
+
     struct WeakPtrObjectHash {
         std::size_t operator()(const std::weak_ptr<Object2D> weakPtr) const noexcept {
             return std::hash<std::shared_ptr<Object2D>>{}(weakPtr.lock());
@@ -98,5 +97,8 @@ namespace GMTKEngine {
             std::unordered_map<GLuint, std::vector<RenderBatch2D>> draw_batches_2d;
 
             std::list<std::thread> cleanupThreads;
+
+            static const uint32_t BATCH_CLEARUP_TRESHOLD_MEMORY = 65536; // 64kb
+            static const uint32_t BATCH_CLEARUP_TRESHOLD_OBJECT_COUNT = 4;
     };
 }

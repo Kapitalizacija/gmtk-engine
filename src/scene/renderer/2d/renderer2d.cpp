@@ -1,7 +1,7 @@
 #include "renderer2d.hpp"
 
-#define SHOULD_CLEANUP(batch) batch.clearQueue.size() * batch.instanceDataSize > RENDERER2D_BATCH_CLEARUP_TRESHOLD_MEMORY \
-                    || batch.clearQueue.size() >= RENDERER2D_BATCH_CLEARUP_TRESHOLD_OBJECT_COUNT
+#define SHOULD_CLEANUP(batch) batch.clearQueue.size() * batch.instanceDataSize > BATCH_CLEARUP_TRESHOLD_MEMORY \
+                    || batch.clearQueue.size() >= BATCH_CLEARUP_TRESHOLD_OBJECT_COUNT
 
 const uint32_t indices[] = { // the most barebones indices needed for a square, therefore I feel comfortable making it a global cosntant
     0, 1, 2,

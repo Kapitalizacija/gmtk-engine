@@ -18,12 +18,14 @@ namespace GMTKEngine {
     }
 
     void Sound::update() {
-        for (auto &snd : mPlayingSounds) {
-            if (snd.second->getState() == AL_STOPPED) {
-                //Delete handles to stopped sounds
-                delete snd.second;
+        for (auto it = mPlayingSounds.begin(); it != mPlayingSounds.end(); ) {
+            if (it->second->getState() == AL_STOPPED) {
+                delete it->second;
+                it = mPlayingSounds.erase(it); // Erase and advance
+            } else {
+                ++it;
             }
-        }
+        }        
     }
 
     bool Sound::loadSound(const std::string &soundID, const std::string &fileName) {
@@ -49,6 +51,7 @@ namespace GMTKEngine {
         auto it = mSoundBuffers.find(soundID);
         if (it != mSoundBuffers.end()) {
             delete it->second;
+            mSoundBuffers.erase(it);
             LOG("Successfully freed the sound '" << soundID << "'");
         } else {
             WARN("soundID '" << soundID << "' was not found. Did not free.");

@@ -10,8 +10,8 @@ namespace GMTKEngine {
 
     class Transform2D : public Component {
         public:
-            Transform2D(glm::vec2 position = glm::vec2(0.0f), float rotation = 0, float depth = 0,
-             glm::vec2 scale = glm::vec2(1.0f));
+            Transform2D(glm::vec3 position = glm::vec3(0.0f), float rotation = 0, float depth = 0,
+            glm::vec3 scale = glm::vec3(1.0f));
 
             virtual void start() { return; }
             virtual void early_update() { return; }
@@ -20,12 +20,12 @@ namespace GMTKEngine {
             virtual void frameCleanup() override;
             virtual bool hasChanged() override;  
             
-            glm::vec2 getPosition();
-            void setPosition(glm::vec2 newPos);
-            void translate(glm::vec2 vec);
+            glm::vec3 getPosition();
+            void setPosition(glm::vec3 newPos);
+            void translate(glm::vec3 vec);
 
-            glm::vec2 getScale();
-            void setScale(glm::vec2 newScale);
+            glm::vec3 getScale();
+            void setScale(glm::vec3 newScale);
 
             float getRotation();
             void setRotation(float newRotation);
@@ -37,8 +37,8 @@ namespace GMTKEngine {
         protected:
             bool changed;
 
-            glm::vec2 mPosition;
-            glm::vec2 mScale;
+            glm::vec3 mPosition;
+            glm::vec3 mScale;
             float depth;
             float rotation;
 

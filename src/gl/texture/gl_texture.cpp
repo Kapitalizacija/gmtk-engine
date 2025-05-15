@@ -4,7 +4,7 @@
 #include <stb_image/stb_image.h>
 
 namespace GMTKEngine {
-	GLTexture::GLTexture() {}
+	GLTexture::GLTexture(): tex(0) {}
 
     GLTexture::GLTexture(std::string imagePath): tex(0) {
 		stbi_set_flip_vertically_on_load(true);
@@ -18,6 +18,8 @@ namespace GMTKEngine {
 		}
 
 		createTexture(data, width, height, channels);
+
+		stbi_image_free(data);
 	}
 
     GLTexture::GLTexture(GLTexture&& other) {
@@ -48,7 +50,7 @@ namespace GMTKEngine {
 		GLint format;
 		switch(channels) {
 			case 1: 
-				format = GL_R;
+				format = GL_RED;
 				break;
 			case 2: 
 				format = GL_RG;
@@ -69,8 +71,6 @@ namespace GMTKEngine {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-
-		stbi_image_free(data);
 	}
     
 	GLuint GLTexture::getTexture(){
