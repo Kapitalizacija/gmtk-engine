@@ -38,7 +38,7 @@ namespace GMTKEngine {
         return program != 0;
     }
 
-    GLuint GLShader::get_program() {
+    GLuint GLShader::getProgram() {
         return program;
     }
     

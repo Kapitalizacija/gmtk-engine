@@ -6,7 +6,6 @@ namespace GMTKEngine {
         this->mPosition = position;
         this->mScale = scale;
         this->rotation = rotation;
-        this->depth = depth;
         this->changed = false;
     }
 
@@ -44,16 +43,6 @@ namespace GMTKEngine {
     
     void Transform2D::rotate(float amount) {
         rotation += amount;
-    }
-
-
-    float Transform2D::getDepth() {
-        return depth;
-    }
-
-    void Transform2D::setDepth(float newDepth) {
-        changed = true;
-        depth = newDepth;
     }
 
     bool Transform2D::hasChanged() {

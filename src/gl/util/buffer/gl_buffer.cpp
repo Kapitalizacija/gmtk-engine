@@ -81,6 +81,9 @@ namespace GMTKEngine {
             case Type::INDEX:
                 glType = GL_ELEMENT_ARRAY_BUFFER;
                 break;
+            case Type::STORAGE:
+                glType = GL_SHADER_STORAGE_BUFFER;
+                break;
             case Type::UNDEFINED:
                 UNDEFINED_WARN;
                 

@@ -56,7 +56,7 @@ namespace GMTKEngine {
             GLint texturesUniformLoc = glGetUniformLocation(shaderGroup.first, "textures");
             GLuint projectionLoc = glGetUniformLocation(shaderGroup.first, "projection");
 
-            camera.applyProjection(projectionLoc);
+            camera.__applyProjection(projectionLoc);
 
             glUniform1iv(texturesUniformLoc, 32, texture_indices);
 
@@ -351,7 +351,7 @@ namespace GMTKEngine {
         GLAttribPointer ptr1;
         ptr1.buff = &batch.objectDataGLBuffer;
         ptr1.index = 1;
-        ptr1.componentCount = 2;
+        ptr1.componentCount = 3;
         ptr1.type = GL_FLOAT;
         ptr1.stride = batch.instanceDataSize;
         ptr1.offset = 0;
@@ -363,25 +363,25 @@ namespace GMTKEngine {
         ptr2.componentCount = 1;
         ptr2.type = GL_FLOAT;
         ptr2.stride = batch.instanceDataSize;
-        ptr2.offset = 8;
+        ptr2.offset = 12;
         ptr2.isInstanced = true;
 
         GLAttribPointer ptr3;
         ptr3.buff = &batch.objectDataGLBuffer;
         ptr3.index = 3;
-        ptr3.componentCount = 1;
+        ptr3.componentCount = 2;
         ptr3.type = GL_FLOAT;
         ptr3.stride = batch.instanceDataSize;
-        ptr3.offset = 12;
+        ptr3.offset = 16;
         ptr3.isInstanced = true;
 
         GLAttribPointer ptr4;
-        ptr4.buff = &batch.objectDataGLBuffer;
+        ptr4.buff = &batch.extraDrawDataGLBuffer;
         ptr4.index = 4;
-        ptr4.componentCount = 2;
-        ptr4.type = GL_FLOAT;
-        ptr4.stride = batch.instanceDataSize;
-        ptr4.offset = 16;
+        ptr4.componentCount = 1;
+        ptr4.type = GL_INT;
+        ptr4.stride = sizeof(bool32_t) * 2;
+        ptr4.offset = 0;
         ptr4.isInstanced = true;
 
         GLAttribPointer ptr5;
@@ -390,19 +390,10 @@ namespace GMTKEngine {
         ptr5.componentCount = 1;
         ptr5.type = GL_INT;
         ptr5.stride = sizeof(bool32_t) * 2;
-        ptr5.offset = 0;
+        ptr5.offset = 4;
         ptr5.isInstanced = true;
 
-        GLAttribPointer ptr6;
-        ptr6.buff = &batch.extraDrawDataGLBuffer;
-        ptr6.index = 6;
-        ptr6.componentCount = 1;
-        ptr6.type = GL_INT;
-        ptr6.stride = sizeof(bool32_t) * 2;
-        ptr6.offset = 4;
-        ptr6.isInstanced = true;
-
-        GLAttribPointer ptrs[] = {ptr0, ptr1, ptr2, ptr3, ptr4, ptr5, ptr6};
+        GLAttribPointer ptrs[] = {ptr0, ptr1, ptr2, ptr3, ptr4, ptr5};
 
         batch.vao = GLVAO(ptrs, sizeof(ptrs) / sizeof(GLAttribPointer));
         batch.vao.addEBO(ebo);

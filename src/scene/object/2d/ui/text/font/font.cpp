@@ -89,8 +89,29 @@ namespace GMTKEngine {
 
         return buff;
     }
+    
+    std::vector<float> Font::getCharOffsets(std::string text) {
+        std::vector<float> offsets;
+        offsets.reserve(text.length() * 2);
 
-    GLTexture& Font::getHandle() {
+        for(char c : text) {
+            if (c < START_CHAR || c > END_CHAR) {
+                ERROR("Character in text out of range: " << (int)c);
+
+                offsets.push_back(0);
+                offsets.push_back(0);
+
+                continue;
+            }
+
+            offsets.push_back(charPositions[c - START_CHAR].first / bitmapWidth);
+            offsets.push_back(charPositions[c - START_CHAR].second / bitmapWidth);
+        }
+
+        return offsets;
+    }
+
+    GLTexture& Font::getBitmap() {
         return fontBitmap;
     }            
 }

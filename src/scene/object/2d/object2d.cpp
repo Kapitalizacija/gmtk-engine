@@ -2,6 +2,7 @@
 
 namespace GMTKEngine {
     
+
     Object2D::Object2D() {
 
         createComponent<Transform2D>();
@@ -15,14 +16,13 @@ namespace GMTKEngine {
             return;
         }
 
-        program = shader.get_program();
+        program = shader.getProgram();
     }
 
     std::vector<float> Object2D::getDrawData() {
         std::shared_ptr<Transform2D> transform = getComponentLock<Transform2D>().value();
         return {
-            transform->getPosition().x, transform->getPosition().y,
-            transform->getDepth(),
+            transform->getPosition().x, transform->getPosition().y, transform->getPosition().z,
             transform->getRotation(),
             transform->getScale().x, transform->getScale().y
         };

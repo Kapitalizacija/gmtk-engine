@@ -1,7 +1,7 @@
 #pragma once
 
 #include "io/logging/logger.hpp"
-#include "util/utilities.h"
+#include "util/utilities.hpp"
 #include <AL/al.h>
 #include <string>
 #include <iostream>

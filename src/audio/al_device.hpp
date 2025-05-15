@@ -1,6 +1,6 @@
 #pragma once
 
-#include "util/utilities.h"
+#include "util/utilities.hpp"
 #include <AL/al.h>
 #include <AL/alc.h>
 #include <string>

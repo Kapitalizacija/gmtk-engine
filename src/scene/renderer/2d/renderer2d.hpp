@@ -21,8 +21,7 @@
 #include "../../object/camera/camera.hpp"
 #include "gl/util/buffer/gl_buffer.hpp"
 #include "gl/util/vao/gl_vao.hpp"
-
-
+#include "util/utilities.hpp"
 
 
 typedef uint32_t bool32_t;
@@ -30,19 +29,9 @@ typedef uint32_t bool32_t;
 namespace GMTKEngine {
     
 
-    struct WeakPtrObjectHash {
-        std::size_t operator()(const std::weak_ptr<Object2D> weakPtr) const noexcept {
-            return std::hash<std::shared_ptr<Object2D>>{}(weakPtr.lock());
-        }
-    };
-    
-    struct WeakPtrObjectEquals {
-        std::size_t operator()(const std::weak_ptr<Object2D> lhs, const std::weak_ptr<Object2D> rhs) const noexcept {
-            return !lhs.owner_before(rhs) && !rhs.owner_before(lhs);
-        }
-    };
+  
 
-    typedef std::unordered_map<std::weak_ptr<Object2D>, GLuint, WeakPtrObjectHash, WeakPtrObjectEquals> ObjectMap;
+    typedef std::unordered_map<std::weak_ptr<Object2D>, GLuint, WeakPtrObjectHash<Object2D>, WeakPtrObjectEquals<Object2D>> ObjectMap;
     
     struct RenderBatch2D {
         std::shared_ptr<std::mutex> cleanupMutex;
@@ -68,8 +57,8 @@ namespace GMTKEngine {
         public:
             Renderer2D();
 
-            Renderer2D(Renderer2D&& yes) = delete;
-            Renderer2D(Renderer2D& yes) = delete;
+            Renderer2D(Renderer2D&&) = delete;
+            Renderer2D(Renderer2D&) = delete;
 
             void render(Camera& camera);
             void update();

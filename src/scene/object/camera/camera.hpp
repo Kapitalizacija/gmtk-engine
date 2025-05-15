@@ -28,9 +28,9 @@ namespace GMTKEngine {
 			void setProjectionType(ProjectionType newType);
 			void setDimensions(glm::ivec2 newDimensions);
 			
-			
+			void __applyProjection(GLuint location);
+
 			protected:
-			void applyProjection(GLuint location);
 			
             virtual void start() { return; }
             virtual void earlyUpdate() { return; }

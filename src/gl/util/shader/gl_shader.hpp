@@ -20,7 +20,7 @@ namespace GMTKEngine {
             ~GLShader();
 
             bool is_valid();
-            GLuint get_program();
+            GLuint getProgram();
             std::string get_name();
         private:
             std::string read_file(std::string path);

@@ -28,6 +28,10 @@ namespace GMTKEngine {
 
         renderer2d.update();
 
+        for(auto& obj : renderObjects) {
+            obj.lock()->draw(camera);
+        }
+
         renderer2d.render(camera);
 
         for (auto& object : objects ) {

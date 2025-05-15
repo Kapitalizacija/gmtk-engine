@@ -4,19 +4,25 @@
 #include <vector>
 #include <tuple>
 
+
 #include "io/logging/logger.hpp"
 #include "gl/texture/gl_texture.hpp"
 
 namespace GMTKEngine {
-
+    
     class Font {
+        friend class Text;
+
         public:
             Font(std::string fontPath);
 
             Font(const Font&) = delete;
             Font(Font&&) = delete;
 
-            GLTexture& getHandle();            
+        protected:
+            std::vector<float> getCharOffsets(std::string text);
+            GLTexture& getBitmap();            
+
         private:
             std::vector<uint8_t> readFont(std::string path);
             std::vector<uint8_t> createBitmap(std::vector<uint8_t>& buff, std::string fontPath);

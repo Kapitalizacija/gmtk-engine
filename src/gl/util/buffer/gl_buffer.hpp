@@ -14,6 +14,7 @@ namespace GMTKEngine {
             enum class Type {
                 UNDEFINED,
                 VERTEX,
+                STORAGE,
                 INDEX
             };
 

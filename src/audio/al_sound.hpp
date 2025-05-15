@@ -1,6 +1,6 @@
 #pragma once
 
-#include "util/utilities.h"
+#include "util/utilities.hpp"
 #include "al_buffer.hpp"
 #include <AL/al.h>
 #include <glm/glm.hpp>

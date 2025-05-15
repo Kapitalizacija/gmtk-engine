@@ -8,10 +8,12 @@
 #include <memory>
 
 #include "object/object.hpp"
+#include "object/render_object/RenderObject.hpp"
 #include "object/2d/object2d.hpp"
 #include "object/3d/object3d.hpp"
 #include "object/camera/camera.hpp"
 #include "renderer/2d/renderer2d.hpp"
+#include "util/utilities.hpp"
 
 namespace GMTKEngine {
  
@@ -27,10 +29,10 @@ namespace GMTKEngine {
 
             //"Create" is a bit misleading, you have to create an instance of the class and then pass a pointer for it. Same goes for components in the Object 
             template<class T, typename... Args>
-            std::weak_ptr<T> createObject(Args... args) {
+            std::weak_ptr<T> createObject(Args&... args) {
 
-                static_assert(!std::is_pointer<T>::value);
-                static_assert(std::is_base_of<Object, T>::value);
+                static_assert(!std::is_pointer_v<T>);
+                static_assert(std::is_base_of_v<Object, T>);
 
                 std::shared_ptr<T> obj = std::make_shared<T>(args...);
             
@@ -41,8 +43,8 @@ namespace GMTKEngine {
     
             template<class T>
             void destroy_object(std::weak_ptr<T> object) {
-                static_assert(std::is_pointer<T>::value);
-                static_assert(std::is_base_of<Object, T>::value);
+                static_assert(!std::is_pointer_v<T>);
+                static_assert(std::is_base_of_v<Object, T>);
 
                 std::shared_ptr<T> shared_obj = object.lock();
 
@@ -63,7 +65,7 @@ namespace GMTKEngine {
 
                 if(std::is_base_of<Object2D, deref_T>::value) {
                     renderer2d.addObject2d(object);
-                } else if (std::is_base_of<Object3D, deref_T>::value)
+                } else if (std::is_base_of_v<Object3D, deref_T>)
                 {
                     throw new std::runtime_error("UNIMPLEMENTED");
                 } else {
@@ -89,6 +91,26 @@ namespace GMTKEngine {
                 }
             }
             
+            template <class T>
+            void addRenderObject(std::weak_ptr<T> object) {
+                static_assert(std::is_base_of_v<RenderObject, T>);
+                static_assert(!std::is_pointer_v<T>);
+
+                renderObjects.insert(
+                    std::static_pointer_cast<RenderObject>(object.lock())
+                );
+            }
+
+            template <class T>
+            void removeRenderObject(std::weak_ptr<T> object) {
+                static_assert(std::is_base_of_v<RenderObject, T>);
+                static_assert(!std::is_pointer_v<T>);
+
+                renderObjects.erase(
+                    std::static_pointer_cast<RenderObject>(object.lock())
+                );
+            }
+            
             void start();
             void update();
 
@@ -97,6 +119,7 @@ namespace GMTKEngine {
         private:
 
             std::unordered_set<std::shared_ptr<Object>> objects;
+            std::unordered_set<std::weak_ptr<RenderObject>, WeakPtrObjectHash<RenderObject>, WeakPtrObjectEquals<RenderObject>> renderObjects;
 
             Camera camera;
 

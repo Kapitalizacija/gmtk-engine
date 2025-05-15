@@ -6,6 +6,7 @@
 #include "window/window.hpp"
 #include "scene/scene.hpp"
 #include "scene/object/2d/ui/text/font/font.hpp"
+#include "scene/object/2d/ui/text/text.hpp"
 #include "gl/util/buffer/gl_buffer.hpp"
 #include "gl/util/shader/gl_shader.hpp"
 #include "gl/util/vao/gl_vao.hpp"
@@ -48,6 +49,10 @@ int main() {
     GLShader shader = GLShader("test_shader", "test_shaders/sprite_2d.vert", "test_shaders/sprite_2d.frag"); // fellas in paris
 
     Font font = Font("fonts/font.ttf");
+    std::weak_ptr<Text> text = scene.createObject<Text>(font, "c");
+    text.lock()->getComponentLock<Transform2D>().value()->setScale(glm::vec3(300, 300, 300));
+
+    scene.addRenderObject(text);
 
     //TODO: Test the Sound component abstraction here or something
     /*
@@ -86,10 +91,9 @@ int main() {
    //     }
    // }
 
-    std::weak_ptr<Object2D> obj = scene.createObject<Object2D>();
+    /*std::weak_ptr<Object2D> obj = scene.createObject<Object2D>();
     auto obj_shared = obj.lock();
     obj_shared->setShader(shader);
-    obj_shared->getComponentLock<Texture>().value()->setTexture(font.getHandle());
     obj_shared->getComponentLock<Transform2D>().value()->setScale(glm::vec3(1280, 720, 0));
     obj_shared->getComponentLock<Transform2D>().value()->setPosition(glm::vec3(-640, -360, 0));
 
@@ -102,9 +106,7 @@ int main() {
         soundShared->setGain(1.f);
         soundShared->setPosition(obj_shared->getComponentLock<Transform2D>().value()->getPosition());
         soundShared->playSound("example");
-    }
-    
-    scene.addToRenderer(obj);
+    }*/
     
     while ( !window.shouldClose() ) {
         scene.update();

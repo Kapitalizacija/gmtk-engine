@@ -35,7 +35,7 @@ namespace GMTKEngine {
 		projection = glm::rotate(projection, transform->getRotation().z, glm::vec3(0.0, 0.0, 1.0));
 	}
 
-	void Camera::applyProjection(GLuint location) {
+	void Camera::__applyProjection(GLuint location) {
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(projection));
 	}
 	

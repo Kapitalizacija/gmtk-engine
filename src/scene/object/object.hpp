@@ -26,9 +26,9 @@ namespace GMTKEngine {
             Object(Object&&) = delete;
 
             template<class T, typename... Args>
-            std::optional<std::weak_ptr<T>> createComponent(Args... args) {
-                static_assert(std::is_base_of<Component, T>::value);
-                static_assert(!std::is_pointer<T>::value);
+            std::optional<std::weak_ptr<T>> createComponent(Args&... args) {
+                static_assert(std::is_base_of_v<Component, T>);
+                static_assert(!std::is_pointer_v<T>);
                 
                 if (mComponents.find(typeid(T).hash_code()) != mComponents.end()) {
                     WARN("Tried to add a preexisting component to object");

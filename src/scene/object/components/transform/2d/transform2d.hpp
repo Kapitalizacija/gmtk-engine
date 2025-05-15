@@ -31,15 +31,11 @@ namespace GMTKEngine {
             void setRotation(float newRotation);
             void rotate(float amount);
 
-            float getDepth();
-            void setDepth(float newDepth);
-
         protected:
             bool changed;
 
             glm::vec3 mPosition;
             glm::vec3 mScale;
-            float depth;
             float rotation;
 
             std::string mComponentName;
