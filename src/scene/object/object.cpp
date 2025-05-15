@@ -2,7 +2,17 @@
 
 namespace GMTKEngine {
     Object::Object() {
+<<<<<<< Updated upstream
         rendered = false;
+=======
+        LOG("Object Awoke");
+    }
+
+    Object::~Object() {
+        for (auto &comp : mComponents) {
+            delete comp.second;
+        }
+>>>>>>> Stashed changes
     }
 
     void Object::start() {
