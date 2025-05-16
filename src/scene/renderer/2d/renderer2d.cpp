@@ -66,8 +66,8 @@ namespace GMTKEngine {
                 std::vector<uint32_t> textureOffsets;
                 textureOffsets.resize(32);
 
-                batch.objectDataGLBuffer.upload_data(batch.objectData.data(), batch.objectData.size() * sizeof(std::float32_t), GLBuffer::Usage::OFTEN); // TODO glBufferSubData
-                batch.extraDrawDataGLBuffer.upload_data(batch.extraDrawInfo.data(), batch.extraDrawInfo.size() * sizeof(bool32_t), GLBuffer::Usage::OFTEN);
+                batch.objectDataGLBuffer.uploadData(batch.objectData.data(), batch.objectData.size() * sizeof(std::float32_t), GLBuffer::Usage::OFTEN); // TODO glBufferSubData
+                batch.extraDrawDataGLBuffer.uploadData(batch.extraDrawInfo.data(), batch.extraDrawInfo.size() * sizeof(bool32_t), GLBuffer::Usage::OFTEN);
                 
                 auto it = batch.objects.begin();
                 for ( size_t i = 0; i < batch.objects.size(); i++) {

@@ -44,16 +44,16 @@ namespace GMTKEngine {
         for (size_t i = 0; i < attrib_pointer_count; i++) {
             GLAttribPointer *attrib = &attrib_pointers[i];
 
-            if (attrib->buff->get_type() != GLBuffer::Type::VERTEX) {
+            if (attrib->buff->getType() != GLBuffer::Type::VERTEX) {
                 ERROR("Tried to set a vertex attrib with a non-vertex buffer");
                 continue;
             } 
-            if (!attrib->buff->is_valid()) {
+            if (!attrib->buff->isValid()) {
                 ERROR("Tried to set a vertex attrib with an invalid vertex buffer");
                 continue;
             } 
 
-            glBindBuffer(GL_ARRAY_BUFFER, attrib->buff->get_buffer());
+            glBindBuffer(GL_ARRAY_BUFFER, attrib->buff->getBuffer());
 
             if(attrib->type == GL_FLOAT) {
                 glVertexAttribPointer(attrib->index, attrib->componentCount, attrib->type, GL_FALSE, attrib->stride, (const void*)attrib->offset);
@@ -76,17 +76,17 @@ namespace GMTKEngine {
     } 
 
     void GLVAO::addEBO(GLBuffer& buff) {
-        if (buff.get_type() != GLBuffer::Type::INDEX) {
+        if (buff.getType() != GLBuffer::Type::INDEX) {
             ERROR("Tried to set the index buffer in VAO with non index buffer");
             return;
         }
-        if (!buff.is_valid()) {
+        if (!buff.isValid()) {
             return;
             ERROR("Tried to bind an invalid EBO to a VAO");
         }
 
         glBindVertexArray(vao);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buff.get_buffer());
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buff.getBuffer());
 
         glBindVertexArray(0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);

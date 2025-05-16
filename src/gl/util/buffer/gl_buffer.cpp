@@ -13,7 +13,7 @@ namespace GMTKEngine {
         }
 
         create_buffer();
-        match_type(buffer_type);
+        matchType(buffer_type);
     }
 
 
@@ -27,7 +27,7 @@ namespace GMTKEngine {
 
 
     GLBuffer::~GLBuffer() {
-        if ( !is_valid() ) {
+        if ( !isValid() ) {
             return;
         }
 
@@ -48,24 +48,24 @@ namespace GMTKEngine {
         glCreateBuffers(1, &buff);
     }
 
-    bool GLBuffer::is_valid() {
+    bool GLBuffer::isValid() {
         return buff != 0;
     }
     
-    GLuint GLBuffer::get_buffer() {
+    GLuint GLBuffer::getBuffer() {
         return buff;
     }
 
-    size_t GLBuffer::get_size() {
+    size_t GLBuffer::getSize() {
         return size;
     }
     
-    GLBuffer::Type GLBuffer::get_type() {
+    GLBuffer::Type GLBuffer::getType() {
         return type;
     }
 
     bool GLBuffer::assert_valid() {
-        if ( !is_valid() ) {
+        if ( !isValid() ) {
             ERROR("Tried to use invalid buffer");
             return false;
         }
@@ -73,7 +73,7 @@ namespace GMTKEngine {
         return true;
     }
     
-    void GLBuffer::match_type(Type buffer_type) {
+    void GLBuffer::matchType(Type buffer_type) {
         switch (buffer_type) {
             case Type::VERTEX:
                 glType = GL_ARRAY_BUFFER;
@@ -92,5 +92,14 @@ namespace GMTKEngine {
 
                 return;
         }
+    }
+
+    void GLBuffer::bindBase(GLuint index) {
+        if (type != Type::STORAGE) {
+            ERROR("Tried to bind buffer base on non storage buffer: " << buff);
+            return;
+        }
+
+        glBindBufferBase(glType, index, buff);
     }
 }

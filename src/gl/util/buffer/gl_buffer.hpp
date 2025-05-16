@@ -1,13 +1,20 @@
 #pragma once
 
 #include <cstdlib>
+#include <vector>
+#include <cstring>
+
 #include <glad/glad.h>
 
 #include "io/logging/logger.hpp"
 
 namespace GMTKEngine {
 
-
+    struct GLBufferUpdateRegion {
+        uint8_t* data;
+        size_t size;
+        size_t offset;
+    };
 
     class GLBuffer {
         public:
@@ -37,17 +44,22 @@ namespace GMTKEngine {
 
             ~GLBuffer();
 
-            template<typename T>
-            void upload_data(T data, size_t size, Usage buffer_usage);
+            void bindBase(GLuint index);
 
-            bool is_valid();
-            size_t get_size();
-            GLuint get_buffer();
-            Type get_type();
+            template<typename T>
+            void uploadData(T data, size_t size, Usage buffer_usage);
+
+            template<typename T>
+            void partialUpdate(std::vector<GLBufferUpdateRegion> updateRegions);
+
+            bool isValid();
+            size_t getSize();
+            GLuint getBuffer();
+            Type getType();
         private:
             bool assert_valid();
             void create_buffer();
-            void match_type(Type buffer_type);
+            void matchType(Type buffer_type);
 
             void move(GLBuffer& other);
 
@@ -66,12 +78,12 @@ namespace GMTKEngine {
         
         this->size = size;
         create_buffer();
-        match_type(buffer_type);
-        upload_data(data, size, buffer_usage);
+        matchType(buffer_type);
+        uploadData(data, size, buffer_usage);
     }
 
     template<typename T>
-    void GLBuffer::upload_data(T data, size_t size, Usage buffer_usage) {
+    void GLBuffer::uploadData(T data, size_t size, Usage buffer_usage) {
         static_assert(std::is_pointer<T>::value);
 
         if ( !assert_valid() ) {
@@ -96,6 +108,23 @@ namespace GMTKEngine {
         glBindBuffer(glType, buff);
         glBufferData(glType, size, data, usage);
         glBindBuffer(glType, 0);
+    }
+    
+    template<typename T>
+    void GLBuffer::partialUpdate(std::vector<GLBufferUpdateRegion> updateRegions) {
+
+        glBindBuffer(glType, buff); 
+        void* ptr = glMapBuffer(glType, GL_WRITE_ONLY);
+
+        if (ptr == nullptr) {
+             ERROR("Failed to map buffer: " << this->buff);
+        }
+
+        for (GLBufferUpdateRegion& region : updateRegions) {
+            memcpy(ptr + region.offset, region.data, region.size);
+        }
+
+        glUnmapBuffer(glType);
     }
 
 }
