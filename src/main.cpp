@@ -26,7 +26,7 @@
 #include <cmath>
 #include <thread>
 
-#define TEST_SOUND 0 //Set to 1 to play the example sound (will create the sound components no matter what)
+#define TEST_SOUND 1 //Set to 1 to play the example sound (will create the sound components no matter what)
 
 using namespace GMTKEngine;
 
@@ -91,7 +91,7 @@ int main() {
    //     }
    // }
 
-    /*std::weak_ptr<Object2D> obj = scene.createObject<Object2D>();
+    std::weak_ptr<Object2D> obj = scene.createObject<Object2D>();
     auto obj_shared = obj.lock();
     obj_shared->setShader(shader);
     obj_shared->getComponentLock<Transform2D>().value()->setScale(glm::vec3(1280, 720, 0));
@@ -106,7 +106,7 @@ int main() {
         soundShared->setGain(1.f);
         soundShared->setPosition(obj_shared->getComponentLock<Transform2D>().value()->getPosition());
         soundShared->playSound("example");
-    }*/
+    }
     
     while ( !window.shouldClose() ) {
         scene.update();

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <unordered_map>
 #include "../component.hpp"
 #include "audio/al_buffer.hpp"
@@ -41,7 +42,7 @@ namespace GMTKEngine {
             bool mIsLooping;
             float mGain;
 
-            std::unordered_map<std::string, ALBuffer*> mSoundBuffers;
-            std::unordered_map<std::string, ALSound*> mPlayingSounds;
+            std::unordered_map<std::string, std::shared_ptr<ALBuffer>> mSoundBuffers;
+            std::unordered_map<std::string, std::shared_ptr<ALSound>> mPlayingSounds;
     };
 }
