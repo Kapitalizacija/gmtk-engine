@@ -25,5 +25,8 @@ void main() {
     } else {
         texCoords.x = texOffset.y;
     }
+
+    texCoords.y = 1 - texCoords.y;
+    
 }
 

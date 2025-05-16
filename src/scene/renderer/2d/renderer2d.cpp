@@ -47,7 +47,6 @@ namespace GMTKEngine {
             texture_indices[i] = i;
         }
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
         for (auto& shaderGroup : draw_batches_2d) {
@@ -67,7 +66,7 @@ namespace GMTKEngine {
                 std::vector<uint32_t> textureOffsets;
                 textureOffsets.resize(32);
 
-                batch.objectDataGLBuffer.upload_data(batch.objectData.data(), batch.objectData.size() * sizeof(std::float32_t), GLBuffer::Usage::OFTEN);
+                batch.objectDataGLBuffer.upload_data(batch.objectData.data(), batch.objectData.size() * sizeof(std::float32_t), GLBuffer::Usage::OFTEN); // TODO glBufferSubData
                 batch.extraDrawDataGLBuffer.upload_data(batch.extraDrawInfo.data(), batch.extraDrawInfo.size() * sizeof(bool32_t), GLBuffer::Usage::OFTEN);
                 
                 auto it = batch.objects.begin();

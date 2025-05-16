@@ -104,8 +104,8 @@ namespace GMTKEngine {
                 continue;
             }
 
-            offsets.push_back(charPositions[c - START_CHAR].first / bitmapWidth);
-            offsets.push_back(charPositions[c - START_CHAR].second / bitmapWidth);
+            offsets.push_back(charPositions[c - START_CHAR].first / (float)bitmapWidth);
+            offsets.push_back(charPositions[c - START_CHAR].second / (float)bitmapWidth);
         }
 
         return offsets;
