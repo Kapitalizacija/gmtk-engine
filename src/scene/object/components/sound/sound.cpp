@@ -9,18 +9,18 @@ namespace GMTKEngine {
     Sound::~Sound() {
         //Clear the buffers and playing
         for (auto &snd : mPlayingSounds) {
-            delete snd.second;
+            snd.second.reset();
         }
 
         for (auto &buf : mSoundBuffers) {
-            delete buf.second;
+            buf.second.reset();
         }
     }
 
     void Sound::update() {
         for (auto it = mPlayingSounds.begin(); it != mPlayingSounds.end(); ) {
             if (it->second->getState() == AL_STOPPED) {
-                delete it->second;
+                it->second.reset();
                 it = mPlayingSounds.erase(it); // Erase and advance
             } else {
                 ++it;
@@ -29,10 +29,9 @@ namespace GMTKEngine {
     }
 
     bool Sound::loadSound(const std::string &soundID, const std::string &fileName) {
-        ALBuffer *buffer = new ALBuffer;
+        std::shared_ptr<ALBuffer> buffer(new ALBuffer());
         if (!buffer->loadFromFile(fileName)) {
             ERROR("Failed to load audio file: " << fileName);
-            delete buffer;
             return false;
         }
 
@@ -42,7 +41,7 @@ namespace GMTKEngine {
             return true;
         } else {
             WARN("The requested soundID ('" << soundID << "') already exists on this Object. The sound will not be loaded.");
-            delete buffer;
+            buffer.reset();
             return false;
         }
     }
@@ -50,7 +49,6 @@ namespace GMTKEngine {
     void Sound::freeSound(const std::string &soundID) {
         auto it = mSoundBuffers.find(soundID);
         if (it != mSoundBuffers.end()) {
-            delete it->second;
             mSoundBuffers.erase(it);
             LOG("Successfully freed the sound '" << soundID << "'");
         } else {
@@ -65,8 +63,8 @@ namespace GMTKEngine {
             //Not existing yet
             auto it = mSoundBuffers.find(soundID);
             if (it != mSoundBuffers.end()) {
-                ALBuffer *ref = it->second;
-                ALSound *sound = new ALSound(*ref);
+                std::shared_ptr<ALBuffer> ref = it->second;
+                std::shared_ptr<ALSound> sound(new ALSound(*ref));
                 sound->setPosition(mPosition);
                 sound->setGain(mGain);
                 sound->setLooping(mIsLooping);
@@ -78,7 +76,7 @@ namespace GMTKEngine {
             }
         } else {
             //Exists already
-            ALSound *ref = itP->second;
+            std::shared_ptr<ALSound> ref = itP->second;
             ref->play();
         }
     }
@@ -86,7 +84,7 @@ namespace GMTKEngine {
     void Sound::pauseSound(const std::string &soundID) {
         auto itP = mPlayingSounds.find(soundID);
         if (itP != mPlayingSounds.end()) {
-            ALSound *ref = itP->second;
+            std::shared_ptr<ALSound> ref = itP->second;
             ref->pause();
         } else {
             ERROR("soundID '" << soundID << "' was not found. Did not pause.");
@@ -96,7 +94,7 @@ namespace GMTKEngine {
     void Sound::stopSound(const std::string &soundID) {
         auto itP = mPlayingSounds.find(soundID);
         if (itP != mPlayingSounds.end()) {
-            ALSound *ref = itP->second;
+            std::shared_ptr<ALSound> ref = itP->second;
             ref->stop();
         } else {
             ERROR("soundID '" << soundID << "' was not found. Did not stop.");
