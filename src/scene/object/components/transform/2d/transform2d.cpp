@@ -27,7 +27,7 @@ namespace GMTKEngine {
         return mScale;
     }
 
-    void Transform2D::setScale(glm::vec3 newScale){
+    void Transform2D::setScale(glm::vec3 newScale) {
         changed = true;
         mScale = newScale;
     } 

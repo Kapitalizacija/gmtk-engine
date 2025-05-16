@@ -104,7 +104,7 @@ int main() {
     if (TEST_SOUND) {
         soundShared->setIsLooping(false);
         soundShared->setGain(1.f);
-        soundShared->setPosition(obj_shared->getComponentLock<Transform2D>().value()->getPosition());
+        soundShared->setPosition(glm::vec3(100.f, 0.f, 0.f));
         soundShared->playSound("example");
     }
     

@@ -25,7 +25,28 @@ namespace GMTKEngine {
             } else {
                 ++it;
             }
-        }        
+        }
+    }
+
+    void Sound::setPosition(const glm::vec3 &pos) {
+        mPosition = pos;
+        for (auto it = mPlayingSounds.begin(); it != mPlayingSounds.end(); ) {
+            it->second.get()->setPosition(mPosition);
+        }
+    }
+
+    void Sound::setIsLooping(const bool loop) {
+        mIsLooping = loop;
+        for (auto it = mPlayingSounds.begin(); it != mPlayingSounds.end(); ) {
+            it->second.get()->setLooping(mIsLooping);
+        }
+    }
+
+    void Sound::setGain(const float gain) {
+        mGain = gain;
+        for (auto it = mPlayingSounds.begin(); it != mPlayingSounds.end(); ) {
+            it->second.get()->setGain(mGain);
+        }
     }
 
     bool Sound::loadSound(const std::string &soundID, const std::string &fileName) {
@@ -56,7 +77,6 @@ namespace GMTKEngine {
         }
     }
 
-    //TODO: Apply changes to gain, looping etc. during playtime.
     void Sound::playSound(const std::string &soundID) {
         auto itP = mPlayingSounds.find(soundID);
         if (itP == mPlayingSounds.end()) {

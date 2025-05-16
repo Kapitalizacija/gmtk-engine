@@ -5,11 +5,13 @@
 #include "../component.hpp"
 #include "audio/al_buffer.hpp"
 #include "audio/al_sound.hpp"
+#include "util/utilities.hpp"
 
 namespace GMTKEngine {
     class Sound : public Component {
         public:
             Sound();
+            DISABLE_COPY_AND_MOVE(Sound);
             ~Sound();
 
             virtual void start() { return; }
@@ -19,11 +21,11 @@ namespace GMTKEngine {
             virtual void frameCleanup() { return; }
             virtual bool hasChanged() { return false; }
 
-            void setPosition(const glm::vec3 &pos) { mPosition = pos; }
+            void setPosition(const glm::vec3 &pos);
             glm::vec3 getPosition() const { return mPosition; }
-            void setIsLooping(const bool loop) { mIsLooping = loop; }
+            void setIsLooping(const bool loop);
             bool getIsLooping() const { return mIsLooping; }
-            void setGain(const float gain) { mGain = gain; }
+            void setGain(const float gain);
             bool getGain() const { return mGain; }
 
             //Loads the desired sound from path as soundId. Returns success status.
