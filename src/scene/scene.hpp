@@ -27,18 +27,18 @@ namespace GMTKEngine {
             void freeUnusedMemory();
 
             template<class T, typename... Args>
-            std::weak_ptr<T> createObject(Args&... args);
+            ResourceRef<T> createObject(Args&... args);
 
             template<class T>
-            void destroyObject(std::weak_ptr<T> object);
+            void destroyObject(ResourceRef<T> object);
        
-            std::weak_ptr<Renderer> getRenderer();
+            ResourceRef<Renderer> getRenderer();
 
             void start();
             void update();
             void fixedUpdate();
 
-            std::weak_ptr<Camera> getCamera();
+            ResourceRef<Camera> getCamera();
     
         private:
 

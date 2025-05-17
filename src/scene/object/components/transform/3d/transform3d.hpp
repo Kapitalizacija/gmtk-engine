@@ -7,40 +7,42 @@
 #include <glm/glm.hpp>
 
 namespace GMTKEngine {
-    struct Vertex {
-        glm::vec3 position;
-        glm::vec3 normal;
-        glm::vec2 texCoord;
-    };
+    namespace Component {
+        struct Vertex {
+            glm::vec3 position;
+            glm::vec3 normal;
+            glm::vec2 texCoord;
+        };
 
-    class Transform3D : public Component {
-        public:
-            Transform3D(glm::vec3 position = glm::vec3(0.f, 0.f, 0.f), glm::vec4 rotation = glm::vec4(0.f, 0.f, 0.f, 0.f), glm::vec3 scale = glm::vec3(0.f, 0.f, 0.f), std::vector<Vertex> vertices = {});
+        class Transform3D : public Component {
+            public:
+                Transform3D(glm::vec3 position = glm::vec3(0.f, 0.f, 0.f), glm::vec4 rotation = glm::vec4(0.f, 0.f, 0.f, 0.f), glm::vec3 scale = glm::vec3(0.f, 0.f, 0.f), std::vector<Vertex> vertices = {});
 
-            virtual void start() { return; }
-            virtual void earlyUpdate() { return; }
-            virtual void update() { return; }
-            virtual void lateUpdate() { return; }
-            virtual void frameCleanup() override;
-            virtual void fixedUpdate() { return; }
-            virtual bool hasChanged() override;  
-            
-            glm::vec3 getPosition();
-            void setPosition(glm::vec3 newPos);
+                virtual void start() { return; }
+                virtual void earlyUpdate() { return; }
+                virtual void update() { return; }
+                virtual void lateUpdate() { return; }
+                virtual void frameCleanup() override;
+                virtual void fixedUpdate() { return; }
+                virtual bool hasChanged() override;  
 
-            glm::vec3 getScale();
-            void setScale(glm::vec3 newScale);
+                glm::vec3 getPosition();
+                void setPosition(glm::vec3 newPos);
 
-            glm::vec4 getRotation();
-            void setRotation(glm::vec4 newRotation);
+                glm::vec3 getScale();
+                void setScale(glm::vec3 newScale);
 
-        protected:
-            bool changed;
+                glm::vec4 getRotation();
+                void setRotation(glm::vec4 newRotation);
 
-            glm::vec3 mPosition;
-            glm::vec4 mRotation;
-            glm::vec3 mScale;
+            protected:
+                bool changed;
 
-            std::vector<Vertex> mVertices;
-    };
+                glm::vec3 mPosition;
+                glm::vec4 mRotation;
+                glm::vec3 mScale;
+
+                std::vector<Vertex> mVertices;
+        };
+    }
 }

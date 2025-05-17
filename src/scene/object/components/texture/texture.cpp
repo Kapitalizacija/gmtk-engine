@@ -1,29 +1,31 @@
 #include "texture.hpp"
 
 namespace GMTKEngine {
-    Texture::Texture() {
-        mComponentName = "Texture";
-        mTextureID = 0;
-        changed = false;
-    }
-
-    void Texture::setTexture(GLTexture& glTexture) {
-        if(mTextureID != 0 && glTexture.getTexture() != mTextureID) {
-            changed = true;
+    namespace Component {
+        Texture::Texture() {
+            mComponentName = "Texture";
+            mTextureID = 0;
+            changed = false;
         }
 
-        mTextureID = glTexture.getTexture();
-    }
+        void Texture::setTexture(GLTexture& glTexture) {
+            if(mTextureID != 0 && glTexture.getTexture() != mTextureID) {
+                changed = true;
+            }
 
-    GLuint Texture::getRawHandle() {
-        return mTextureID;
-    }
+            mTextureID = glTexture.getTexture();
+        }
 
-    bool Texture::hasChanged() {
-        return changed;
-    }
+        GLuint Texture::getRawHandle() {
+            return mTextureID;
+        }
+
+        bool Texture::hasChanged() {
+            return changed;
+        }
   
-    void Texture::frameCleanup() {
-        changed = false;
+        void Texture::frameCleanup() {
+            changed = false;
+        }
     }
 }

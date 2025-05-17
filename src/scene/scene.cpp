@@ -54,8 +54,12 @@ namespace GMTKEngine {
 
     }
     
-    std::weak_ptr<Camera> Scene::getCamera() {
+    ResourceRef<Camera> Scene::getCamera() {
         return renderer->camera;
+    }
+    
+    ResourceRef<Renderer> Scene::getRenderer() {
+        return renderer;
     }
 
     std::weak_ptr<Renderer> getRenderer();

@@ -20,7 +20,6 @@
 #include "audio/al_listener.hpp"
 
 #include "scene/object/components/sound/sound.hpp"
-#include "scene/object/components/ref/component_ref.hpp"
 
 #include "memory/memorypool.hpp"
 
@@ -30,6 +29,7 @@
 #define TEST_SOUND 1 //Set to 1 to play the example sound (will create the sound components no matter what)
 
 using namespace GMTKEngine;
+using namespace GMTKEngine::Component;
 
 class TestObj : public Object2D {
     private:
@@ -52,6 +52,13 @@ int main() {
     Font font = Font("fonts/font.ttf");
     auto text = scene.createObject<Text>(font, "no homo");
 
+    ResourceRef<Transform2D> transform = text->getComponent<Transform2D>();
+    transform->setScale(glm::vec3(300, 300, 300));
+    transform->translate(glm::vec3(0.0, 0.0, 0.1));
+    
+    scene.getRenderer()->addCustomRenderObject(text);
+    
+
 
     //TODO: Test the Sound component abstraction here or something
     /*
@@ -69,34 +76,32 @@ int main() {
     //The update() method needs to be impemented fully before this will work :(
     
 
-    std::weak_ptr<Camera> cam = scene.getCamera().lock();
-    cam.lock()->setProjectionType(Camera::ProjectionType::ORTHOGRAPHIC);
+    ResourceRef<Camera> cam = scene.getCamera();
+    cam->setProjectionType(Camera::ProjectionType::ORTHOGRAPHIC);
 
-   // std::array<std::weak_ptr<Object2D>, 128*72> objs;
+    std::array<ResourceRef<Object2D>, 128*72> objs;
 
-   // for(int y = 0; y < 72; y++) {
-   //     for (int x = 0; x < 128; x++) {
-   //         std::weak_ptr<Object2D> obj;
+    for(int y = 0; y < 72; y++) {
+        for (int x = 0; x < 128; x++) {
+            ResourceRef<Object2D> obj;
 
-   //         obj = scene.createObject<Object2D>();
-   //         auto obj_shared = obj.lock();
-   //         obj_shared->setShader(shader);
-   //         obj_shared->getComponentLock<Texture>().value()->setTexture(tex);
-   //         obj_shared->getComponentLock<Transform2D>().value()->setPosition(glm::vec2((float)x * 10 - 640, (float)y * 10 - 360));
-   //         obj_shared->getComponentLock<Transform2D>().value()->setScale(glm::vec2(10.0f, 10.0f));
-   //         scene.addToRenderer(obj);
+            obj = scene.createObject<Object2D>();
+            obj->setShader(shader);
+            obj->getComponent<Texture>()->setTexture(tex);
+            obj->getComponent<Transform2D>()->setPosition(glm::vec3((float)x * 10 - 640, (float)y * 10 - 360, 0.0));
+            obj->getComponent<Transform2D>()->setScale(glm::vec3(10.0f, 10.0f, 0.0));
+            scene.getRenderer()->addObject2d(obj);
 
-   //         objs[y * 128 + x] = obj;
-   //     }
-   // }
+            objs[y * 128 + x] = obj;
+        }
+    }
 
-    std::weak_ptr<Object2D> obj = scene.createObject<Object2D>();
-    auto obj_shared = obj.lock();
-    obj_shared->setShader(shader);
+    ResourceRef<Object2D> obj = scene.createObject<Object2D>();
+    obj->setShader(shader);
     //obj_shared->getComponentLock<Transform2D>().value()->setScale(glm::vec3(1280, 720, 0));
     //obj_shared->getComponentLock<Transform2D>().value()->setPosition(glm::vec3(-640, -360, 0));
 
-    obj_shared->createComponent<Sound>();
+    obj->createComponent<Sound>();
 //    auto soundShared = obj_shared->getComponent<Sound>().value();
 //    bool res = soundShared->loadSound("example", "example.mp3");
 //    DBG("Sound load status: " << res);

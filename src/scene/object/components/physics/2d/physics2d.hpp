@@ -9,21 +9,24 @@
 #include "shape/shape.hpp"
 
 namespace GMTKEngine {
-    class Physics2D : public Component {
-        public:
-            Physics2D() = default;
-            Physics2D(Shape shape);
-            DISABLE_COPY_AND_MOVE(Physics2D);
+    namespace Component {
 
-            virtual void start() { return; }
-            virtual void earlyUpdate() { return; }
-            virtual void update() { return; }
-            virtual void lateUpdate() { return; }
-            virtual void frameCleanup() { return; }
-            virtual void fixedUpdate() { return; }
-            virtual bool hasChanged() { return false; }
-        
-        private:
-            Shape shape;
-    };
+        class Physics2D : public Component {
+            public:
+                Physics2D() = default;
+                Physics2D(Shape shape);
+                DISABLE_COPY_AND_MOVE(Physics2D);
+
+                virtual void start() { return; }
+                virtual void earlyUpdate() { return; }
+                virtual void update() { return; }
+                virtual void lateUpdate() { return; }
+                virtual void frameCleanup() { return; }
+                virtual void fixedUpdate() { return; }
+                virtual bool hasChanged() { return false; }
+            
+            private:
+                Shape shape;
+        };
+    }
 }

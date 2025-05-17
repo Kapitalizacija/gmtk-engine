@@ -12,7 +12,7 @@
 
 #include "components/component.hpp"
 #include "io/logging/logger.hpp"
-#include "scene/object/components/ref/component_ref.hpp"
+#include "scene/ref/resource_ref.hpp"
 
 namespace GMTKEngine {
     class Object {
@@ -27,10 +27,10 @@ namespace GMTKEngine {
             Object(Object&&) = delete;
 
             template<class T, typename... Args>
-            ComponentRef<T> createComponent(Args&... args);
+            ResourceRef<T> createComponent(Args&... args);
 
             template <class T>
-            ComponentRef<T> getComponent();
+            ResourceRef<T> getComponent();
 
             template <class T>
             bool changedComponent();
@@ -56,7 +56,7 @@ namespace GMTKEngine {
             bool hasChanged();
 
             std::string mObjectName;
-            std::unordered_map<size_t, std::shared_ptr<Component>> mComponents;
+            std::unordered_map<size_t, std::shared_ptr<Component::Component>> mComponents;
             std::unordered_set<std::string> mTags;
     
             bool enabled;

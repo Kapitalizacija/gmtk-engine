@@ -35,7 +35,7 @@ namespace GMTKEngine {
             createGlobalResources();
         }        
 
-        createComponent<Transform2D>();
+        createComponent<Component::Transform2D>();
         
         std::vector<float> offsets = font.getCharOffsets(text);
         createBuffers(offsets);
@@ -75,7 +75,7 @@ namespace GMTKEngine {
     
 
     void Text::draw(Camera& camera) {
-        ComponentRef<Transform2D> transform = getComponent<Transform2D>();
+        ResourceRef<Component::Transform2D> transform = getComponent<Component::Transform2D>();
 
         glUseProgram(SHADER->getProgram());
 

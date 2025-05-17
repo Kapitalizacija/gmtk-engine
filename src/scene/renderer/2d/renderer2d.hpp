@@ -12,7 +12,6 @@
 #include <stdfloat>
 #include <memory>
 #include <functional>
-#include <optional>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -64,7 +63,7 @@ namespace GMTKEngine {
             void update();
 
             void addObject(std::weak_ptr<Object2D> object);
-            std::optional<ObjectMap::iterator> removeObject2d(std::weak_ptr<Object2D> object, GLuint oldTex = 0);
+            ObjectMap::iterator removeObject2d(std::weak_ptr<Object2D> object, GLuint oldTex = 0);
 
             void freeUnusedMemory();
         private:

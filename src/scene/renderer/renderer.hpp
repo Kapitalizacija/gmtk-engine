@@ -6,7 +6,7 @@
 #include "scene/object/2d/object2d.hpp"
 #include "scene/object/3d/object3d.hpp"
 #include "scene/object/custom_render_object/custom_render_object.hpp"
-#include "scene/object/components/ref/component_ref.hpp"
+#include "scene/ref/resource_ref.hpp"
 #include "2d/renderer2d.hpp"
 
 namespace GMTKEngine {
@@ -18,21 +18,25 @@ namespace GMTKEngine {
         public:
             Renderer();
 
-            template<typename T>
-            void addToRenderer(std::weak_ptr<T> object);
-
             void renderer();
             void freeUnusedMemory();
 
-            std::weak_ptr<Renderer2D> getRenderer2D();
+            std::weak_ptr<Renderer2D> getRenderer2d();
+
+            template<typename T> 
+            void addObject2d(ResourceRef<T> object);
+
+            template<typename T> 
+            void addCustomRenderObject(ResourceRef<T> object);
 
         protected:
             std::shared_ptr<Camera> camera;
 
         private:
+
             std::shared_ptr<Renderer2D> renderer2d;
 
-            CustomObjectTable renderObjects;
+            CustomObjectTable customRenderObjects;
     };
 
     #include "renderer.tpp"

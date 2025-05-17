@@ -1,12 +1,12 @@
 template<class T, typename... Args>
 
-ComponentRef<T> Object::createComponent(Args&... args) {
-    static_assert(std::is_base_of_v<Component, T>);
+ResourceRef<T> Object::createComponent(Args&... args) {
+    static_assert(std::is_base_of_v<Component::Component, T>);
     static_assert(!std::is_pointer_v<T>);
     
     if (mComponents.find(typeid(T).hash_code()) != mComponents.end()) {
         WARN("Tried to add a preexisting component to object");
-        return ComponentRef<T>();
+        return ResourceRef<T>();
     }
 
     changed = true;
@@ -15,19 +15,19 @@ ComponentRef<T> Object::createComponent(Args&... args) {
 
     mComponents[typeid(T).hash_code()] = component;
     
-    return ComponentRef<T>(component);
+    return ResourceRef<T>(component);
 }
 
 
 template <class T>
-ComponentRef<T> Object::getComponent() {
+ResourceRef<T> Object::getComponent() {
     auto it = mComponents.find(typeid(T).hash_code());
 
     if (it == mComponents.end()) {
-        return ComponentRef<T>();
+        return ResourceRef<T>();
     }
 
-    return ComponentRef<T>(std::static_pointer_cast<T>(it->second));
+    return ResourceRef<T>(std::static_pointer_cast<T>(it->second));
 }
 
 template <class T>

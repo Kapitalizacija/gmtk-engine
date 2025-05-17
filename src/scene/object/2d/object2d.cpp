@@ -5,8 +5,8 @@ namespace GMTKEngine {
 
     Object2D::Object2D() {
 
-        createComponent<Transform2D>();
-        createComponent<Texture>();
+        createComponent<Component::Transform2D>();
+        createComponent<Component::Texture>();
     }
 
 
@@ -20,7 +20,7 @@ namespace GMTKEngine {
     }
 
     std::vector<float> Object2D::getDrawData() {
-        ComponentRef<Transform2D> transform = getComponent<Transform2D>();
+        ResourceRef<Component::Transform2D> transform = getComponent<Component::Transform2D>();
         return {
             transform->getPosition().x, transform->getPosition().y, transform->getPosition().z,
             transform->getRotation(),

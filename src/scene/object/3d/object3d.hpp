@@ -7,7 +7,7 @@
 
 //TODO everything
 namespace GMTKEngine {
-    class Object3D : Object, Texture {
+    class Object3D : Object {
         public:
 
         protected:

@@ -98,7 +98,7 @@ namespace GMTKEngine {
 
         auto& shader_group = draw_batches_2d[shared->program];
         
-        GLuint textureID = (shared->getComponent<Texture>())->getRawHandle();
+        GLuint textureID = (shared->getComponent<Component::Texture>())->getRawHandle();
 
         bool found_group = false;
         for (auto& tex_group : shader_group) {
@@ -142,12 +142,12 @@ namespace GMTKEngine {
         shared->rendered = true;
     }
     
-    std::optional<ObjectMap::iterator> Renderer2D::removeObject2d(std::weak_ptr<Object2D> object, GLuint oldTex) {
+    ObjectMap::iterator Renderer2D::removeObject2d(std::weak_ptr<Object2D> object, GLuint oldTex) {
         bool found = false;
 
         std::shared_ptr<Object2D> shared = object.lock();
 
-        GLuint textureID = (shared->getComponent<Texture>())->getRawHandle();
+        GLuint textureID = (shared->getComponent<Component::Texture>())->getRawHandle();
 
         if (oldTex != 0) {
             textureID = oldTex;
@@ -165,7 +165,7 @@ namespace GMTKEngine {
                 auto objectIt = texIt->second.find(object);
                 if (objectIt == texIt->second.end()) {
                     ERROR("Tried to remove nonexistant object: " << shared.get());
-                    return std::nullopt;
+                    return {};
                 }
 
                 std::lock_guard lock(*batch.cleanupMutex.get());
@@ -200,7 +200,7 @@ namespace GMTKEngine {
     
     void Renderer2D::appendObjectToBatch(RenderBatch2D& batch, std::weak_ptr<Object2D> object, std::shared_ptr<Object2D> shared) {
 
-        GLuint textureID = (shared->getComponent<Texture>())->getRawHandle();
+        GLuint textureID = (shared->getComponent<Component::Texture>())->getRawHandle();
 
         batch.objects[textureID][object] = batch.instanceCount;
         
@@ -305,19 +305,19 @@ namespace GMTKEngine {
             for(RenderBatch2D& batch : shaderGroup.second) {
                 for (auto& textureGroup : batch.objects) {
                     for (auto it = textureGroup.second.begin(); it != textureGroup.second.end();) {
-                        if ( (*it).first.lock()->changedComponent<Texture>()) {
+                        if ( (*it).first.lock()->changedComponent<Component::Texture>()) {
                             std::shared_ptr<Object2D> shared = (*it).first.lock();
 
-                            it = removeObject2d((*it).first, textureGroup.first).value();
+                            it = removeObject2d((*it).first, textureGroup.first);
 
                             addObject((*it).first);
                             
-                            shared->getComponent<Texture>()->frameCleanup();
+                            shared->getComponent<Component::Texture>()->frameCleanup();
                             continue;
                         }
 
                         // I lock it in the if statement intentionally so no deadlock 
-                        if ( !(*it).first.lock()->changedComponent<Transform2D>() ) {
+                        if ( !(*it).first.lock()->changedComponent<Component::Transform2D>() ) {
                             it++;
                             continue;
                         }
