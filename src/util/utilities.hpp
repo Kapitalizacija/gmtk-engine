@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <chrono>
 
 //DISABLE_COPY macro
 #ifndef DISABLE_COPY
@@ -19,6 +20,22 @@
 //DISABLE_COPY_AND_MOVE macro
 #ifndef DISABLE_COPY_AND_MOVE
 #define DISABLE_COPY_AND_MOVE(T) DISABLE_COPY(T) DISABLE_MOVE(T)
+#endif
+
+#ifndef CLOCK_NS
+#define CLOCK_NS std::chrono::high_resolution_clock::now().time_since_epoch().count() 
+#endif
+
+#ifndef CLOCK_MS
+#define CLOCK_MS (CLOCK_NS / 1000000)
+#endif
+
+#ifndef DELETER_EMPTY
+#define DELETER_EMPTY [](auto){}
+#endif
+
+#ifndef COMP
+#define COMP(T)
 #endif
 
 namespace GMTKEngine {

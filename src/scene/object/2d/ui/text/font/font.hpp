@@ -36,5 +36,6 @@ namespace GMTKEngine {
             static const uint32_t CHAR_HEIGHT = 256;
             static const char START_CHAR = '!';
             static const char END_CHAR = 'z';
+
     };
 }

@@ -14,10 +14,11 @@ namespace GMTKEngine {
             glm::vec3 scale = glm::vec3(1.0f));
 
             virtual void start() { return; }
-            virtual void early_update() { return; }
+            virtual void earlyUpdate() { return; }
             virtual void update() { return; }
-            virtual void late_update() { return; }
+            virtual void lateUpdate() { return; }
             virtual void frameCleanup() override;
+            virtual void fixedUpdate() { return; }
             virtual bool hasChanged() override;  
             
             glm::vec3 getPosition();

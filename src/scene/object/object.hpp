@@ -12,6 +12,7 @@
 
 #include "components/component.hpp"
 #include "io/logging/logger.hpp"
+#include "scene/object/components/ref/component_ref.hpp"
 
 namespace GMTKEngine {
     class Object {
@@ -26,53 +27,16 @@ namespace GMTKEngine {
             Object(Object&&) = delete;
 
             template<class T, typename... Args>
-            std::optional<std::weak_ptr<T>> createComponent(Args&... args) {
-                static_assert(std::is_base_of_v<Component, T>);
-                static_assert(!std::is_pointer_v<T>);
-                
-                if (mComponents.find(typeid(T).hash_code()) != mComponents.end()) {
-                    WARN("Tried to add a preexisting component to object");
-                    return std::nullopt; 
-                }
+            ComponentRef<T> createComponent(Args&... args);
 
-                changed = true;
-                
-                std::shared_ptr<T> component = std::make_shared<T>(args...);
+            template <class T>
+            ComponentRef<T> getComponent();
 
-                mComponents[typeid(T).hash_code()] = component;
-                
-                return component;
-            }
+            template <class T>
+            bool changedComponent();
 
             std::string getName() { return mObjectName; }
             void setName(std::string name) { mObjectName = name; }
-
-            template <class T>
-            std::optional<std::weak_ptr<T>> getComponent() {
-                auto it = mComponents.find(typeid(T).hash_code());
-
-                if (it == mComponents.end()) {
-                    return std::nullopt;
-                }
-
-                return std::weak_ptr<T>(std::static_pointer_cast<T>(it->second));
-            }
-
-            template <typename T>
-            std::optional<std::shared_ptr<T>> getComponentLock() {
-                std::optional<std::weak_ptr<T>> weakPtr = getComponent<T>();
-
-                if (weakPtr.has_value()) {
-                    return weakPtr.value().lock();
-                }
-
-                return std::nullopt;
-            }
-
-            template <class T>
-            bool changedComponent() {
-                return mComponents[typeid(T).hash_code()]->hasChanged();
-            }
             
             void addTag(std::string tag) { mTags.insert(tag); }
             bool hasTag(std::string tag) { return mTags.count(tag); }
@@ -85,6 +49,7 @@ namespace GMTKEngine {
             virtual void earlyUpdate();
             virtual void update();
             virtual void lateUpdate();
+            virtual void fixedUpdate();
             virtual std::vector<float> getDrawData();
             virtual void frameCleanup();
 
@@ -98,4 +63,6 @@ namespace GMTKEngine {
             bool rendered;
             bool changed;
     };
+
+    #include "object.tpp"
 }

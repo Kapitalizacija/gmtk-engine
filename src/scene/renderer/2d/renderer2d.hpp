@@ -63,7 +63,7 @@ namespace GMTKEngine {
             void render(Camera& camera);
             void update();
 
-            void addObject2d(std::weak_ptr<Object2D> object);
+            void addObject(std::weak_ptr<Object2D> object);
             std::optional<ObjectMap::iterator> removeObject2d(std::weak_ptr<Object2D> object, GLuint oldTex = 0);
 
             void freeUnusedMemory();

@@ -15,10 +15,11 @@ namespace GMTKEngine {
             ~Sound();
 
             virtual void start() { return; }
-            virtual void early_update() { return; }
+            virtual void earlyUpdate() { return; }
             virtual void update();
-            virtual void late_update() { return; }
+            virtual void lateUpdate() { return; }
             virtual void frameCleanup() { return; }
+            virtual void fixedUpdate() { return; }
             virtual bool hasChanged() { return false; }
 
             void setPosition(const glm::vec3 &pos);

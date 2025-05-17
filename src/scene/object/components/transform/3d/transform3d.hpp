@@ -18,10 +18,11 @@ namespace GMTKEngine {
             Transform3D(glm::vec3 position = glm::vec3(0.f, 0.f, 0.f), glm::vec4 rotation = glm::vec4(0.f, 0.f, 0.f, 0.f), glm::vec3 scale = glm::vec3(0.f, 0.f, 0.f), std::vector<Vertex> vertices = {});
 
             virtual void start() { return; }
-            virtual void early_update() { return; }
+            virtual void earlyUpdate() { return; }
             virtual void update() { return; }
-            virtual void late_update() { return; }
+            virtual void lateUpdate() { return; }
             virtual void frameCleanup() override;
+            virtual void fixedUpdate() { return; }
             virtual bool hasChanged() override;  
             
             glm::vec3 getPosition();

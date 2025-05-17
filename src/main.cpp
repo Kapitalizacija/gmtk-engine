@@ -20,6 +20,7 @@
 #include "audio/al_listener.hpp"
 
 #include "scene/object/components/sound/sound.hpp"
+#include "scene/object/components/ref/component_ref.hpp"
 
 #include "memory/memorypool.hpp"
 
@@ -49,10 +50,8 @@ int main() {
     GLShader shader = GLShader("test_shader", "test_shaders/sprite_2d.vert", "test_shaders/sprite_2d.frag"); // fellas in paris
 
     Font font = Font("fonts/font.ttf");
-    std::weak_ptr<Text> text = scene.createObject<Text>(font, "c");
-    text.lock()->getComponentLock<Transform2D>().value()->setScale(glm::vec3(300, 300, 300));
+    auto text = scene.createObject<Text>(font, "no homo");
 
-    scene.addRenderObject(text);
 
     //TODO: Test the Sound component abstraction here or something
     /*
@@ -70,8 +69,8 @@ int main() {
     //The update() method needs to be impemented fully before this will work :(
     
 
-    Camera* cam = scene.getCamera();
-    cam->setProjectionType(Camera::ProjectionType::ORTHOGRAPHIC);
+    std::weak_ptr<Camera> cam = scene.getCamera().lock();
+    cam.lock()->setProjectionType(Camera::ProjectionType::ORTHOGRAPHIC);
 
    // std::array<std::weak_ptr<Object2D>, 128*72> objs;
 
@@ -94,19 +93,19 @@ int main() {
     std::weak_ptr<Object2D> obj = scene.createObject<Object2D>();
     auto obj_shared = obj.lock();
     obj_shared->setShader(shader);
-    obj_shared->getComponentLock<Transform2D>().value()->setScale(glm::vec3(1280, 720, 0));
-    obj_shared->getComponentLock<Transform2D>().value()->setPosition(glm::vec3(-640, -360, 0));
+    //obj_shared->getComponentLock<Transform2D>().value()->setScale(glm::vec3(1280, 720, 0));
+    //obj_shared->getComponentLock<Transform2D>().value()->setPosition(glm::vec3(-640, -360, 0));
 
     obj_shared->createComponent<Sound>();
-    auto soundShared = obj_shared->getComponentLock<Sound>().value();
-    bool res = soundShared->loadSound("example", "example.mp3");
-    DBG("Sound load status: " << res);
-    if (TEST_SOUND) {
-        soundShared->setIsLooping(false);
-        soundShared->setGain(1.f);
-        soundShared->setPosition(glm::vec3(100.f, 0.f, 0.f));
-        soundShared->playSound("example");
-    }
+//    auto soundShared = obj_shared->getComponent<Sound>().value();
+//    bool res = soundShared->loadSound("example", "example.mp3");
+//    DBG("Sound load status: " << res);
+//    if (TEST_SOUND) {
+//        soundShared->setIsLooping(false);
+//        soundShared->setGain(1.f);
+//        soundShared->setPosition(glm::vec3(100.f, 0.f, 0.f));
+//        soundShared->playSound("example");
+//    }
     
     while ( !window.shouldClose() ) {
         scene.update();

@@ -13,7 +13,7 @@ namespace GMTKEngine {
 
     void Object::earlyUpdate() {
         for (auto &comp : mComponents) {
-            comp.second->early_update();
+            comp.second->earlyUpdate();
         }
     }
     
@@ -25,7 +25,13 @@ namespace GMTKEngine {
     
     void Object::lateUpdate() {
         for (auto &comp : mComponents) {
-            comp.second->late_update();
+            comp.second->lateUpdate();
+        }
+    }
+
+    void Object::fixedUpdate() {
+        for (auto &comp : mComponents) {
+            comp.second->fixedUpdate();
         }
     }
     

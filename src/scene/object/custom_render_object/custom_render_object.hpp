@@ -3,7 +3,7 @@
 #include "scene/object/camera/camera.hpp"
 
 namespace GMTKEngine {
-    class RenderObject {
+    class CustomRenderObject {
         friend class Scene;
 
         protected:

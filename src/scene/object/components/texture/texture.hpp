@@ -17,9 +17,10 @@ namespace GMTKEngine {
             GLuint getRawHandle();
 
             virtual void start() { return; }
-            virtual void early_update() { return; }
+            virtual void earlyUpdate() { return; }
             virtual void update() { return; }
-            virtual void late_update() { return; }
+            virtual void lateUpdate() { return; }
+            virtual void fixedUpdate() { return; }
             virtual void frameCleanup() override;
             virtual bool hasChanged() override;
 

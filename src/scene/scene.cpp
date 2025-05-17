@@ -1,8 +1,8 @@
 #include "scene.hpp"
 
 namespace GMTKEngine {
-    Scene::Scene() {
-
+    Scene::Scene(): sinceLastFixedUpdate(0) {
+        renderer = std::make_shared<Renderer>();
     }
 
     void Scene::start() {
@@ -14,7 +14,7 @@ namespace GMTKEngine {
     void Scene::update() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        camera.update();
+        renderer->camera->update();
 
         for (auto& object: objects ) {
             object->earlyUpdate();
@@ -28,13 +28,9 @@ namespace GMTKEngine {
             object->lateUpdate();
         }
 
-        renderer2d.update();
+        fixedUpdate();
 
-        for(auto& obj : renderObjects) {
-            obj.lock()->draw(camera);
-        }
-
-        renderer2d.render(camera);
+        renderer->renderer();
 
         for (auto& object : objects ) {
             object->frameCleanup();
@@ -42,13 +38,27 @@ namespace GMTKEngine {
     
     }
 
+    void Scene::fixedUpdate() {
+        if (CLOCK_MS - sinceLastFixedUpdate < FIXED_UPDATE_INTERVAL) {
+            return;
+        }
+
+        sinceLastFixedUpdate = CLOCK_MS;
+
+        for (auto& object: objects ) {
+            object->fixedUpdate();
+        }
+    }
+
     void Scene::freeUnusedMemory() {
-        renderer2d.freeUnusedMemory();
+
     }
     
-    Camera* Scene::getCamera() {
-        return &camera;
+    std::weak_ptr<Camera> Scene::getCamera() {
+        return renderer->camera;
     }
+
+    std::weak_ptr<Renderer> getRenderer();
 
 /*    uint64_t Scene::combine_hashes(uint64_t hash1, uint64_t hash2) {
         hash1 ^= hash2 + 0x9e3779b9 + (hash1 << 6) + (hash1 >> 2); // stolen from boost

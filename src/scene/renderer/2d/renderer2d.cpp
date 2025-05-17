@@ -93,12 +93,12 @@ namespace GMTKEngine {
         glBindVertexArray(0);
     }
 
-    void Renderer2D::addObject2d(std::weak_ptr<Object2D> object) {
+    void Renderer2D::addObject(std::weak_ptr<Object2D> object) {
         std::shared_ptr<Object2D> shared = object.lock();
 
         auto& shader_group = draw_batches_2d[shared->program];
         
-        GLuint textureID = (shared->getComponentLock<Texture>()).value()->getRawHandle();
+        GLuint textureID = (shared->getComponent<Texture>())->getRawHandle();
 
         bool found_group = false;
         for (auto& tex_group : shader_group) {
@@ -147,7 +147,7 @@ namespace GMTKEngine {
 
         std::shared_ptr<Object2D> shared = object.lock();
 
-        GLuint textureID = (shared->getComponentLock<Texture>()).value()->getRawHandle();
+        GLuint textureID = (shared->getComponent<Texture>())->getRawHandle();
 
         if (oldTex != 0) {
             textureID = oldTex;
@@ -200,7 +200,7 @@ namespace GMTKEngine {
     
     void Renderer2D::appendObjectToBatch(RenderBatch2D& batch, std::weak_ptr<Object2D> object, std::shared_ptr<Object2D> shared) {
 
-        GLuint textureID = (shared->getComponentLock<Texture>()).value()->getRawHandle();
+        GLuint textureID = (shared->getComponent<Texture>())->getRawHandle();
 
         batch.objects[textureID][object] = batch.instanceCount;
         
@@ -310,9 +310,9 @@ namespace GMTKEngine {
 
                             it = removeObject2d((*it).first, textureGroup.first).value();
 
-                            addObject2d((*it).first);
+                            addObject((*it).first);
                             
-                            shared->getComponentLock<Texture>().value()->frameCleanup();
+                            shared->getComponent<Texture>()->frameCleanup();
                             continue;
                         }
 

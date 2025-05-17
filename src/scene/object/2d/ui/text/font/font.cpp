@@ -4,6 +4,7 @@
 #include <stb_truetype/stb_truetype.h>
 
 namespace GMTKEngine {
+
     Font::Font(std::string fontPath) {
         std::vector<uint8_t> rawBuff = readFont(fontPath);
         if (rawBuff.empty()) {
@@ -96,7 +97,9 @@ namespace GMTKEngine {
 
         for(char c : text) {
             if (c < START_CHAR || c > END_CHAR) {
-                ERROR("Character in text out of range: " << (int)c);
+                if ((int)c != 32) {
+                    ERROR("Character in text out of range: " << (int)c);
+                }
 
                 offsets.push_back(0);
                 offsets.push_back(0);

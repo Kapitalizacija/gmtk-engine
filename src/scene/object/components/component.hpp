@@ -14,9 +14,10 @@ namespace GMTKEngine {
 
         protected:
             virtual void start() = 0;
-            virtual void early_update() = 0;
+            virtual void earlyUpdate() = 0;
             virtual void update() = 0;
-            virtual void late_update() = 0;
+            virtual void lateUpdate() = 0;
+            virtual void fixedUpdate() = 0;
             virtual void frameCleanup() = 0;
             virtual bool hasChanged() = 0; 
             
