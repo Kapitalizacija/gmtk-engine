@@ -5,12 +5,15 @@
 namespace GMTKEngine {
     GLBuffer::GLBuffer() {
         type = Type::UNDEFINED; 
+        size = 0;
     }
 
     GLBuffer::GLBuffer(Type buffer_type): buff(0), type(buffer_type) {
         if (buffer_type == Type::UNDEFINED) {
             UNDEFINED_WARN;
         }
+
+        size = 0;
 
         create_buffer();
         matchType(buffer_type);
@@ -102,4 +105,16 @@ namespace GMTKEngine {
 
         glBindBufferBase(glType, index, buff);
     }
+
+    void GLBuffer::partialUpdate(std::vector<GLBufferUpdateRegion> updateRegions) {
+
+        glBindBuffer(glType, buff); 
+
+        for (GLBufferUpdateRegion& region : updateRegions) {
+            if (region.offset >= 221136){
+                continue;
+            } 
+            glBufferSubData(glType, region.offset, region.size, region.data + region.offset);
+        }
+}
 }

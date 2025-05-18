@@ -11,6 +11,7 @@
 #include "gl/util/shader/gl_shader.hpp"
 #include "gl/util/vao/gl_vao.hpp"
 #include "gl/texture/gl_texture.hpp"
+#include "gl/util/gl_util.hpp"
 
 #include "scene/object/components/transform/2d/transform2d.hpp"
 
@@ -42,6 +43,8 @@ int main() {
     if (!audio.isValid()) {
         ERROR("OpenAL Device Error, exiting");
     }
+
+    GLUtils::init();
 
     Scene scene = Scene();
     
@@ -113,8 +116,13 @@ int main() {
 //    }
     
     while ( !window.shouldClose() ) {
+        for(int i = 0; i < 128 * 72; i++) {
+            objs[i]->getComponent<Transform2D>()->setRotation(glfwGetTime());
+        }
+
         scene.update();
         window.update();
     }
 
+    GLUtils::cleanup();
 }

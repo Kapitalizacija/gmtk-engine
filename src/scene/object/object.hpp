@@ -18,6 +18,7 @@ namespace GMTKEngine {
     class Object {
         friend class Scene;
         friend class Renderer2D;
+        friend class RenderBatch2D;
 
         public:
             Object();

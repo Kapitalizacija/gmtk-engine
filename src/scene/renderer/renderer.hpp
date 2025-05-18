@@ -10,7 +10,7 @@
 #include "2d/renderer2d.hpp"
 
 namespace GMTKEngine {
-    typedef std::unordered_set<std::weak_ptr<CustomRenderObject>, WeakPtrObjectHash<CustomRenderObject>, WeakPtrObjectEquals<CustomRenderObject>> CustomObjectTable;
+    typedef std::unordered_set<ResourceRef<CustomRenderObject>> CustomObjectTable;
 
     class Renderer {
         friend class Scene;
@@ -21,7 +21,7 @@ namespace GMTKEngine {
             void renderer();
             void freeUnusedMemory();
 
-            std::weak_ptr<Renderer2D> getRenderer2d();
+            ResourceRef<Renderer2D> getRenderer2d();
 
             template<typename T> 
             void addObject2d(ResourceRef<T> object);

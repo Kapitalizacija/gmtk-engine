@@ -6,7 +6,7 @@ namespace GMTKEngine {
         renderer2d = std::make_shared<Renderer2D>();
     }
 
-    std::weak_ptr<Renderer2D> Renderer::getRenderer2d() {
+    ResourceRef<Renderer2D> Renderer::getRenderer2d() {
         return renderer2d;
     }
 
@@ -14,7 +14,7 @@ namespace GMTKEngine {
         renderer2d->render(*camera);
 
         for (auto& object : customRenderObjects) {
-            object.lock()->draw(*camera);
+            object->draw(*camera);
         }
     }
 
