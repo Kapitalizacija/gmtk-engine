@@ -1,10 +1,13 @@
 #pragma once
 
 #include "../../component.hpp"
+#define GLM_ENABLE_EXPERIMENTAL
 
 #include <string>
 #include <vector>
 #include <glm/glm.hpp>
+#include <glm/ext.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 namespace GMTKEngine {
     namespace Component {

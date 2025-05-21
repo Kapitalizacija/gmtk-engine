@@ -7,6 +7,7 @@
 #include "audio/al_sound.hpp"
 #include "util/utilities.hpp"
 #include "shape/shape.hpp"
+#include "../physicsconstants.hpp"
 
 namespace GMTKEngine {
     namespace Component {
@@ -27,6 +28,7 @@ namespace GMTKEngine {
             
             private:
                 Shape shape;
+                glm::vec3 mForceDirection;
         };
     }
 }

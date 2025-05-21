@@ -99,12 +99,12 @@ int main() {
         }
     }
 
-    ResourceRef<Object2D> obj = scene.createObject<Object2D>();
-    obj->setShader(shader);
+    //ResourceRef<Object2D> obj = scene.createObject<Object2D>();
+    //obj->setShader(shader);
     //obj_shared->getComponentLock<Transform2D>().value()->setScale(glm::vec3(1280, 720, 0));
     //obj_shared->getComponentLock<Transform2D>().value()->setPosition(glm::vec3(-640, -360, 0));
 
-    obj->createComponent<Sound>();
+    //obj->createComponent<Sound>();
 //    auto soundShared = obj_shared->getComponent<Sound>().value();
 //    bool res = soundShared->loadSound("example", "example.mp3");
 //    DBG("Sound load status: " << res);
@@ -119,6 +119,10 @@ int main() {
         for(int i = 0; i < 128 * 72; i++) {
             objs[i]->getComponent<Transform2D>()->setRotation(glfwGetTime());
         }
+
+        glm::vec3 pos = text->getComponent<Transform2D>()->getPosition();
+        text->getComponent<Transform2D>()->setPosition(glm::vec3(pos.x, pos.y - 1, pos.z));
+        LOG(glm::to_string(pos));
 
         scene.update();
         window.update();
