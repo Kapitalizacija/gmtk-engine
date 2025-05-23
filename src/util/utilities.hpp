@@ -30,6 +30,10 @@
 #define CLOCK_MS (CLOCK_NS / 1000000)
 #endif
 
+#ifndef FIXED_TIMESTEP_MS
+#define FIXED_TIMESTEP_MS 33
+#endif
+
 #ifndef DELETER_EMPTY
 #define DELETER_EMPTY [](auto){}
 #endif

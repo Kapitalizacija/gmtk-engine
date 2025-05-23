@@ -2,8 +2,11 @@
 
 #include <string>
 #include "io/logging/logger.hpp"
+#include "scene/ref/resource_ref.hpp"
 
 namespace GMTKEngine {
+    class Object;
+
     namespace Component {
         class Component {
             friend class Object;
@@ -11,6 +14,8 @@ namespace GMTKEngine {
             public:
                 std::string getComponentName();
 
+                Component() = default;
+                Component(std::weak_ptr<Object> ref);
                 virtual ~Component() = default;
 
                 virtual void start() = 0;
@@ -19,8 +24,9 @@ namespace GMTKEngine {
                 virtual void lateUpdate() = 0;
                 virtual void fixedUpdate() = 0;
                 virtual void frameCleanup() = 0;
-                virtual bool hasChanged() = 0; 
+                virtual bool hasChanged() = 0;
             protected:
+                ResourceRef<Object> mGameObject;
 
                 std::string mComponentName;
 

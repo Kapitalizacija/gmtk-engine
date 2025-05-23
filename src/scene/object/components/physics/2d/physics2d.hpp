@@ -8,6 +8,7 @@
 #include "util/utilities.hpp"
 #include "shape/shape.hpp"
 #include "../physicsconstants.hpp"
+#include "scene/object/components/transform/2d/transform2d.hpp"
 
 namespace GMTKEngine {
     namespace Component {
@@ -15,20 +16,26 @@ namespace GMTKEngine {
         class Physics2D : public Component {
             public:
                 Physics2D() = default;
-                Physics2D(Shape shape);
+                Physics2D(ResourceRef<Transform2D> transform, Shape shape, float mass);
                 DISABLE_COPY_AND_MOVE(Physics2D);
 
+                void checkCollisionWithObject(ResourceRef<Physics2D> other);
+                ResourceRef<Shape> getShape();
+                
                 virtual void start() { return; }
                 virtual void earlyUpdate() { return; }
                 virtual void update() { return; }
                 virtual void lateUpdate() { return; }
                 virtual void frameCleanup() { return; }
-                virtual void fixedUpdate() { return; }
+                virtual void fixedUpdate();
                 virtual bool hasChanged() { return false; }
             
             private:
-                Shape shape;
+                std::shared_ptr<Shape> shape;
                 glm::vec3 mForceDirection;
+                float mMass;
+
+                ResourceRef<Transform2D> transform;
         };
     }
 }

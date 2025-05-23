@@ -46,7 +46,7 @@ namespace GMTKEngine {
 
             std::shared_ptr<Renderer> renderer;
 
-            const uint64_t FIXED_UPDATE_INTERVAL = 1000;
+            const uint64_t FIXED_UPDATE_INTERVAL = FIXED_TIMESTEP_MS;
             uint64_t sinceLastFixedUpdate = 0;
     };
 

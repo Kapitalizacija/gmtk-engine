@@ -16,12 +16,12 @@ namespace GMTKEngine {
         }
 
     
-        std::vector<glm::vec2> Shape::getEdges() {
-            std::vector<glm::vec2> edges;
+        std::unordered_set<glm::vec2> Shape::getEdges() {
+            std::unordered_set<glm::vec2> edges;
             edges.reserve(vertices.size());
 
             for (int i = 0; i < vertices.size(); i++) {
-                edges.push_back(
+                edges.insert(
                     vertices[i] - vertices[(i + 1) % vertices.size()]
                 );
             }
@@ -29,16 +29,16 @@ namespace GMTKEngine {
             return edges;
         }
     
-        std::vector<glm::vec2> Shape::getNormals() {
-            std::vector<glm::vec2> edges = getEdges();
+        std::unordered_set<glm::vec2> Shape::getNormals() {
+            std::unordered_set<glm::vec2> edges = getEdges();
 
-            std::vector<glm::vec2> normals;
+            std::unordered_set<glm::vec2> normals;
             normals.reserve(edges.size());
 
-            for (int i = 0; i < vertices.size(); i++) {
-                normals.push_back({
-                    -edges[i].y,
-                     edges[i].x
+            for(glm::vec2 edge : edges) {
+                normals.insert({
+                    -edge.y,
+                     edge.x
                     }
                 );
             }

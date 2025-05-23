@@ -20,7 +20,7 @@ namespace GMTKEngine {
                 hash = std::hash<std::shared_ptr<T>>{}(weakPtr.lock());
             }
 
-            std::shared_ptr<T> operator->() const{
+            std::shared_ptr<T> operator->() const {
                 if (is_empty()) {
                     throw std::runtime_error("Tried to access an empty component");
                 }
@@ -28,7 +28,7 @@ namespace GMTKEngine {
                 return weakPtr.lock();
             }
 
-            bool is_empty() const{
+            bool is_empty() const {
                 return weakPtr.use_count() == 0;
             }
 
