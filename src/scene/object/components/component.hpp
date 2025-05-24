@@ -1,6 +1,8 @@
 #pragma once
 
 #include <string>
+#include <vector>
+
 #include "io/logging/logger.hpp"
 #include "scene/ref/resource_ref.hpp"
 
@@ -27,6 +29,9 @@ namespace GMTKEngine {
                 virtual bool hasChanged() = 0;
             protected:
                 ResourceRef<Object> mGameObject;
+
+                virtual std::vector<size_t> getRequiredComponentHashes() const;
+                virtual void setRequiredComponents(std::vector<ResourceRef> components);
 
                 std::string mComponentName;
 

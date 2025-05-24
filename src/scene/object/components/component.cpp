@@ -9,5 +9,9 @@ namespace GMTKEngine {
         std::string Component::getComponentName() {
             return mComponentName;
         }
+
+        std::vector<size_t> Component::getRequiredComponentHashes() const{
+            return {};
+        }
     }
 }
