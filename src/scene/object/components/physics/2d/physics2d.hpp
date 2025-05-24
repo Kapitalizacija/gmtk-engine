@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <unordered_map>
+#include <cassert>
 #include <limits>
 
 #include "../../component.hpp"
@@ -35,6 +36,7 @@ namespace GMTKEngine {
             
             protected:
                 virtual std::vector<size_t> getRequiredComponentHashes() const override;
+                virtual void setRequiredComponents(std::vector<ResourceRef<Component>> components) override;
                 
 
             private:

@@ -24,8 +24,8 @@ namespace GMTKEngine {
 
             GLVAO(const GLVAO& other) = delete;
 
-            GLVAO(GLVAO&& other);
-            void operator=(GLVAO&& other);
+            GLVAO(GLVAO&& other) noexcept;
+            void operator=(GLVAO&& other) noexcept;
 
             ~GLVAO();
 
@@ -37,7 +37,7 @@ namespace GMTKEngine {
             void createVAO();
             void createAttribPointers(GLAttribPointer* attrib_pointers, size_t attrib_pointer_count);
 
-            void move(GLVAO& other);
+            void move(GLVAO& other) noexcept;
 
             GLuint vao;
     };

@@ -83,5 +83,11 @@ namespace GMTKEngine {
                 typeid(Transform2D).hash_code()
             };
         }
+
+        void Physics2D::setRequiredComponents(std::vector<ResourceRef<Component>> components) {
+            assert(components.size() == 1);
+
+            transform = components[0];
+        }
     }
 }

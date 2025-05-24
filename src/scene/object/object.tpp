@@ -13,6 +13,8 @@ ResourceRef<T> Object::createComponent(Args&... args) {
     
     std::shared_ptr<T> component = std::make_shared<T>(args...);
 
+   // std::vector<size_t> dependencies = component->getRequiredComponentHashes();
+
     mComponents[typeid(T).hash_code()] = component;
     
     return ResourceRef<T>(component);

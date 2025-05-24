@@ -39,8 +39,8 @@ namespace GMTKEngine {
             
             GLBuffer(const GLBuffer& other) = delete;
 
-            GLBuffer(GLBuffer&& other);
-            void operator=(GLBuffer&& other);
+            GLBuffer(GLBuffer&& other) noexcept;
+            void operator=(GLBuffer&& other) noexcept;
 
             ~GLBuffer();
 
@@ -60,7 +60,7 @@ namespace GMTKEngine {
             void create_buffer();
             void matchType(Type buffer_type);
 
-            void move(GLBuffer& other);
+            void move(GLBuffer& other) noexcept;
 
             Type type;
             GLenum glType;

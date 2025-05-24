@@ -24,8 +24,8 @@ namespace GMTKEngine {
 
             GLTexture(const GLTexture&) = delete; 
 
-            GLTexture(GLTexture&& other); 
-            void operator=(GLTexture&& other);
+            GLTexture(GLTexture&& other) noexcept; 
+            void operator=(GLTexture&& other) noexcept;
 
             ~GLTexture();
 

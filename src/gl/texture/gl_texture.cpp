@@ -22,13 +22,13 @@ namespace GMTKEngine {
 		stbi_image_free(data);
 	}
 
-    GLTexture::GLTexture(GLTexture&& other) {
+    GLTexture::GLTexture(GLTexture&& other) noexcept{
 		tex = other.tex;
 
 		other.tex = 0;
 	} 
 
-    void GLTexture::operator=(GLTexture&& other) {
+    void GLTexture::operator=(GLTexture&& other) noexcept{
 		tex = other.tex;
 
 		other.tex = 0;

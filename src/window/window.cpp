@@ -111,14 +111,14 @@ namespace GMTKEngine {
         return glfw_win;
     }
     
-    Window::Window(Window&& other) {
+    Window::Window(Window&& other) noexcept{
         resolution = other.resolution;
         glfw_win = other.glfw_win;
     
         other.glfw_win = nullptr;
     }
     
-    void Window::operator=(Window&& other) {
+    void Window::operator=(Window&& other) noexcept {
         resolution = other.resolution;
         glfw_win = other.glfw_win;
     

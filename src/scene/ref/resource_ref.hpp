@@ -48,7 +48,7 @@ namespace GMTKEngine {
                 return weakPtr;
             }
 
-            bool operator==(const ResourceRef &other) const {
+            bool operator==(const ResourceRef &other) const noexcept {
                 return !weakPtr.owner_before(other.weakPtr) && !other.weakPtr.owner_before(weakPtr);
             }
 
@@ -63,7 +63,7 @@ namespace GMTKEngine {
             template<typename G>
             operator ResourceRef<G>() {
                 return ResourceRef<G>(
-                    std::dynamic_pointer_cast<G>(weakPtr.lock())
+                    std::static_pointer_cast<G>(weakPtr.lock()) // reinterpret_cast??
                 );
             }
 

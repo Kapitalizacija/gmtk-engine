@@ -14,8 +14,8 @@ namespace GMTKEngine {
 
             GLShader(const GLShader&) = delete;
 
-            GLShader(GLShader&& other);
-            void operator=(GLShader&& other);
+            GLShader(GLShader&& other) noexcept;
+            void operator=(GLShader&& other) noexcept;
 
             ~GLShader();
 
@@ -27,7 +27,7 @@ namespace GMTKEngine {
             GLuint create_shader(std::string shader_path, GLenum type);
             void create_program(GLuint vert_shader, GLuint frag_shader);
 
-            void move(GLShader& other);
+            void move(GLShader& other) noexcept;
 
             GLuint program;
             std::string name;

@@ -10,11 +10,11 @@ namespace GMTKEngine {
         createAttribPointers(attrib_pointers, attrib_pointer_count);
     }
 
-    GLVAO::GLVAO(GLVAO&& other) {
+    GLVAO::GLVAO(GLVAO&& other) noexcept{
         move(other);
     }
 
-    void GLVAO::operator=(GLVAO&& other) {
+    void GLVAO::operator=(GLVAO&& other) noexcept{
         move(other);
     }
 
@@ -92,7 +92,7 @@ namespace GMTKEngine {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
-    void GLVAO::move(GLVAO& other) {
+    void GLVAO::move(GLVAO& other) noexcept{
         vao = other.vao;
 
         other.vao = 0;

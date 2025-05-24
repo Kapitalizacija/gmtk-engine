@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <cassert>
 
 #include "io/logging/logger.hpp"
 #include "scene/ref/resource_ref.hpp"
@@ -31,7 +32,7 @@ namespace GMTKEngine {
                 ResourceRef<Object> mGameObject;
 
                 virtual std::vector<size_t> getRequiredComponentHashes() const;
-                virtual void setRequiredComponents(std::vector<ResourceRef> components);
+                virtual void setRequiredComponents(std::vector<ResourceRef<Component>> components);
 
                 std::string mComponentName;
 

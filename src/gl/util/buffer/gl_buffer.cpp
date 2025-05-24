@@ -20,11 +20,11 @@ namespace GMTKEngine {
     }
 
 
-    GLBuffer::GLBuffer(GLBuffer&& other) {
+    GLBuffer::GLBuffer(GLBuffer&& other) noexcept{
         move(other);
     }
 
-    void GLBuffer::operator=(GLBuffer&& other) {
+    void GLBuffer::operator=(GLBuffer&& other) noexcept{
         move(other);
     }
 
@@ -37,7 +37,7 @@ namespace GMTKEngine {
         glDeleteBuffers(1, &buff);
     }
 
-    void GLBuffer::move(GLBuffer& other) {
+    void GLBuffer::move(GLBuffer& other) noexcept{
         buff = other.buff;
         type = other.type;
         glType = other.glType;

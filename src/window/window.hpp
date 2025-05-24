@@ -18,8 +18,8 @@ namespace GMTKEngine {
         public:
             Window(std::string name, Resolution resolution);
     
-            Window(Window&& other);
-            void operator=(Window&& other);
+            Window(Window&& other) noexcept;
+            void operator=(Window&& other) noexcept;
     
             Window(Window& other) = delete;
             void operator=(Window& other) = delete;

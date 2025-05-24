@@ -13,5 +13,9 @@ namespace GMTKEngine {
         std::vector<size_t> Component::getRequiredComponentHashes() const{
             return {};
         }
+
+        void Component::setRequiredComponents(std::vector<ResourceRef<Component>> components) {
+            assert(components.empty());
+        }
     }
 }

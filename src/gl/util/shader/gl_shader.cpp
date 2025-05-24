@@ -18,11 +18,11 @@ namespace GMTKEngine {
         create_program(vertex_shader, fragment_shader);
     }
     
-    GLShader::GLShader(GLShader&& other) {
+    GLShader::GLShader(GLShader&& other) noexcept{
         move(other);
     }
 
-    void GLShader::operator=(GLShader&& other) {
+    void GLShader::operator=(GLShader&& other) noexcept{
         move(other);
     }
 
@@ -119,7 +119,7 @@ namespace GMTKEngine {
         glDeleteShader(frag_shader);
     }
 
-    void GLShader::move(GLShader& other) {
+    void GLShader::move(GLShader& other) noexcept{
         program = other.program;
         name = other.name;
 
