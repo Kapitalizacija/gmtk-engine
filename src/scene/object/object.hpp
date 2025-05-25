@@ -7,6 +7,8 @@
 #include <memory>
 #include <optional>
 #include <vector>
+#include <cxxabi.h>
+#include <cstdlib>
 
 #include <glad/glad.h>
 

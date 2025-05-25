@@ -34,9 +34,9 @@ namespace GMTKEngine {
                 virtual void fixedUpdate();
                 virtual bool hasChanged() { return false; }
             
-            protected:
                 virtual std::vector<size_t> getRequiredComponentHashes() const override;
                 virtual void setRequiredComponents(std::vector<ResourceRef<Component>> components) override;
+            protected:
                 
 
             private:

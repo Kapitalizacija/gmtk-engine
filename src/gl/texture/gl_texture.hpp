@@ -13,6 +13,8 @@ namespace GMTKEngine {
     };
 
     class GLTexture {
+        friend class Object;
+
         public:
             GLTexture();
             GLTexture(std::string imagePath);

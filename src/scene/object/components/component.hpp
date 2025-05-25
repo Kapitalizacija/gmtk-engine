@@ -28,11 +28,11 @@ namespace GMTKEngine {
                 virtual void fixedUpdate() = 0;
                 virtual void frameCleanup() = 0;
                 virtual bool hasChanged() = 0;
-            protected:
-                ResourceRef<Object> mGameObject;
 
                 virtual std::vector<size_t> getRequiredComponentHashes() const;
                 virtual void setRequiredComponents(std::vector<ResourceRef<Component>> components);
+            protected:
+                ResourceRef<Object> mGameObject;
 
                 std::string mComponentName;
 

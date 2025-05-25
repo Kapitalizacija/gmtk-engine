@@ -12,6 +12,8 @@
 namespace GMTKEngine {
     namespace Component {
         class Transform2D : public Component {
+            friend class Object;
+
             public:
                 Transform2D(glm::vec3 position = glm::vec3(0.0f), float rotation = 0, float depth = 0,
                 glm::vec3 scale = glm::vec3(1.0f));

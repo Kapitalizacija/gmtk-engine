@@ -18,6 +18,8 @@ namespace GMTKEngine {
         };
 
         class Transform3D : public Component {
+            friend class Object;
+
             public:
                 Transform3D(glm::vec3 position = glm::vec3(0.f, 0.f, 0.f), glm::vec4 rotation = glm::vec4(0.f, 0.f, 0.f, 0.f), glm::vec3 scale = glm::vec3(0.f, 0.f, 0.f), std::vector<Vertex> vertices = {});
 

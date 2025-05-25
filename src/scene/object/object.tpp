@@ -13,7 +13,26 @@ ResourceRef<T> Object::createComponent(Args&... args) {
     
     std::shared_ptr<T> component = std::make_shared<T>(args...);
 
-   // std::vector<size_t> dependencies = component->getRequiredComponentHashes();
+    std::vector<size_t> dependencyHashes = component->getRequiredComponentHashes();
+    std::vector<ResourceRef<Component::Component>> dependencies;
+    dependencies.reserve(dependencyHashes.size());
+
+    for (size_t dep : dependencyHashes) {
+        auto it = mComponents.find(dep);
+
+        if (it == mComponents.end()) {
+            char* demangled_name = abi::__cxa_demangle(typeid(T).name(), nullptr, nullptr, nullptr); // standard library retardation
+
+            ERROR("Failed to satisfy all dependencies for component " << demangled_name);
+
+            free(demangled_name);
+            return {};
+        }
+
+        dependencies.push_back(ResourceRef<Component::Component>(it->second));
+
+    }
+    component->setRequiredComponents(dependencies);
 
     mComponents[typeid(T).hash_code()] = component;
     

@@ -14,6 +14,7 @@
 #include "gl/util/gl_util.hpp"
 
 #include "scene/object/components/transform/2d/transform2d.hpp"
+#include "scene/object/components/physics/2d/physics2d.hpp"
 
 #include "audio/al_device.hpp"
 #include "audio/al_buffer.hpp"
@@ -58,6 +59,8 @@ int main() {
     ResourceRef<Transform2D> transform = text->getComponent<Transform2D>();
     transform->setScale(glm::vec3(300, 300, 300));
     transform->translate(glm::vec3(0.0, 0.0, 0.1));
+
+    text->createComponent<Physics2D>();
     
     scene.getRenderer()->addCustomRenderObject(text);
     

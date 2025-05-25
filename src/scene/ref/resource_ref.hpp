@@ -63,7 +63,7 @@ namespace GMTKEngine {
             template<typename G>
             operator ResourceRef<G>() {
                 return ResourceRef<G>(
-                    std::static_pointer_cast<G>(weakPtr.lock()) // reinterpret_cast??
+                    std::static_pointer_cast<G>(weakPtr.lock()) // reinterpret_cast?? NO
                 );
             }
 
