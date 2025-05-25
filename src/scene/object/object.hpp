@@ -29,7 +29,7 @@ namespace GMTKEngine {
             Object(const Object&) = delete;
             Object(Object&&) = delete;
 
-            template<class T, typename... Args>
+            template <class T, typename... Args>
             ResourceRef<T> createComponent(Args&... args);
 
             template <class T>
@@ -44,6 +44,9 @@ namespace GMTKEngine {
             void addTag(std::string tag) { mTags.insert(tag); }
             bool hasTag(std::string tag) { return mTags.count(tag); }
             void removeTag(std::string tag) { mTags.erase(tag); }
+
+            bool getEnabled() { return enabled; }
+            void setEnabled(bool status) { enabled = status; }
 
             bool isRendered();
             

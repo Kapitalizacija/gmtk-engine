@@ -42,6 +42,20 @@
 #define COMP(T)
 #endif
 
+#if defined(_WIN32) || defined(_WIN64)
+    #ifndef API_EXPORT
+    #define API_EXPORT extern "C" __declspec(dllexport)
+    #endif
+#elif defined(__CNUC__) || defined(__clang__)
+    #ifndef API_EXPORT
+    #define API_EXPORT extern "C" __attribute__((visibility("default")))
+    #endif
+#else
+    #ifndef API_EXPORT
+    #define API_EXPORT extern "C"
+    #endif
+#endif
+
 namespace GMTKEngine {
 	template <typename T>
     struct WeakPtrObjectHash {

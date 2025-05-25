@@ -48,7 +48,7 @@ namespace GMTKEngine {
                 
                 for (const glm::vec2& v : shape1->getEdges()) {
                     float dotProduct = glm::dot(v, n);
- 
+                    
                     if (dotProduct < min1) 
                         min1 = dotProduct;
                     else if(dotProduct > max1)
