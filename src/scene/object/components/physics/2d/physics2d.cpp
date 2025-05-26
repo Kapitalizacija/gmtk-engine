@@ -34,14 +34,17 @@ namespace GMTKEngine {
             std::unordered_set<glm::vec2> perpendiculars;
 
             {
-                std::unordered_set<glm::vec2> p1 = mShape->getNormals();
+                std::vector<glm::vec2> p1 = mShape->getNormals();
                 perpendiculars.insert(p1.begin(), p1.end());
             }
 
             {
-                std::unordered_set<glm::vec2> p2 = mShape->getNormals();
+                std::vector<glm::vec2> p2 = mShape->getNormals();
                 perpendiculars.insert(p2.begin(), p2.end());
             }
+
+            glm::vec2 mtv = glm::vec2(0.0);
+            float minOverlap = std::numeric_limits<float>::max();
 
             for(const glm::vec2& n : perpendiculars) {
                 double min1, max1, min2, max2;
@@ -68,12 +71,23 @@ namespace GMTKEngine {
                         max2 = dotProduct;
                 }   
 
-                if ((min1 < max2 && min1 > min2) || (min2 < max1 && min2 > min1)) {
-                    continue;
+                float overlap = std::min(
+                    std::abs(min1 - max2),
+                    std::abs(min2 - max1)
+                );
+
+                if (overlap < minOverlap){
+                    minOverlap = overlap;
+                    mtv = n;
                 }
+
+                if ((min1 < max2 && min1 > min2) || (min2 < max1 && min2 > min1))
+                    continue;
 
                 return false;
             }
+
+            mTransform->translate(glm::vec3(-mtv * minOverlap, 0.0));
 
             return true;
         }

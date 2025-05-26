@@ -28,11 +28,14 @@ namespace GMTKEngine {
                 Shape();
                 Shape(std::vector<glm::vec2> vertices);
 
-                std::unordered_set<glm::vec2> getEdges();
-                std::unordered_set<glm::vec2> getNormals();
+                std::vector<glm::vec2> getNormals();
                 std::vector<glm::vec2> getVertices();
-            private:
-                std::vector<glm::vec2> vertices;
+                private:
+
+                void calcNormals();
+
+                std::vector<glm::vec2> mVertices;
+                std::vector<glm::vec2> mNormalizedNormals;
         };
     }
 }
