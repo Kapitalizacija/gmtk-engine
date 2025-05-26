@@ -1,6 +1,6 @@
 #include "scene.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     Scene::Scene(): sinceLastFixedUpdate(0) {
         renderer = std::make_shared<Renderer>();
     }

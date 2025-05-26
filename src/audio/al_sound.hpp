@@ -5,7 +5,7 @@
 #include <AL/al.h>
 #include <glm/glm.hpp>
 
-namespace GMTKEngine {
+namespace Sierra {
     //Handler for the OpenAL sounds. Loaded via ALBuffers.
     class ALSound {
         public:

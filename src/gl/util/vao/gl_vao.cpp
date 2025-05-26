@@ -1,6 +1,6 @@
 #include "gl_vao.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
 
     GLVAO::GLVAO(): vao(0){
 

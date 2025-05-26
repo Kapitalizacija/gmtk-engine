@@ -3,7 +3,7 @@
 #define SHOULD_CLEANUP clearQueue.size() * instanceDataSize > BATCH_CLEARUP_TRESHOLD_MEMORY \
                     || clearQueue.size() >= BATCH_CLEARUP_TRESHOLD_OBJECT_COUNT
 
-namespace GMTKEngine {
+namespace Sierra {
     RenderBatch2D::RenderBatch2D(size_t instanceDataSize, size_t instanceDataCount): instanceDataSize(instanceDataSize),
      instanceDataCount(instanceDataCount) {
             instanceCount = 0;

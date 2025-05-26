@@ -2,7 +2,7 @@
 
 #include "scene/object/camera/camera.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     class CustomRenderObject {
         friend class Scene;
         friend class Renderer;

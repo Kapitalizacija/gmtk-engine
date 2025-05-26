@@ -56,7 +56,7 @@
     #endif
 #endif
 
-namespace GMTKEngine {
+namespace Sierra {
 	template <typename T>
     struct WeakPtrObjectHash {
         std::size_t operator()(const std::weak_ptr<T> weakPtr) const noexcept {

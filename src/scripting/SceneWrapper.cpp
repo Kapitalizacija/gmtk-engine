@@ -5,9 +5,9 @@
 #include "io/logging/logger.hpp"
 #include "util/utilities.hpp"
 /*
-namespace GMTKEngine {
+namespace Sierra {
     class SceneWrapper : public Scripting::Scene {
-        GMTKEngine::Scene mScene;
+        Sierra::Scene mScene;
 
         public:
             std::shared_ptr<Camera> GetCamera() override {
@@ -15,17 +15,17 @@ namespace GMTKEngine {
             }
 
             template <typename... Args>
-            GMTKEngine::Scripting::GameObject CreateObject(Args&... args) {
+            Sierra::Scripting::GameObject CreateObject(Args&... args) {
                 return mScene.createObject<Object>(args...);
             }
 
-            void DestroyObject(GMTKEngine::Scripting::GameObject &object) {
+            void DestroyObject(Sierra::Scripting::GameObject &object) {
                 //mScene.destroyObject(ResourceRef<Object>(std::weak_ptr(object)));
                 WARN("Not implemented");
             }
     };
 }
 
-API_EXPORT GMTKEngine::Scripting::Scene *CreateScene() {
-    return new GMTKEngine::SceneWrapper();
+API_EXPORT Sierra::Scripting::Scene *CreateScene() {
+    return new Sierra::SceneWrapper();
 }*/

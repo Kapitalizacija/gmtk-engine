@@ -1,6 +1,6 @@
 #include "texture.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     namespace Component {
         Texture::Texture() {
             mComponentName = "Texture";

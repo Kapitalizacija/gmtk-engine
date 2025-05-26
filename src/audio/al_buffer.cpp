@@ -9,7 +9,7 @@
 #define DR_MP3_IMPLEMENTATION
 #include <dr_mp3.h>
 
-namespace GMTKEngine {
+namespace Sierra {
     ALBuffer::ALBuffer() {
         alGenBuffers(1, &mBuffer);
     }

@@ -9,7 +9,7 @@
 #include <glm/ext.hpp>
 #include <glm/gtx/string_cast.hpp>
 
-namespace GMTKEngine {
+namespace Sierra {
     namespace Component {
         class Transform2D : public Component {
             friend class Object;

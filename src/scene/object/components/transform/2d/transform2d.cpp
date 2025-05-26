@@ -1,6 +1,6 @@
 #include "transform2d.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     namespace Component {
         Transform2D::Transform2D(glm::vec3 position, float rotation, float depth, glm::vec3 scale) {
             this->mPosition = position;

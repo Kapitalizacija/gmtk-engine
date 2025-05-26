@@ -1,6 +1,6 @@
 #include "sound.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     namespace Component {
         //TODO: Needs testing
         Sound::Sound() {

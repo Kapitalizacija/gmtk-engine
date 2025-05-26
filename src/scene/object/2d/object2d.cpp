@@ -1,6 +1,6 @@
 #include "object2d.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     
 
     Object2D::Object2D() {

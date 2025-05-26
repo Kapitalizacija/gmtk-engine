@@ -5,7 +5,7 @@
 
 #include "gl/texture/gl_texture.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     namespace Component {
         class Texture : public Component {
             friend class Scene;

@@ -5,7 +5,7 @@
 #include <AL/alc.h>
 #include <string>
 
-namespace GMTKEngine {
+namespace Sierra {
     //Handler for the OpenAL device, via which audio buffers are played.
     class ALDevice {
         public:

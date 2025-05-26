@@ -1,6 +1,6 @@
 #include "transform3d.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     namespace Component {
         Transform3D::Transform3D(glm::vec3 position, glm::vec4 rotation, glm::vec3 scale, std::vector<Vertex> vertices) {
             mComponentName = "Transform";

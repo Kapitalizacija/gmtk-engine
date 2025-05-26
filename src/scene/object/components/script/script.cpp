@@ -1,6 +1,6 @@
 #include "script.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     namespace Component {
 
     }

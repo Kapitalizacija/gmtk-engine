@@ -30,8 +30,8 @@
 
 #define TEST_SOUND 1 //Set to 1 to play the example sound (will create the sound components no matter what)
 
-using namespace GMTKEngine;
-using namespace GMTKEngine::Component;
+using namespace Sierra;
+using namespace Sierra::Component;
 
 class TestObj : public Object2D {
     private:
@@ -39,7 +39,7 @@ class TestObj : public Object2D {
 };
 
 int main() {
-    Window window = Window("GMTKEngine", {1280, 720});
+    Window window = Window("Sierra", {1280, 720});
     ALDevice audio;
     if (!audio.isValid()) {
         ERROR("OpenAL Device Error, exiting");

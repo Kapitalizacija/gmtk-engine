@@ -7,7 +7,7 @@
 
 #include "io/logging/logger.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     struct GLTextureData {
 
     };

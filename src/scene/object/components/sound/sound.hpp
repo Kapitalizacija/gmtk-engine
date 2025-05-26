@@ -7,7 +7,7 @@
 #include "audio/al_sound.hpp"
 #include "util/utilities.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     namespace Component {
 
         class Sound : public Component {

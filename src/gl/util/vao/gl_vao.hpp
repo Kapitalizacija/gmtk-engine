@@ -4,7 +4,7 @@
 
 #include "../buffer/gl_buffer.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     struct GLAttribPointer {
         GLBuffer* buff;
 

@@ -21,7 +21,7 @@ namespace std {
     };
 }
 
-namespace GMTKEngine {
+namespace Sierra {
     namespace Component {
         class Shape {
             public:

@@ -15,7 +15,7 @@
 #include "../physicsconstants.hpp"
 #include "scene/object/components/transform/2d/transform2d.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
 
     namespace Component {
 

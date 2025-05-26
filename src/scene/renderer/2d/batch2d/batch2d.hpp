@@ -17,7 +17,7 @@
 #include "io/logging/logger.hpp"
 #include "scene/ref/resource_ref.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
 
     typedef std::unordered_map<ResourceRef<Object2D>, GLuint> ObjectMap;
 

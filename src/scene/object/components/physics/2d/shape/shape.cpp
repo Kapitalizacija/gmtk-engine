@@ -1,6 +1,6 @@
 #include "shape.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     namespace Component {
         Shape::Shape() { 
            std::vector<glm::vec2> vertices = {

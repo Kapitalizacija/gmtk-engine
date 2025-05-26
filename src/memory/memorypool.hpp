@@ -6,7 +6,7 @@
 #include <cstddef>
 #include <algorithm>
 
-namespace GMTKEngine {
+namespace Sierra {
     class MemoryPool {
         public:
             MemoryPool(GLsizeiptr sizeBytes, GLenum usage = GL_DYNAMIC_DRAW);

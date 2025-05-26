@@ -9,7 +9,7 @@
 #include "gl/util/buffer/gl_buffer.hpp"
 #include "gl/util/vao/gl_vao.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     class Text : public Object, public CustomRenderObject {
         public:
             Text(Font& font, std::string text);

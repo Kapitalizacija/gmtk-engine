@@ -5,7 +5,7 @@
 #include "io/logging/logger.hpp"
 #include "util/utilities.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     class GameObjectWrapper : public Scripting::GameObject {
         Object mObj;
 
@@ -55,6 +55,6 @@ namespace GMTKEngine {
     };
 }
 
-API_EXPORT GMTKEngine::Scripting::GameObject *CreateGameObject() {
-    return new GMTKEngine::GameObjectWrapper();
+API_EXPORT Sierra::Scripting::GameObject *CreateGameObject() {
+    return new Sierra::GameObjectWrapper();
 }

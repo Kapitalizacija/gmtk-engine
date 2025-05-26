@@ -16,7 +16,7 @@
 #include "io/logging/logger.hpp"
 #include "scene/ref/resource_ref.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     class Object {
         friend class Scene;
         friend class Renderer2D;

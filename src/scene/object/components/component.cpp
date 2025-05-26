@@ -1,6 +1,6 @@
 #include "component.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     namespace Component {
         Component::Component(std::weak_ptr<Object> ref) {
             mGameObject = ResourceRef<Object>(ref);

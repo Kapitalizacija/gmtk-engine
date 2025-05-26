@@ -2,7 +2,7 @@
 
 #define UNDEFINED_WARN WARN("Tried to create a buffer of UNDEFINED type")
 
-namespace GMTKEngine {
+namespace Sierra {
     GLBuffer::GLBuffer(): buff(0) {
         type = Type::UNDEFINED; 
         size = 0;

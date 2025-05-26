@@ -8,7 +8,7 @@
 
 #include "io/logging/logger.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     struct Resolution {
         uint16_t w;
         uint16_t h;

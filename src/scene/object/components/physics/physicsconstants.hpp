@@ -1,7 +1,7 @@
 #include <glm/glm.hpp>
 #include "util/utilities.hpp"
 
-namespace GMTKEngine::Component {
+namespace Sierra::Component {
     class PhysicsConstants {
         public:
             PhysicsConstants() = delete;

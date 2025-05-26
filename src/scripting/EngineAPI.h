@@ -5,7 +5,7 @@
 #include <string>
 #include <memory>
 
-namespace GMTKEngine::Scripting {
+namespace Sierra::Scripting {
     struct Vector2 {
         float x;
         float y;
@@ -53,5 +53,5 @@ namespace GMTKEngine::Scripting {
     };
 }
 
-extern "C" GMTKEngine::Scripting::GameObject *CreateGameObject();
-extern "C" GMTKEngine::Scripting::Scene *CreateScene();
+extern "C" Sierra::Scripting::GameObject *CreateGameObject();
+extern "C" Sierra::Scripting::Scene *CreateScene();

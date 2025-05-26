@@ -9,7 +9,7 @@
 #include <glm/ext.hpp>
 #include <glm/gtx/string_cast.hpp>
 
-namespace GMTKEngine {
+namespace Sierra {
     namespace Component {
         struct Vertex {
             glm::vec3 position;

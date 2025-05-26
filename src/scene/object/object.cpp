@@ -1,6 +1,6 @@
 #include "object.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     Object::Object() {
         rendered = false;
     }

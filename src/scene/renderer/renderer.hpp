@@ -9,7 +9,7 @@
 #include "scene/ref/resource_ref.hpp"
 #include "2d/renderer2d.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     typedef std::unordered_set<ResourceRef<CustomRenderObject>> CustomObjectTable;
 
     class Renderer {

@@ -1,7 +1,7 @@
 #include "renderer2d.hpp"
 
 
-namespace GMTKEngine {
+namespace Sierra {
     Renderer2D::Renderer2D() {
         createGLBuffers();
     }

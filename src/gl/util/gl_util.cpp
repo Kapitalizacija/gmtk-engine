@@ -13,7 +13,7 @@ const std::float32_t vertices[] = {
 };
 
 
-namespace GMTKEngine {
+namespace Sierra {
     std::unique_ptr<GLBuffer> GLUtils::squareVertexBuffer = {};
     std::unique_ptr<GLBuffer> GLUtils::squareIndexBuffer = {};
 

@@ -1,6 +1,6 @@
 #include "camera.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
 	Camera::Camera() {
 		createComponent<Component::Transform2D>();
 		createComponent<Component::Transform3D>();

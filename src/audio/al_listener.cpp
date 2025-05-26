@@ -1,6 +1,6 @@
 #include "al_listener.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     void ALListener::setPosition(const glm::vec3 &pos) {
         alListener3f(AL_POSITION, pos.x, pos.y, pos.z);
     }

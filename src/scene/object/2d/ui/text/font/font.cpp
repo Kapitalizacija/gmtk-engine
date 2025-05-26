@@ -3,7 +3,7 @@
 #define STB_TRUETYPE_IMPLEMENTATION
 #include <stb_truetype/stb_truetype.h>
 
-namespace GMTKEngine {
+namespace Sierra {
 
     Font::Font(std::string fontPath) {
         std::vector<uint8_t> rawBuff = readFont(fontPath);

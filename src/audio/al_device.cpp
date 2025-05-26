@@ -1,7 +1,7 @@
 #include "al_device.hpp"
 #include "io/logging/logger.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     ALDevice::ALDevice(const std::string &deviceName) {
         mDevice = alcOpenDevice(deviceName.empty() ? nullptr : deviceName.c_str());
         if (!mDevice) {

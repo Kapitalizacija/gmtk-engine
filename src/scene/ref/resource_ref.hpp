@@ -5,7 +5,7 @@
 
 #include "io/logging/logger.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
 
     template<typename T>
     class ResourceRef {
@@ -77,8 +77,8 @@ namespace GMTKEngine {
 
 namespace std {
     template<typename T>
-    struct hash<GMTKEngine::ResourceRef<T>> {
-        auto operator()(const GMTKEngine::ResourceRef<T>& ref) const -> size_t {
+    struct hash<Sierra::ResourceRef<T>> {
+        auto operator()(const Sierra::ResourceRef<T>& ref) const -> size_t {
             return ref.getHash();
         }
     };

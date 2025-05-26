@@ -12,7 +12,7 @@
 #include "scene/object/components/transform/2d/transform2d.hpp"
 #include "scene/object/object.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
 	class Camera : public Object {
 		friend class Renderer2D;
 		friend class Scene;

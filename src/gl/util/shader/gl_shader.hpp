@@ -7,7 +7,7 @@
 
 #include "io/logging/logger.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     class GLShader {
         public:
             GLShader(const std::string name, const std::string vertex_path, const std::string fragment_path);

@@ -5,7 +5,7 @@
 
 #include "buffer/gl_buffer.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     class GLUtils {
         public: // TODO make protected when engine class is made
             static void init();

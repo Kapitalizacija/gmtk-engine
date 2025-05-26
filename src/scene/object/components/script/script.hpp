@@ -8,7 +8,7 @@
 #include "../component.hpp"
 #include "util/utilities.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     namespace Component {
         class Script : public Component {
             public:

@@ -8,7 +8,7 @@
 #include "io/logging/logger.hpp"
 #include "gl/texture/gl_texture.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     
     class Font {
         friend class Text;

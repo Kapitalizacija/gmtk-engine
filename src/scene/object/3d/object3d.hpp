@@ -6,7 +6,7 @@
 #include "../components/texture/texture.hpp"
 
 //TODO everything
-namespace GMTKEngine {
+namespace Sierra {
     class Object3D : Object {
         public:
 

@@ -34,7 +34,7 @@ void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
 
 // During init, enable debug output
 
-namespace GMTKEngine {
+namespace Sierra {
     size_t Window::instance_count = 0;
 
     Window::Window(std::string name, Resolution resolution):

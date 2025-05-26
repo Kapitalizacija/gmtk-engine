@@ -1,6 +1,6 @@
 #include "gl_shader.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     GLShader::GLShader(const std::string name, const std::string vertex_path, const std::string fragment_path): program(0), name(name) {
         GLuint vertex_shader = create_shader(vertex_path, GL_VERTEX_SHADER);
         GLuint fragment_shader = create_shader(fragment_path, GL_FRAGMENT_SHADER);

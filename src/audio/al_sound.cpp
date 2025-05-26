@@ -1,6 +1,6 @@
 #include "al_sound.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     ALSound::ALSound(ALBuffer &buf)
         : mPosition(0.f, 0.f, 0.f)
     {

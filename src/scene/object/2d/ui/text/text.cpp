@@ -1,6 +1,6 @@
 #include "text.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
 
     const uint32_t indices[] = { 
         0, 1, 2,

@@ -1,6 +1,6 @@
 #include "memorypool.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     //This might have to be rewritten
     //This was written with limited knowledge of OpenGL, kweezo should look over it and make the much needed changes.
 

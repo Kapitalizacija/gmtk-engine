@@ -1,6 +1,6 @@
 #include "renderer.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     Renderer::Renderer() {
         camera = std::make_shared<Camera>();
         renderer2d = std::make_shared<Renderer2D>();

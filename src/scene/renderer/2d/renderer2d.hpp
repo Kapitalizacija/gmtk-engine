@@ -25,7 +25,7 @@
 
 typedef uint32_t bool32_t;
 
-namespace GMTKEngine {
+namespace Sierra {
 
     class Renderer2D {
         public:

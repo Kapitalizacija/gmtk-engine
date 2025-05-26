@@ -1,7 +1,7 @@
 #include "physics2d.hpp"
 
 //The physics 2D engine hooks directly into the Transform2D component
-namespace GMTKEngine {
+namespace Sierra {
     namespace Component {
 
         Physics2D::Physics2D(): mMass(1), mForceDirection(), mIsSimulated(true) {

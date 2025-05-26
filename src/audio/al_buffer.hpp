@@ -8,7 +8,7 @@
 #include <vector>
 #include <cstdint>
 
-namespace GMTKEngine {
+namespace Sierra {
     //Handler for the OpenAL audio buffers. Used for loading audio and playing it in ALSound.
     class ALBuffer {
         public:

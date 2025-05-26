@@ -15,7 +15,7 @@
 #include "renderer/renderer.hpp"
 #include "util/utilities.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
  
     class Scene {
         public:

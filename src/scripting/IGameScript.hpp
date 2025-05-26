@@ -1,6 +1,6 @@
 #pragma once
 
-namespace GMTKEngine::Scripting {
+namespace Sierra::Scripting {
     struct IGameScript {
         virtual void OnStart() = 0;
         virtual void OnEarlyUpdate(float deltaTime) = 0;

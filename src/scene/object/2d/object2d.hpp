@@ -7,7 +7,7 @@
 #include "../components/transform/2d/transform2d.hpp"
 #include "gl/util/shader/gl_shader.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
     class Object2D : public Object {
         friend class Renderer2D;
         friend class RenderBatch2D;

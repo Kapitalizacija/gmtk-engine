@@ -8,7 +8,7 @@
 
 #include "io/logging/logger.hpp"
 
-namespace GMTKEngine {
+namespace Sierra {
 
     struct GLBufferUpdateRegion {
         uint8_t* data;
