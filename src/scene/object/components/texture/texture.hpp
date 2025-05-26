@@ -13,6 +13,7 @@ namespace GMTKEngine {
 
             public:
                 Texture();
+                Texture(GLTexture& gl_texture);
             
                 void setTexture(GLTexture& gl_texture);
                 GLuint getRawHandle();

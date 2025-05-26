@@ -49,86 +49,43 @@ int main() {
 
     Scene scene = Scene();
     
-    GLTexture tex = GLTexture("image.png");
+    GLTexture tex = GLTexture("lepotec.jpg");
     GLTexture tex1 = GLTexture("bombardino.jpg");
+
     GLShader shader = GLShader("test_shader", "test_shaders/sprite_2d.vert", "test_shaders/sprite_2d.frag"); // fellas in paris
 
-    Font font = Font("fonts/font.ttf");
-    auto text = scene.createObject<Text>(font, "no homo");
+    ResourceRef<Object2D> obj1 = scene.createObject<Object2D>();
+    ResourceRef<Object2D> obj2 = scene.createObject<Object2D>();
 
-    ResourceRef<Transform2D> transform = text->getComponent<Transform2D>();
-    transform->setScale(glm::vec3(300, 300, 300));
-    transform->translate(glm::vec3(0.0, 0.0, 0.1));
+    obj1->getComponent<Texture>()->setTexture(tex);
+    obj2->getComponent<Texture>()->setTexture(tex1);
 
-    text->createComponent<Physics2D>();
-    
-    scene.getRenderer()->addCustomRenderObject(text);
-    
+    obj1->setShader(shader);
+    obj2->setShader(shader);
 
+    obj1->getComponent<Transform2D>()->setPosition(glm::vec3(-100, 100, 0));
+    obj2->getComponent<Transform2D>()->setPosition(glm::vec3(100, 100, 0));
 
-    //TODO: Test the Sound component abstraction here or something
-    /*
-    ALBuffer buffer;
-    if (!buffer.loadFromFile("example.mp3")) {
-        ERROR("Failed to load audio");
-        return 1;
-    }
+    obj1->getComponent<Transform2D>()->setScale(glm::vec3(100, 100, 100));
+    obj2->getComponent<Transform2D>()->setScale(glm::vec3(100, 100, 100));
 
-    ALSound sound(buffer);
-    sound.setLooping(false);
-    sound.setGain(1.0f);
-    sound.play();*/
-
-    //The update() method needs to be impemented fully before this will work :(
-    
+    obj1->createComponent<Physics2D>();
+    obj2->createComponent<Physics2D>();
 
     ResourceRef<Camera> cam = scene.getCamera();
     cam->setProjectionType(Camera::ProjectionType::ORTHOGRAPHIC);
 
-    std::array<ResourceRef<Object2D>, 128*72> objs;
+    scene.getRenderer()->addObject2d(obj1);
+    scene.getRenderer()->addObject2d(obj2);
 
-    for(int y = 0; y < 72; y++) {
-        for (int x = 0; x < 128; x++) {
-            ResourceRef<Object2D> obj;
-
-            obj = scene.createObject<Object2D>();
-            obj->setShader(shader);
-            obj->getComponent<Texture>()->setTexture(tex);
-            obj->getComponent<Transform2D>()->setPosition(glm::vec3((float)x * 10 - 640, (float)y * 10 - 360, 0.0));
-            obj->getComponent<Transform2D>()->setScale(glm::vec3(10.0f, 10.0f, 0.0));
-            scene.getRenderer()->addObject2d(obj);
-
-            objs[y * 128 + x] = obj;
-        }
-    }
-
-    //ResourceRef<Object2D> obj = scene.createObject<Object2D>();
-    //obj->setShader(shader);
-    //obj_shared->getComponentLock<Transform2D>().value()->setScale(glm::vec3(1280, 720, 0));
-    //obj_shared->getComponentLock<Transform2D>().value()->setPosition(glm::vec3(-640, -360, 0));
-
-    //obj->createComponent<Sound>();
-//    auto soundShared = obj_shared->getComponent<Sound>().value();
-//    bool res = soundShared->loadSound("example", "example.mp3");
-//    DBG("Sound load status: " << res);
-//    if (TEST_SOUND) {
-//        soundShared->setIsLooping(false);
-//        soundShared->setGain(1.f);
-//        soundShared->setPosition(glm::vec3(100.f, 0.f, 0.f));
-//        soundShared->playSound("example");
-//    }
-    
     while ( !window.shouldClose() ) {
-        for(int i = 0; i < 128 * 72; i++) {
-            objs[i]->getComponent<Transform2D>()->setRotation(glfwGetTime());
-        }
+        auto res = obj1->getComponent<Physics2D>()->checkIntersection(obj2->getComponent<Physics2D>());
+        DBG(res);
 
-        glm::vec3 pos = text->getComponent<Transform2D>()->getPosition();
-        text->getComponent<Transform2D>()->setPosition(glm::vec3(pos.x, pos.y - 1, pos.z));
-        LOG(glm::to_string(pos));
+        obj1->getComponent<Transform2D>()->translate(glm::vec3(1.0f, 0.0f, 0.0f));
 
-        scene.update();
         window.update();
+        scene.update();
     }
 
     GLUtils::cleanup();

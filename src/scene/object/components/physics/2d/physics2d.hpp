@@ -19,7 +19,7 @@ namespace GMTKEngine {
 
         class Physics2D : public Component {
             public:
-                Physics2D() = default;
+                Physics2D();
                 Physics2D(ResourceRef<Transform2D> transform, Shape shape, float mass = 1.f, bool isSimulated = true);
                 DISABLE_COPY_AND_MOVE(Physics2D);
 
@@ -41,11 +41,11 @@ namespace GMTKEngine {
 
             private:
                 bool mIsSimulated;
-                std::shared_ptr<Shape> shape;
+                std::shared_ptr<Shape> mShape;
                 glm::vec3 mForceDirection;
                 float mMass;
 
-                ResourceRef<Transform2D> transform;
+                ResourceRef<Transform2D> mTransform;
         };
     }
 }

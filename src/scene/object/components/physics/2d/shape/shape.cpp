@@ -5,9 +5,9 @@ namespace GMTKEngine {
         Shape::Shape() { 
             vertices = {
                 {0.0f, 0.0f},
-                {0.0f, 1.0f},
-                {1.0f, 0.0f},
-                {1.0f, 1.0f}
+                {0.0f, 100.0f},
+                {100.0f, 0.0f},
+                {100.0f, 100.0f}
             };
         }    
 
@@ -44,6 +44,10 @@ namespace GMTKEngine {
             }
 
             return normals;
+        }
+
+        std::vector<glm::vec2> Shape::getVertices() {
+            return vertices;
         }
     }
 }

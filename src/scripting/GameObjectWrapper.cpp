@@ -55,6 +55,6 @@ namespace GMTKEngine {
     };
 }
 
-API_EXPORT GMTKEngine::Scripting::GameObject *CreateGameObject() {
+GMTKEngine::Scripting::GameObject *CreateGameObject() {
     return new GMTKEngine::GameObjectWrapper();
 }

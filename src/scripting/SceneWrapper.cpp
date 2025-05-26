@@ -26,6 +26,6 @@ namespace GMTKEngine {
     };
 }
 
-API_EXPORT GMTKEngine::Scripting::Scene *CreateScene() {
+GMTKEngine::Scripting::Scene *CreateScene() {
     return new GMTKEngine::SceneWrapper();
 }

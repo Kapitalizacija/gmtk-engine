@@ -11,7 +11,5 @@ namespace GMTKEngine::Scripting {
         virtual ~IGameScript() = default;
     };
 
-    extern "C" {
-        IGameScript *CreateScriptInstance();
-    }
+    IGameScript *CreateScriptInstance();
 }

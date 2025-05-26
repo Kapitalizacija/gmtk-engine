@@ -5,11 +5,18 @@
 
 #include <glm/glm.hpp>
 
+#include "io/logging/logger.hpp"
+
 namespace std {
     template<>
     struct hash<glm::vec2> {
         auto operator()(const glm::vec2& ref) const -> size_t {
-            return  (*(uint32_t*)&ref.x ^ 0x1f4bd2f4) ^ (*(uint32_t*)&ref.y ^ 0x1f4bd2f4);
+            size_t h1 = (*(uint32_t*)&ref.x ^ 0x9e3779b9);
+            size_t h2 = (*(uint32_t*)&ref.y ^ 0x9e3779b9);
+
+            h1 ^= h2 + 0x9e3779b9 + (h1 << 6) + (h1 >> 2);
+
+            return h1;
         }
     };
 }
@@ -23,6 +30,7 @@ namespace GMTKEngine {
 
                 std::unordered_set<glm::vec2> getEdges();
                 std::unordered_set<glm::vec2> getNormals();
+                std::vector<glm::vec2> getVertices();
             private:
                 std::vector<glm::vec2> vertices;
         };

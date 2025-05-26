@@ -77,9 +77,19 @@ namespace GMTKEngine {
 
     void Renderer2D::addObject(ResourceRef<Object2D> object) {
 
+        if (object->program == 0) {
+            ERROR("Failed to add object2D to the renderer as the shader is not set: " << object.getLock().get());
+            return;
+        } 
+
         auto& shader_group = draw_batches_2d[object->program];
         
         GLuint textureID = object->getComponent<Component::Texture>()->getRawHandle();
+
+        if (textureID == 0) {
+            ERROR("Failed to add object2D to the renderer as the texture is invalid: " << object.getLock().get());
+            return;
+        }
 
         bool found_group = false;
         for (auto& texGroup : shader_group) {
