@@ -27,19 +27,19 @@ namespace GMTKEngine {
         }
 
         
-        bool Physics2D::checkIntersection(ResourceRef<Physics2D> other) {
+        glm::vec2 Physics2D::checkIntersection(ResourceRef<Physics2D> other) {
             ResourceRef<Shape> shape1 = mShape;    
             ResourceRef<Shape> shape2 = other->getShape();    
 
             std::unordered_set<glm::vec2> perpendiculars;
 
             {
-                std::vector<glm::vec2> p1 = mShape->getNormals();
+                std::vector<glm::vec2> p1 = mShape->getRotatedNormals(mTransform->getRotation());
                 perpendiculars.insert(p1.begin(), p1.end());
             }
 
             {
-                std::vector<glm::vec2> p2 = mShape->getNormals();
+                std::vector<glm::vec2> p2 = mShape->getRotatedNormals(other->mTransform->getRotation());
                 perpendiculars.insert(p2.begin(), p2.end());
             }
 
@@ -51,18 +51,18 @@ namespace GMTKEngine {
                 min1 = min2 = std::numeric_limits<double>::max();
                 max1 = max2 = std::numeric_limits<double>::min();
                 
-                for (const glm::vec2& v : shape1->getVertices()) {
-                    glm::vec2 p = v + (glm::vec2)mTransform->getPosition();
+                for (const glm::vec2& v : shape1->getRotatedVertices(mTransform->getRotation())) {
+                    glm::vec2 p = v * (glm::vec2)mTransform->getScale() + (glm::vec2)mTransform->getPosition();
                     float dotProduct = glm::dot(p, n);
-                    
+
                     if (dotProduct < min1) 
                         min1 = dotProduct;
                     else if(dotProduct > max1)
                         max1 = dotProduct;
                 }
 
-                for (const glm::vec2& v : shape2->getVertices()) {
-                    glm::vec2 p = v + (glm::vec2)other->mTransform->getPosition();
+                for (const glm::vec2& v : shape2->getRotatedVertices(other->mTransform->getRotation())) {
+                    glm::vec2 p = v * (glm::vec2)other->mTransform->getScale() + (glm::vec2)other->mTransform->getPosition();
                     float dotProduct = glm::dot(p, n);
  
                     if (dotProduct < min2) 
@@ -81,15 +81,14 @@ namespace GMTKEngine {
                     mtv = n;
                 }
 
-                if ((min1 < max2 && min1 > min2) || (min2 < max1 && min2 > min1))
+                if ((min1 <= max2 && min1 >= min2) || (min2 <= max1 && min2 >= min1)) {
                     continue;
+                }
 
-                return false;
+                return glm::vec2(0.0);
             }
 
-            mTransform->translate(glm::vec3(-mtv * minOverlap, 0.0));
-
-            return true;
+            return mtv * minOverlap;
         }
 
         ResourceRef<Shape> Physics2D::getShape() {

@@ -5,6 +5,8 @@
 #include <cassert>
 #include <limits>
 
+#include <GLFW/glfw3.h>
+
 #include "../../component.hpp"
 #include "audio/al_buffer.hpp"
 #include "audio/al_sound.hpp"
@@ -23,7 +25,7 @@ namespace GMTKEngine {
                 Physics2D(ResourceRef<Transform2D> transform, Shape shape, float mass = 1.f, bool isSimulated = true);
                 DISABLE_COPY_AND_MOVE(Physics2D);
 
-                bool checkIntersection(ResourceRef<Physics2D> other);
+                glm::vec2 checkIntersection(ResourceRef<Physics2D> other);
                 ResourceRef<Shape> getShape();
                 
                 virtual void start() { return; }

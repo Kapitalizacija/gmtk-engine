@@ -3,6 +3,8 @@
 #include <memory>
 #include <stdexcept>
 
+#include "io/logging/logger.hpp"
+
 namespace GMTKEngine {
 
     template<typename T>

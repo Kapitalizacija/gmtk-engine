@@ -40,7 +40,7 @@ namespace GMTKEngine {
 
             template <class T, typename... Args>
             T CreateComponent(Args&... args) {
-                return mObj.createComponent<T>(args);
+                return mObj.createComponent<T>(args...);
             }
 
             template <class T>

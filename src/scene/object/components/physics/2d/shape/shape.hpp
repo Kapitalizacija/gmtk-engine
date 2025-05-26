@@ -30,12 +30,25 @@ namespace GMTKEngine {
 
                 std::vector<glm::vec2> getNormals();
                 std::vector<glm::vec2> getVertices();
+                std::vector<glm::vec2> getRotatedVertices(float angle);
+                std::vector<glm::vec2> getRotatedNormals(float angle);
+
+                glm::vec2 getCenterOfGeometry();
+
                 private:
 
-                void calcNormals();
+                void normalizeVertices(std::vector<glm::vec2> vertices);
+                std::vector<glm::vec2> calcNormals(std::vector<glm::vec2> vertices);
+                void calcSignedArea();
+                void calcCenterOfGeometry();
+                void calcVertDistFromCenter();
 
                 std::vector<glm::vec2> mVertices;
                 std::vector<glm::vec2> mNormalizedNormals;
+                std::vector<std::pair<float, float>> mDistVertFromCenter; // magnitude and angle relative to the geom center
+
+                float mSignedArea;
+                glm::vec2 mCenterOfGeometry;
         };
     }
 }

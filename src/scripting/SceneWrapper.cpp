@@ -4,7 +4,7 @@
 
 #include "io/logging/logger.hpp"
 #include "util/utilities.hpp"
-
+/*
 namespace GMTKEngine {
     class SceneWrapper : public Scripting::Scene {
         GMTKEngine::Scene mScene;
@@ -16,7 +16,7 @@ namespace GMTKEngine {
 
             template <typename... Args>
             GMTKEngine::Scripting::GameObject CreateObject(Args&... args) {
-                return mScene.createObject<Object>(args);
+                return mScene.createObject<Object>(args...);
             }
 
             void DestroyObject(GMTKEngine::Scripting::GameObject &object) {
@@ -28,4 +28,4 @@ namespace GMTKEngine {
 
 API_EXPORT GMTKEngine::Scripting::Scene *CreateScene() {
     return new GMTKEngine::SceneWrapper();
-}
+}*/

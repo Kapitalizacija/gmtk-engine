@@ -79,8 +79,11 @@ int main() {
     scene.getRenderer()->addObject2d(obj2);
 
     while ( !window.shouldClose() ) {
-        auto res = obj1->getComponent<Physics2D>()->checkIntersection(obj2->getComponent<Physics2D>());
-        DBG(res);
+        glm::vec2 res = obj1->getComponent<Physics2D>()->checkIntersection(obj2->getComponent<Physics2D>());
+        DBG(res.x << " " << res.y);
+        obj1->getComponent<Transform2D>()->translate(-glm::vec3(res.x, res.y, 0.0));
+        obj1->getComponent<Transform2D>()->setRotation(glfwGetTime());
+
 
         obj1->getComponent<Transform2D>()->translate(glm::vec3(1.0f, 0.0f, 0.0f));
 
