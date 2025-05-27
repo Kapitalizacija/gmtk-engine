@@ -57,7 +57,7 @@ namespace Sierra {
 
                     if (dotProduct < min1) 
                         min1 = dotProduct;
-                    else if(dotProduct > max1)
+                    if(dotProduct > max1)
                         max1 = dotProduct;
                 }
 
@@ -67,7 +67,7 @@ namespace Sierra {
  
                     if (dotProduct < min2) 
                         min2 = dotProduct;
-                    else if(dotProduct > max2)
+                    if(dotProduct > max2)
                         max2 = dotProduct;
                 }   
 

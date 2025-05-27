@@ -27,24 +27,25 @@ namespace Sierra {
 
         void Shape::normalizeVertices(std::vector<glm::vec2> vertices) {
             glm::vec2 minOffset = glm::vec2(std::numeric_limits<float>::max());
+            glm::vec2 max = glm::vec2(std::numeric_limits<float>::min());
             float maxCoord = std::numeric_limits<float>::min();
 
             mVertices = std::move(vertices);
 
+
             for (const glm::vec2& v : mVertices) {
                 minOffset.x = std::min(v.x, minOffset.x);
                 minOffset.y = std::min(v.y, minOffset.y);
+
+                max.x = std::max(max.x, v.x);
+                max.y = std::max(max.y, v.y);
             }
+
+            max -= minOffset;
 
             for (glm::vec2& v : mVertices) {
                 v -= minOffset;
-
-                maxCoord = std::max(v.x, maxCoord);
-                maxCoord = std::max(v.y, maxCoord);
-            }
-
-            for (glm::vec2& v : mVertices) {
-                v /= maxCoord;
+                v /= std::max(max.x, max.y);
             }
         }
 
@@ -105,7 +106,7 @@ namespace Sierra {
             for (const glm::vec2& v : mVertices) {
                 mDistVertFromCenter.emplace_back(
                     glm::length( v - mCenterOfGeometry ),
-                    std::atan2(v.y - mCenterOfGeometry.y, v.x - mCenterOfGeometry.x) // reversed?
+                    std::atan2(v.y - mCenterOfGeometry.y, v.x - mCenterOfGeometry.x)
                 );
             }
         }

@@ -11,12 +11,14 @@ namespace std {
     template<>
     struct hash<glm::vec2> {
         auto operator()(const glm::vec2& ref) const -> size_t {
-            size_t h1 = (*(uint32_t*)&ref.x ^ 0x9e3779b9);
-            size_t h2 = (*(uint32_t*)&ref.y ^ 0x9e3779b9);
+            uint32_t h1 = (*(uint32_t*)&ref.x ^ 0x9e3779b9);
+            uint32_t h2 = (*(uint32_t*)&ref.y ^ 0x9e3779b9);
 
-            h1 ^= h2 + 0x9e3779b9 + (h1 << 6) + (h1 >> 2);
+ //           h1 ^= h2 + 0x9e3779b9 + (h1 << 6) + (h1 >> 2);
 
-            return h1;
+            size_t combination = h1 + ((size_t)h2 << 32);
+
+            return combination;
         }
     };
 }
