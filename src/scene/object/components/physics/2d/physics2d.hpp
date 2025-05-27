@@ -26,7 +26,10 @@ namespace Sierra {
                 DISABLE_COPY_AND_MOVE(Physics2D);
 
                 glm::vec2 checkIntersection(ResourceRef<Physics2D> other);
+                bool resolveCollision(ResourceRef<Physics2D> other);
+
                 ResourceRef<Shape> getShape();
+                float getMass();
                 
                 virtual void start() { return; }
                 virtual void earlyUpdate() { return; }

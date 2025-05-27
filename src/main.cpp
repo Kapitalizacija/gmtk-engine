@@ -80,13 +80,7 @@ int main() {
     scene.getRenderer()->addObject2d(obj2);
 
     while ( !window.shouldClose() ) {
-        glm::vec2 res = obj1->getComponent<Physics2D>()->checkIntersection(obj2->getComponent<Physics2D>());
-        //DBG(res.x << " " << res.y);
-        obj1->getComponent<Transform2D>()->translate(-glm::vec3(res.x, res.y, 0.0));
-        obj1->getComponent<Transform2D>()->setRotation(glfwGetTime() * 5);
-        //obj1->getComponent<Transform2D>()->setRotation(std::numbers::pi * 1.35);
-
-
+        obj1->getComponent<Physics2D>()->resolveCollision(obj2->getComponent<Physics2D>());
         obj1->getComponent<Transform2D>()->translate(glm::vec3(5.0f, 0.0f, 0.0f));
 
         window.update();
