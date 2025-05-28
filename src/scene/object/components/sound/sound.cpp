@@ -18,7 +18,7 @@ namespace Sierra {
             }
         }
 
-        void Sound::update() {
+        void Sound::update(float dt) {
             for (auto it = mPlayingSounds.begin(); it != mPlayingSounds.end(); ) {
                 if (it->second->getState() == AL_STOPPED) {
                     it->second.reset();

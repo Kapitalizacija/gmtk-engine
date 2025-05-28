@@ -1,33 +1,40 @@
-#include "physics2d.hpp"
+#include "body2d.hpp"
 
 //The physics 2D engine hooks directly into the Transform2D component
 namespace Sierra {
     namespace Component {
 
-        Physics2D::Physics2D(): mMass(1), mForceDirection(), mIsSimulated(true) {
+        Body2D::Body2D(): mMass(100), mVel(0.0f), mIsSimulated(true) {
             this->mShape = std::make_shared<Shape>();
         }
 
-        Physics2D::Physics2D(ResourceRef<Transform2D> transform, Shape shape, float mass, bool isSimulated): mMass(mass), mIsSimulated(isSimulated) {
+        Body2D::Body2D(ResourceRef<Transform2D> transform, Shape shape, float mass, bool isSimulated): mMass(mass), mIsSimulated(isSimulated),
+         mVel(0.0f) {
             this->mShape = std::make_shared<Shape>(shape);
-            mForceDirection = glm::vec3(0.f, 0.f, 0.f);
         }
 
-        void Physics2D::fixedUpdate() {
-            float mul = 1 / FIXED_TIMESTEP_MS;
-            if (mIsSimulated) {
-                float Fg = mMass * (PhysicsConstants::g * mul);
-                mForceDirection = glm::vec3(mForceDirection.x, mForceDirection.y + Fg, mForceDirection.z);
-                
-                glm::vec3 reducedVector = glm::vec3(mForceDirection * mul);
-                reducedVector /= mMass; //Newton's 2nd law or something idk.
-                glm::vec3 prevPos = mTransform->getPosition();
-                mTransform->setPosition(prevPos + reducedVector);
+        void Body2D::fixedUpdate() {
+            if (physicsConstants.isEmpty()) {
+                ERROR("Physics constants not set in object, cannot update.");
+                return;
             }
-        }
 
+            float mul = 1.0f / FIXED_TIMESTEP_MS;
+            if (!mIsSimulated) {
+                return;
+            } 
+
+            glm::vec3 dragForce = glm::pow2(mVel) * physicsConstants->air_drag * mul * -glm::sign(mVel);
+            glm::vec3 Fg = mMass * physicsConstants->g * mul;
+
+            mVel += Fg;
+            //mVel += dragForce;
+
+            glm::vec3 reducedVector = mVel;
+            mTransform->translate(mVel * mul); // DON'T DO IN FIXED UPDATE FEELS LAGGY
+        }
         
-        glm::vec2 Physics2D::checkIntersection(ResourceRef<Physics2D> other) {
+        glm::vec2 Body2D::checkIntersection(ResourceRef<Body2D> other) {
             ResourceRef<Shape> shape1 = mShape;    
             ResourceRef<Shape> shape2 = other->getShape();    
 
@@ -91,7 +98,7 @@ namespace Sierra {
             return resolveAxis * minOverlap;
         }
         
-        bool Physics2D::resolveCollision(ResourceRef<Physics2D> other) {
+        bool Body2D::resolveCollision(ResourceRef<Body2D> other) {
             if (!mIsSimulated && other->mIsSimulated)
                 return false;
             
@@ -118,21 +125,25 @@ namespace Sierra {
             return true;
         }
 
-        ResourceRef<Shape> Physics2D::getShape() {
+        ResourceRef<Shape> Body2D::getShape() {
             return (ResourceRef<Shape>)mShape;
         }
 
-        float Physics2D::getMass() {
+        float Body2D::getMass() {
             return mMass;
         }
 
-        std::vector<size_t> Physics2D::getRequiredComponentHashes() const{
+        void Body2D::setPhysicsConstants(ResourceRef<PhysicsConstants> constants) {
+            physicsConstants = constants;
+        }
+
+        std::vector<size_t> Body2D::getRequiredComponentHashes() const{
             return {
                 typeid(Transform2D).hash_code()
             };
         }
 
-        void Physics2D::setRequiredComponents(std::vector<ResourceRef<Component>> components) {
+        void Body2D::setRequiredComponents(std::vector<ResourceRef<Component>> components) {
             assert(components.size() == 1);
 
             mTransform = components[0];

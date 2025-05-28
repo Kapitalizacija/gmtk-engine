@@ -17,9 +17,9 @@ namespace Sierra {
                 ~Sound();
 
                 virtual void start() { return; }
-                virtual void earlyUpdate() { return; }
-                virtual void update();
-                virtual void lateUpdate() { return; }
+                virtual void earlyUpdate(float dt) { return; }
+                virtual void update(float dt);
+                virtual void lateUpdate(float dt) { return; }
                 virtual void frameCleanup() { return; }
                 virtual void fixedUpdate() { return; }
                 virtual bool hasChanged() { return false; }

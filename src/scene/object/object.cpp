@@ -11,21 +11,21 @@ namespace Sierra {
         }
     }
 
-    void Object::earlyUpdate() {
+    void Object::earlyUpdate(float dt) {
         for (auto &comp : mComponents) {
-            comp.second->earlyUpdate();
+            comp.second->earlyUpdate(dt);
         }
     }
     
-    void Object::update() {
+    void Object::update(float dt) {
         for (auto &comp : mComponents) {
-            comp.second->update();
+            comp.second->update(dt);
         }
     }
     
-    void Object::lateUpdate() {
+    void Object::lateUpdate(float dt) {
         for (auto &comp : mComponents) {
-            comp.second->lateUpdate();
+            comp.second->lateUpdate(dt);
         }
     }
 

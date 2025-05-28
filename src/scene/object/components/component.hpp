@@ -22,9 +22,9 @@ namespace Sierra {
                 virtual ~Component() = default;
 
                 virtual void start() = 0;
-                virtual void earlyUpdate() = 0;
-                virtual void update() = 0;
-                virtual void lateUpdate() = 0;
+                virtual void earlyUpdate(float dt) = 0;
+                virtual void update(float dt) = 0;
+                virtual void lateUpdate(float dt) = 0;
                 virtual void fixedUpdate() = 0;
                 virtual void frameCleanup() = 0;
                 virtual bool hasChanged() = 0;

@@ -3,6 +3,7 @@
 namespace Sierra {
     Scene::Scene(): sinceLastFixedUpdate(0) {
         renderer = std::make_shared<Renderer>();
+        physicsManager2D = std::make_shared<PhysicsManager2D>();
     }
 
     void Scene::start() {
@@ -14,39 +15,40 @@ namespace Sierra {
     void Scene::update() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        renderer->camera->update();
+        renderer->camera->update(0); //TODO dt
 
         for (auto& object: objects ) {
-            object->earlyUpdate();
+            object->earlyUpdate(0);
         }
     
         for (auto& object: objects ) {
-            object->update();
+            object->update(0);
         }
     
         for (auto& object: objects ) {
-            object->lateUpdate();
+            object->lateUpdate(0);
         }
 
         fixedUpdate();
-
+        
         renderer->renderer();
-
+        
         for (auto& object : objects ) {
             object->frameCleanup();
         }
-    
+        
     }
-
+    
     void Scene::fixedUpdate() {
         if (CLOCK_MS - sinceLastFixedUpdate < FIXED_UPDATE_INTERVAL) {
             return;
         }
-
+        
         sinceLastFixedUpdate = CLOCK_MS;
-
+        
         for (auto& object: objects ) {
             object->fixedUpdate();
+            physicsManager2D->fixedUpdate();
         }
     }
 
@@ -60,6 +62,10 @@ namespace Sierra {
     
     ResourceRef<Renderer> Scene::getRenderer() {
         return renderer;
+    }
+
+    ResourceRef<PhysicsManager2D> Scene::getPhysicsManager2D() {
+        return physicsManager2D;
     }
 
     std::weak_ptr<Renderer> getRenderer();

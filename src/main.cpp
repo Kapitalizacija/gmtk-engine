@@ -15,7 +15,7 @@
 #include "gl/util/gl_util.hpp"
 
 #include "scene/object/components/transform/2d/transform2d.hpp"
-#include "scene/object/components/physics/2d/physics2d.hpp"
+#include "scene/object/components/physics/2d/body2d.hpp"
 
 #include "audio/al_device.hpp"
 #include "audio/al_buffer.hpp"
@@ -70,8 +70,17 @@ int main() {
     obj1->getComponent<Transform2D>()->setScale(glm::vec3(100, 100, 100));
     obj2->getComponent<Transform2D>()->setScale(glm::vec3(100, 100, 100));
 
-    obj1->createComponent<Physics2D>();
-    obj2->createComponent<Physics2D>();
+    obj1->createComponent<Body2D>();
+    obj2->createComponent<Body2D>();
+
+    PhysicsConstants constants{};
+    constants.g = glm::vec3(0.0f);
+
+    ResourceRef<PhysicsManager2D> physicsManager2D = scene.getPhysicsManager2D();
+    physicsManager2D->setConstants(constants);
+
+    physicsManager2D->addBody(obj1->getComponent<Body2D>());
+    physicsManager2D->addBody(obj2->getComponent<Body2D>());
 
     ResourceRef<Camera> cam = scene.getCamera();
     cam->setProjectionType(Camera::ProjectionType::ORTHOGRAPHIC);
@@ -80,7 +89,7 @@ int main() {
     scene.getRenderer()->addObject2d(obj2);
 
     while ( !window.shouldClose() ) {
-        obj1->getComponent<Physics2D>()->resolveCollision(obj2->getComponent<Physics2D>());
+        obj1->getComponent<Body2D>()->resolveCollision(obj2->getComponent<Body2D>());
         obj1->getComponent<Transform2D>()->translate(glm::vec3(5.0f, 0.0f, 0.0f));
 
         window.update();

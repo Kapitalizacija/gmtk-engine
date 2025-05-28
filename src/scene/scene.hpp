@@ -14,6 +14,7 @@
 #include "object/camera/camera.hpp"
 #include "renderer/renderer.hpp"
 #include "util/utilities.hpp"
+#include "physics_manager/2d/physics_manager2d.hpp"
 
 namespace Sierra {
  
@@ -33,6 +34,7 @@ namespace Sierra {
             void destroyObject(ResourceRef<T> object);
        
             ResourceRef<Renderer> getRenderer();
+            ResourceRef<PhysicsManager2D> getPhysicsManager2D();
 
             void start();
             void update();
@@ -45,6 +47,7 @@ namespace Sierra {
             std::unordered_set<std::shared_ptr<Object>> objects;
 
             std::shared_ptr<Renderer> renderer;
+            std::shared_ptr<PhysicsManager2D> physicsManager2D;
 
             const uint64_t FIXED_UPDATE_INTERVAL = FIXED_TIMESTEP_MS;
             uint64_t sinceLastFixedUpdate = 0;

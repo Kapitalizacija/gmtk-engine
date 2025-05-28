@@ -23,19 +23,19 @@ namespace Sierra {
             }
 
             std::shared_ptr<T> operator->() const {
-                if (is_empty()) {
+                if (isEmpty()) {
                     throw std::runtime_error("Tried to access an empty component");
                 }
 
                 return weakPtr.lock();
             }
 
-            bool is_empty() const {
+            bool isEmpty() const {
                 return weakPtr.use_count() == 0;
             }
 
             std::shared_ptr<T> getLock() {
-                if (is_empty()) {
+                if (isEmpty()) {
                     throw std::runtime_error("Tried to access an empty component");
                 }
 
@@ -43,7 +43,7 @@ namespace Sierra {
             }
 
             std::weak_ptr<T> getPtr() {
-                if (is_empty()) {
+                if (isEmpty()) {
                     throw std::runtime_error("Tried to access an empty component");
                 }
 

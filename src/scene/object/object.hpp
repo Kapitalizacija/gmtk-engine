@@ -52,9 +52,9 @@ namespace Sierra {
             
         protected:
             virtual void start();
-            virtual void earlyUpdate();
-            virtual void update();
-            virtual void lateUpdate();
+            virtual void earlyUpdate(float dt);
+            virtual void update(float dt);
+            virtual void lateUpdate(float dt);
             virtual void fixedUpdate();
             virtual std::vector<float> getDrawData();
             virtual void frameCleanup();
