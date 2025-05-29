@@ -15,6 +15,7 @@
 #include "renderer/renderer.hpp"
 #include "util/utilities.hpp"
 #include "physics_manager/2d/physics_manager2d.hpp"
+#include "dt/delta_time.hpp"
 
 namespace Sierra {
  
@@ -43,6 +44,7 @@ namespace Sierra {
             ResourceRef<Camera> getCamera();
     
         private:
+            DelaTime dt;
 
             std::unordered_set<std::shared_ptr<Object>> objects;
 

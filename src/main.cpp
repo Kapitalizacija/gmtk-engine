@@ -82,6 +82,8 @@ int main() {
     physicsManager2D->addBody(obj1->getComponent<Body2D>());
     physicsManager2D->addBody(obj2->getComponent<Body2D>());
 
+    obj2->getComponent<Body2D>()->setIsSimulated(false);
+
     ResourceRef<Camera> cam = scene.getCamera();
     cam->setProjectionType(Camera::ProjectionType::ORTHOGRAPHIC);
 
