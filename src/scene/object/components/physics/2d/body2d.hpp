@@ -29,15 +29,20 @@ namespace Sierra {
                 glm::vec2 checkIntersection(ResourceRef<Body2D> other);
                 bool resolveCollision(ResourceRef<Body2D> other);
 
+                void applyImpulse(glm::vec3 f);
+
                 ResourceRef<Shape> getShape();
                 float getMass();
+
+                bool isSimulated();
+                void setIsSimulated(bool isSimulated);
 
                 void setPhysicsConstants(ResourceRef<PhysicsConstants> constants);
                 
                 virtual void start() { return; }
                 virtual void earlyUpdate(float dt) { return; }
                 virtual void update(float dt) { return; }
-                virtual void lateUpdate(float dt) { return; }
+                virtual void lateUpdate(float dt);
                 virtual void frameCleanup() { return; }
                 virtual void fixedUpdate();
                 virtual bool hasChanged() { return false; }

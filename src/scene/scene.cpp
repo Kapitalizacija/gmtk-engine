@@ -15,18 +15,21 @@ namespace Sierra {
     void Scene::update() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        renderer->camera->update(0); //TODO dt
+        dt.update();
+
+        renderer->camera->update(dt.get()); 
+
 
         for (auto& object: objects ) {
-            object->earlyUpdate(0);
+            object->earlyUpdate(dt.get());
         }
     
         for (auto& object: objects ) {
-            object->update(0);
+            object->update(dt.get());
         }
     
         for (auto& object: objects ) {
-            object->lateUpdate(0);
+            object->lateUpdate(dt.get());
         }
 
         fixedUpdate();

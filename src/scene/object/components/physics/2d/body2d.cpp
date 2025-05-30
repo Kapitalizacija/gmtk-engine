@@ -28,10 +28,11 @@ namespace Sierra {
             glm::vec3 Fg = mMass * physicsConstants->g * mul;
 
             mVel += Fg;
-            //mVel += dragForce;
+            mVel += dragForce;
+        }
 
-            glm::vec3 reducedVector = mVel;
-            mTransform->translate(mVel * mul); // DON'T DO IN FIXED UPDATE FEELS LAGGY
+        void Body2D::lateUpdate(float dt) {
+            mTransform->translate(mVel * dt); 
         }
         
         glm::vec2 Body2D::checkIntersection(ResourceRef<Body2D> other) {
@@ -125,6 +126,10 @@ namespace Sierra {
             return true;
         }
 
+        void Body2D::applyImpulse(glm::vec3 f) {
+            mVel += f / mMass;
+        }
+
         ResourceRef<Shape> Body2D::getShape() {
             return (ResourceRef<Shape>)mShape;
         }
@@ -147,6 +152,15 @@ namespace Sierra {
             assert(components.size() == 1);
 
             mTransform = components[0];
+        }
+
+        
+        bool Body2D::isSimulated() {
+            return mIsSimulated;
+        }
+        
+        void Body2D::setIsSimulated(bool isSimulated) {
+            mIsSimulated = isSimulated;
         }
     }
 }
