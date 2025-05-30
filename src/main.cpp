@@ -24,7 +24,7 @@
 
 #include "scene/object/components/sound/sound.hpp"
 
-#include "memory/memorypool.hpp"
+#include "memory/mempool.hpp"
 
 #include <cmath>
 #include <thread>
@@ -40,6 +40,9 @@ class TestObj : public Object2D {
 };
 
 int main() {
+    //Allocate a small mempool for the lulz
+    Memory::Mempool mempool = Memory::Mempool(1048576); //1 MiB because I feel special
+
     Window window = Window("Sierra", {1280, 720});
     ALDevice audio;
     if (!audio.isValid()) {
@@ -88,7 +91,21 @@ int main() {
     scene.getRenderer()->addObject2d(obj1);
     scene.getRenderer()->addObject2d(obj2);
 
+    double lastTime = glfwGetTime();
+    double deltaTime = 0.0;
+    double fps = 0.0;
+
     while ( !window.shouldClose() ) {
+        //Some basic fps counter login here, should be moved sometime
+        double currentTime = glfwGetTime();
+        deltaTime = currentTime - lastTime;
+        lastTime = currentTime;
+
+        fps = 1.0 / deltaTime;
+
+        std::string title = "FPS: " + std::to_string(static_cast<int>(fps));
+        glfwSetWindowTitle(window.get_glfw_window(), title.c_str());
+
         obj1->getComponent<Body2D>()->resolveCollision(obj2->getComponent<Body2D>());
         obj1->getComponent<Transform2D>()->translate(glm::vec3(5.0f, 0.0f, 0.0f));
 
