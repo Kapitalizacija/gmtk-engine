@@ -60,7 +60,7 @@ namespace Sierra {
         glfwMakeContextCurrent(glfw_win);
 
         glfwSetWindowSizeCallback(glfw_win, framebufferSizeCallback);
-        glfwSwapInterval(2);
+        //glfwSwapInterval(1);
     }
     
     void Window::init_glfw() {

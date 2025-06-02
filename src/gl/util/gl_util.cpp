@@ -6,10 +6,10 @@ const uint32_t indices[] = { // the most barebones indices needed for a square, 
 };
 
 const std::float32_t vertices[] = {
-    -0.5f, -0.5f,
-    -0.5f,  0.5f,
-     0.5f, -0.5f,
-     0.5f,  0.5f    
+     0.0f,  0.0f,
+     0.0f,  1.0f,
+     1.0f,  0.0f,
+     1.0f,  1.0f
 };
 
 
@@ -35,7 +35,7 @@ namespace Sierra {
     }
 
     void GLUtils::cleanup() {
-        squareIndexBuffer.release();
-        squareVertexBuffer.release();
+        squareIndexBuffer.~unique_ptr();
+        squareVertexBuffer.~unique_ptr();
     }
 }

@@ -1,16 +1,19 @@
 #pragma once
 
 #include "util/utilities.hpp"
+#include "io/logging/logger.hpp"
 
 namespace Sierra {
-    class DelaTime {
+    class DeltaTime {
         public:
+            DeltaTime();
+
             void update();
             float get();
         private:
             float mDt;
-            float mLast;
+            size_t mLast;
 
-            const float MAX_DT = 0.032f; // to prevent game breaking stutters
+            const float MAX_DT = 0.32f; // to prevent game breaking stutters
     };
 }

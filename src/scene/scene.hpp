@@ -26,25 +26,27 @@ namespace Sierra {
             Scene(const Scene&) = delete;
             Scene(Scene&&) = delete;
 
-            void freeUnusedMemory();
-
+            
             template<class T, typename... Args>
             ResourceRef<T> createObject(Args&... args);
-
+            
             template<class T>
             void destroyObject(ResourceRef<T> object);
-       
+            
             ResourceRef<Renderer> getRenderer();
             ResourceRef<PhysicsManager2D> getPhysicsManager2D();
-
+            
             void start();
             void update();
             void fixedUpdate();
-
+            
             ResourceRef<Camera> getCamera();
+            float getDeltaTime();
+
+            void freeUnusedMemory();
     
         private:
-            DelaTime dt;
+            DeltaTime dt;
 
             std::unordered_set<std::shared_ptr<Object>> objects;
 

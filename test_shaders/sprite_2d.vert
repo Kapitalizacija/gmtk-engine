@@ -18,14 +18,24 @@ void main() {
         return;
     }
 
-    mat2 rotationMatrix = mat2(
-        vec2(cos(rotation), -sin(rotation)),
-        vec2(sin(rotation), cos(rotation))
-    );
+    const float PI = 3.14159;
 
-    gl_Position = projection * vec4(aPos.xy + aVert * scale * rotationMatrix, aPos.z, 1.0);
+    float distFromCenter = 0.7071067811865475;
+    const float angles[] = {
+        PI / 4 * 1,
+        PI / 4 * 3,
+        PI / 4 * 5,
+        PI / 4 * 7
+    };
 
-    texCoords = vec2(0.5, 0.5) + aVert;
+    vec2 rotatedVert = vec2(
+        cos(angles[gl_VertexID] + rotation) * distFromCenter,
+        sin(angles[gl_VertexID] + rotation) * distFromCenter
+    ) + vec2(distFromCenter, distFromCenter);
+
+    gl_Position = projection * vec4(aPos.xy + scale * rotatedVert, aPos.z, 1.0);
+
+    texCoords = aVert;
 
     offset = texOffset;
 }

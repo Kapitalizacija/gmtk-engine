@@ -11,7 +11,9 @@ namespace Sierra {
             }; // MUST ALWAYS BE ORDERED
 
             normalizeVertices(vertices);
-            mNormalizedNormals = calcNormals(mVertices);
+
+            mNormalizedNormals = getNormals(0);
+
             calcSignedArea();
             calcCenterOfGeometry();
             calcVertDistFromCenter();
@@ -19,7 +21,7 @@ namespace Sierra {
 
         Shape::Shape(std::vector<glm::vec2> vertices) {
             normalizeVertices(vertices);
-            mNormalizedNormals = calcNormals(mVertices);
+            mNormalizedNormals = getNormals(0);
             calcSignedArea();
             calcCenterOfGeometry();
             calcVertDistFromCenter();
@@ -27,29 +29,22 @@ namespace Sierra {
 
         void Shape::normalizeVertices(std::vector<glm::vec2> vertices) {
             glm::vec2 minOffset = glm::vec2(std::numeric_limits<float>::max());
-            glm::vec2 max = glm::vec2(std::numeric_limits<float>::min());
-            float maxCoord = std::numeric_limits<float>::min();
 
             mVertices = std::move(vertices);
-
 
             for (const glm::vec2& v : mVertices) {
                 minOffset.x = std::min(v.x, minOffset.x);
                 minOffset.y = std::min(v.y, minOffset.y);
-
-                max.x = std::max(max.x, v.x);
-                max.y = std::max(max.y, v.y);
             }
 
-            max -= minOffset;
 
             for (glm::vec2& v : mVertices) {
                 v -= minOffset;
-                v /= std::max(max.x, max.y);
             }
         }
 
-        std::vector<glm::vec2> Shape::calcNormals(std::vector<glm::vec2> vertices) {
+        std::vector<glm::vec2> Shape::getEdges(float angle) {
+            std::vector<glm::vec2> vertices = getVertices(angle);
 
             std::unordered_set<glm::vec2> edges;
             edges.reserve(vertices.size());
@@ -60,24 +55,28 @@ namespace Sierra {
                 );
             }
 
-            std::unordered_set<glm::vec2> normals;
+            std::vector<glm::vec2> vEdges;
+            vEdges.insert(vEdges.end(), edges.begin(), edges.end());
+
+            return vEdges;
+        }
+
+        std::vector<glm::vec2> Shape::getNormals(float angle) {
+            std::vector<glm::vec2> edges = getEdges(angle);
+
+            std::vector<glm::vec2> normals;
             normals.reserve(edges.size());
 
             for(glm::vec2 edge : edges) {
-                normals.insert({
+                normals.push_back({
+                    glm::normalize(glm::vec2(
                     -edge.y,
-                     edge.x
+                     edge.x))
                     }
                 );
             }
 
-            mNormalizedNormals.reserve(normals.size());
-
-            for (const glm::vec2& normal : normals) {
-                mNormalizedNormals.push_back(glm::normalize(normal));
-            }
-
-            return mNormalizedNormals;
+            return normals;
         }
 
         void Shape::calcSignedArea() {
@@ -105,13 +104,13 @@ namespace Sierra {
 
             for (const glm::vec2& v : mVertices) {
                 mDistVertFromCenter.emplace_back(
-                    glm::length( v - mCenterOfGeometry ),
+                    glm::length(v - mCenterOfGeometry),
                     std::atan2(v.y - mCenterOfGeometry.y, v.x - mCenterOfGeometry.x)
                 );
             }
         }
 
-        std::vector<glm::vec2> Shape::getRotatedVertices(float angle) {
+        std::vector<glm::vec2> Shape::getVertices(float angle) {
             if (angle == 0)
                 return mVertices;
 
@@ -119,6 +118,7 @@ namespace Sierra {
             rotatedVertices.reserve(mVertices.size());
 
             glm::vec2 minOffset = glm::vec2(std::numeric_limits<float>::max());
+            glm::vec2 maxOffset = glm::vec2(std::numeric_limits<float>::min());
 
             for (int i = 0; i < mDistVertFromCenter.size(); i++) {
                 rotatedVertices.emplace_back(
@@ -128,7 +128,12 @@ namespace Sierra {
 
                 minOffset.x = std::min(minOffset.x, rotatedVertices.back().x);
                 minOffset.y = std::min(minOffset.y, rotatedVertices.back().y);
+
+                maxOffset.x = std::max(maxOffset.x, rotatedVertices.back().x);
+                maxOffset.y = std::max(maxOffset.y, rotatedVertices.back().y);
             }
+
+            maxOffset -= minOffset;
 
             for (glm::vec2& v : rotatedVertices) {
                 v -= minOffset;
@@ -137,23 +142,6 @@ namespace Sierra {
             return rotatedVertices;
         }
 
-        std::vector<glm::vec2> Shape::getRotatedNormals(float angle) {
-            if (angle == 0) 
-                return mNormalizedNormals;
-
-            std::vector<glm::vec2> rotatedVertices = getRotatedVertices(angle);
-
-            return calcNormals(rotatedVertices);
-        }
-
-        std::vector<glm::vec2> Shape::getVertices() {
-            return mVertices;
-        }
-
-        std::vector<glm::vec2> Shape::getNormals() {
-            return mNormalizedNormals;
-        }
-        
         glm::vec2 Shape::getCenterOfGeometry() {
             return mCenterOfGeometry;
         }

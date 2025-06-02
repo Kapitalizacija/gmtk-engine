@@ -28,7 +28,7 @@ namespace Sierra {
             glm::vec3 Fg = mMass * physicsConstants->g * mul;
 
             mVel += Fg;
-            mVel += dragForce;
+            //mVel += dragForce;
         }
 
         void Body2D::lateUpdate(float dt) {
@@ -42,12 +42,12 @@ namespace Sierra {
             std::unordered_set<glm::vec2> perpendiculars;
 
             {
-                std::vector<glm::vec2> p1 = mShape->getRotatedNormals(mTransform->getRotation());
+                std::vector<glm::vec2> p1 = mShape->getNormals(mTransform->getRotation());
                 perpendiculars.insert(p1.begin(), p1.end());
             }
 
             {
-                std::vector<glm::vec2> p2 = mShape->getRotatedNormals(other->mTransform->getRotation());
+                std::vector<glm::vec2> p2 = mShape->getNormals(other->mTransform->getRotation());
                 perpendiculars.insert(p2.begin(), p2.end());
             }
 
@@ -59,8 +59,9 @@ namespace Sierra {
                 min1 = min2 = std::numeric_limits<double>::max();
                 max1 = max2 = std::numeric_limits<double>::min();
                 
-                for (const glm::vec2& v : shape1->getRotatedVertices(mTransform->getRotation())) {
+                for (const glm::vec2& v : shape1->getVertices(mTransform->getRotation())) {
                     glm::vec2 p = v * (glm::vec2)mTransform->getScale() + (glm::vec2)mTransform->getPosition();
+                    DBG(p.x);
                     float dotProduct = glm::dot(p, n);
 
                     if (dotProduct < min1) 
@@ -69,7 +70,7 @@ namespace Sierra {
                         max1 = dotProduct;
                 }
 
-                for (const glm::vec2& v : shape2->getRotatedVertices(other->mTransform->getRotation())) {
+                for (const glm::vec2& v : shape2->getVertices(other->mTransform->getRotation())) {
                     glm::vec2 p = v * (glm::vec2)other->mTransform->getScale() + (glm::vec2)other->mTransform->getPosition();
                     float dotProduct = glm::dot(p, n);
  
@@ -110,20 +111,51 @@ namespace Sierra {
 
             if (!mIsSimulated && other->mIsSimulated) {
                 other->mTransform->translate(glm::vec3(mtv, 0.0));
-                return true;
+
             } else if (mIsSimulated && !other->mIsSimulated) {
                 mTransform->translate(glm::vec3(-mtv, 0.0));
-                return true;
+            } else {
+
+                float selfPush = other->getMass() / (mMass + other->getMass());
+                float otherPush = mMass / (mMass + other->getMass());
+
+                mTransform->translate(glm::vec3(-mtv * selfPush, 0.0));
+                other->mTransform->translate(glm::vec3(mtv * otherPush, 0.0));
+
             }
 
+            glm::vec2 intersectionPoint = (glm::vec2)mTransform->getPosition() - mtv;
 
-            float selfPush = other->getMass() / (mMass + other->getMass());
-            float otherPush = mMass / (mMass + other->getMass());
+            glm::vec2 n1 = getIntersectingNormal(mShape->getVertices(mTransform->getRotation()), glm::normalize(mtv));
 
-            mTransform->translate(glm::vec3(-mtv * selfPush, 0.0));
-            other->mTransform->translate(glm::vec3(mtv * otherPush, 0.0));
+            mVel *= glm::abs(glm::vec3(n1.y, n1.x, 1.0f));
+            other->mVel *= glm::abs(glm::vec3(n1.y, n1.x, 1.0f));
 
             return true;
+        }
+
+        glm::vec2 Body2D::getIntersectingNormal(std::vector<glm::vec2> vertices,glm::vec2 p) {
+            for (int i = 0; i < vertices.size() - 1; i++) {
+                glm::vec2 a = vertices[i];
+                glm::vec2 b = vertices[(i + 1) % vertices.size()];
+
+                float totalDist = glm::length(a - b);
+                float distA  = glm::length(a - p);
+                float distB = glm::length(b - p);
+
+                float diff = std::abs(totalDist - (distA + distB));
+
+                if (diff > 0.1f) {// to account for floating point errors
+                    continue;                     
+                } 
+
+                glm::vec2 edge = a - b;
+                
+                return glm::normalize(glm::vec2(-edge.y, edge.x));
+            }
+
+            //ERROR("Failed to find an intersecting edge, a bug?");
+            return glm::vec2(0.0f);
         }
 
         void Body2D::applyImpulse(glm::vec3 f) {

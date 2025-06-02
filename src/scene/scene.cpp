@@ -33,6 +33,8 @@ namespace Sierra {
         }
 
         fixedUpdate();
+
+        physicsManager2D->update();
         
         renderer->renderer();
         
@@ -51,7 +53,6 @@ namespace Sierra {
         
         for (auto& object: objects ) {
             object->fixedUpdate();
-            physicsManager2D->fixedUpdate();
         }
     }
 
@@ -65,6 +66,10 @@ namespace Sierra {
     
     ResourceRef<Renderer> Scene::getRenderer() {
         return renderer;
+    }
+
+    float Scene::getDeltaTime() {
+        return dt.get();
     }
 
     ResourceRef<PhysicsManager2D> Scene::getPhysicsManager2D() {

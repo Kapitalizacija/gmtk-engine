@@ -1,16 +1,23 @@
 #include "delta_time.hpp"
 
 namespace Sierra {
-    void DelaTime::update() {
-        if (!mLast)
-            mLast = CLOCK_MS;
 
-        mDt = (CLOCK_MS - mLast) / 1000.0f;
+    DeltaTime::DeltaTime(): mLast(0), mDt(0) {
 
-        mDt = std::min(mDt, MAX_DT);
     }
 
-    float DelaTime::get() {
+    void DeltaTime::update() {
+        if (!mLast)
+            mLast = CLOCK_NS;
+
+        mDt = (CLOCK_NS - mLast) / 100000000.0f;
+
+        //mDt = std::min(mDt, MAX_DT);
+
+        mLast = CLOCK_NS;
+    }
+
+    float DeltaTime::get() {
         return mDt;
     }
 

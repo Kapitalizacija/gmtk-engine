@@ -30,17 +30,15 @@ namespace Sierra {
                 Shape();
                 Shape(std::vector<glm::vec2> vertices);
 
-                std::vector<glm::vec2> getNormals();
-                std::vector<glm::vec2> getVertices();
-                std::vector<glm::vec2> getRotatedVertices(float angle);
-                std::vector<glm::vec2> getRotatedNormals(float angle);
+                std::vector<glm::vec2> getVertices(float angle);
+                std::vector<glm::vec2> getEdges(float angle);
+                std::vector<glm::vec2> getNormals(float angle);
 
                 glm::vec2 getCenterOfGeometry();
 
                 private:
 
                 void normalizeVertices(std::vector<glm::vec2> vertices);
-                std::vector<glm::vec2> calcNormals(std::vector<glm::vec2> vertices);
                 void calcSignedArea();
                 void calcCenterOfGeometry();
                 void calcVertDistFromCenter();

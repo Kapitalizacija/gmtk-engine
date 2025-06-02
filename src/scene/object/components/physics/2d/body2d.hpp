@@ -58,6 +58,8 @@ namespace Sierra {
             std::shared_ptr<Shape> mShape;
             
             glm::vec3 mVel;
+
+            static glm::vec2 getIntersectingNormal(std::vector<glm::vec2> verticesm,  glm::vec2 p);
             
             ResourceRef<Transform2D> mTransform;
             ResourceRef<PhysicsConstants> physicsConstants;

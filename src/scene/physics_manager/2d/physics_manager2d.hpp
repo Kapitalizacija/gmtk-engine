@@ -21,7 +21,7 @@ namespace Sierra {
             PhysicsConstants getConstants();
 
         protected:
-            void fixedUpdate();
+            void update();
 
         private:
             std::unordered_set<ResourceRef<Component::Body2D>> bodies;
