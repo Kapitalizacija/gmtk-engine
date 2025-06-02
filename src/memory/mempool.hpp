@@ -8,6 +8,7 @@
 #include <span>
 #include <cstring>
 #include <algorithm>
+#include <unordered_map>
 #include "io/logging/logger.hpp"
 #include "util/utilities.hpp"
 
@@ -37,7 +38,10 @@ namespace Sierra::Memory {
 			uint32_t mCurrentSize;
 			uint32_t mMaxSize;
 
-			std::vector<std::pair<uint8_t*, uint8_t*>> mBoundPtrs;
-			std::vector<std::pair<uint8_t*, uint8_t*>> mFreedBounds;
+			//std::vector<std::pair<uint8_t*, uint8_t*>> mBoundPtrs;
+			//std::vector<std::pair<uint8_t*, uint8_t*>> mFreedBounds;
+
+			std::unordered_map<uint8_t*, uint8_t*> mBoundPtrs;
+			std::unordered_map<uint8_t*, uint8_t*> mFreedBounds;
 	};
 }

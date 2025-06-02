@@ -22,7 +22,7 @@ namespace Sierra::Memory {
 			if (it->second - it->first >= sz) {
 				//We can reuse
 				auto sec = it->first + sz;
-				mBoundPtrs.emplace_back(it->first, sec);
+				mBoundPtrs[it->first] = sec;
 				mFreedBounds.erase(it);
 				return it->first;
 			}
@@ -37,51 +37,45 @@ namespace Sierra::Memory {
 		uint8_t *setPtr = mAvailPtr;
 		mAvailPtr += sz;
 		
-		mBoundPtrs.emplace_back(setPtr, mAvailPtr);
-
+		mBoundPtrs[setPtr] = mAvailPtr;
 		return setPtr;
 	}
 
 	bool Mempool::free(uint8_t* ptr, bool overwrite) {
-		for (auto it = mBoundPtrs.begin(); it != mBoundPtrs.end(); ++it) {
-			if (it->first == ptr) {
-				mFreedBounds.emplace_back(it->first, it->second);
-				mBoundPtrs.erase(it);
-			
-				if (overwrite) {
-					size_t len = it->second - it->first;
-					std::memset(it->first, 0x00, len);
-				}
-			
-				return true;
+		if (mBoundPtrs.find(ptr) != mBoundPtrs.end()) {
+			mFreedBounds[ptr] = mBoundPtrs[ptr];
+			mBoundPtrs.erase(ptr);
+
+			if (overwrite) {
+				size_t len = ptr - mFreedBounds[ptr];
+				std::memset(ptr, 0x00, len);
 			}
+
+			return true;
+		} else {
+			WARN("Pointer not found in allocations");
+			return false;
 		}
-		
-		WARN("Pointer not found in allocations");
-		return false;
 	}
 
 	std::span<uint8_t> Mempool::access(uint8_t* ptr) {
-		for (auto it = mBoundPtrs.begin(); it != mBoundPtrs.end(); ++it) {
-			if (it->first == ptr) {
-				return std::span<uint8_t>(it->first, it->second - it->first);
-			}
+		if (mBoundPtrs.find(ptr) != mBoundPtrs.end()) {
+			return std::span<uint8_t>(ptr, mBoundPtrs[ptr]);
+		} else {
+			WARN("Pointer not found in allocations");
+			return std::span<uint8_t>(); //Return empty span
 		}
-
-		return std::span<uint8_t>(); //Return empty span
 	}
 
 	bool Mempool::write(uint8_t* ptr, const uint8_t* src, size_t sz) {
-		for (auto it = mBoundPtrs.begin(); it != mBoundPtrs.end(); ++it) {
-			if (it->first == ptr) {
-				if (!ptr || !src || it->second - it->first > sz) return false;
-				
-				size_t maxWritable = it->second - it->first;
-				size_t copySize = std::min(sz, maxWritable);
+		if (!ptr || !src || mBoundPtrs[ptr] - ptr > sz) return false;
+		
+		if (mBoundPtrs.find(ptr) != mBoundPtrs.end()) {
+			size_t maxWritable = mBoundPtrs[ptr] - ptr;
+			size_t copySize = std::min(sz, maxWritable);
 
-				std::memcpy(ptr, src, copySize);
-				return true;
-			}
+			std::memcpy(ptr, src, copySize);
+			return true;
 		}
 
 		return false;
