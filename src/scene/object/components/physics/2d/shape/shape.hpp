@@ -30,7 +30,7 @@ namespace Sierra {
                 Shape();
                 Shape(std::vector<glm::vec2> vertices);
 
-                std::vector<glm::vec2> getVertices(float angle);
+                std::vector<glm::vec2> getVertices(float angle, glm::vec2 scale = glm::vec2(1.0f));
                 std::vector<glm::vec2> getEdges(float angle);
                 std::vector<glm::vec2> getNormals(float angle);
 

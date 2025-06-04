@@ -5,11 +5,18 @@ const uint32_t indices[] = { // the most barebones indices needed for a square, 
     1, 2, 3
 };
 
-const std::float32_t vertices[] = {
+/*const std::float32_t vertices[] = {
      0.0f,  0.0f,
      0.0f,  1.0f,
      1.0f,  0.0f,
      1.0f,  1.0f
+};*/
+
+const std::float32_t vertices[] = {
+    -0.5f, -0.5f,
+    -0.5f,  0.5f,
+     0.5f, -0.5f,
+     0.5f,  0.5f    
 };
 
 

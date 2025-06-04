@@ -17,6 +17,10 @@ namespace Sierra {
             calcSignedArea();
             calcCenterOfGeometry();
             calcVertDistFromCenter();
+
+            for(glm::vec2& v : mVertices) {
+                v -= mCenterOfGeometry;
+            }
         ;}    
 
         Shape::Shape(std::vector<glm::vec2> vertices) {
@@ -35,11 +39,6 @@ namespace Sierra {
             for (const glm::vec2& v : mVertices) {
                 minOffset.x = std::min(v.x, minOffset.x);
                 minOffset.y = std::min(v.y, minOffset.y);
-            }
-
-
-            for (glm::vec2& v : mVertices) {
-                v -= minOffset;
             }
         }
 
@@ -110,36 +109,46 @@ namespace Sierra {
             }
         }
 
-        std::vector<glm::vec2> Shape::getVertices(float angle) {
-            if (angle == 0)
-                return mVertices;
+        std::vector<glm::vec2> Shape::getVertices(float angle, glm::vec2 scale) {
 
             std::vector<glm::vec2> rotatedVertices;
             rotatedVertices.reserve(mVertices.size());
 
-            glm::vec2 minOffset = glm::vec2(std::numeric_limits<float>::max());
-            glm::vec2 maxOffset = glm::vec2(std::numeric_limits<float>::min());
+            if (angle == 0) {
+                for (const glm::vec2& v : mVertices) {
+                    rotatedVertices.emplace_back(
+                        v * scale
+                    );
+                }
 
-            for (int i = 0; i < mDistVertFromCenter.size(); i++) {
-                rotatedVertices.emplace_back(
-                    cos(angle + mDistVertFromCenter[i].second) * mDistVertFromCenter[i].first,
-                    sin(angle + mDistVertFromCenter[i].second) * mDistVertFromCenter[i].first
-                );
-
-                minOffset.x = std::min(minOffset.x, rotatedVertices.back().x);
-                minOffset.y = std::min(minOffset.y, rotatedVertices.back().y);
-
-                maxOffset.x = std::max(maxOffset.x, rotatedVertices.back().x);
-                maxOffset.y = std::max(maxOffset.y, rotatedVertices.back().y);
+                return rotatedVertices;
             }
 
-            maxOffset -= minOffset;
+            if (scale.x == scale.y) { // faster because precomputed
+                for (int i = 0; i < mDistVertFromCenter.size(); i++) {
+                    rotatedVertices.emplace_back(
+                        cos(angle + mDistVertFromCenter[i].second) * mDistVertFromCenter[i].first * scale.x, 
+                        sin(angle + mDistVertFromCenter[i].second) * mDistVertFromCenter[i].first * scale.y
+                    );
+                }
+                return rotatedVertices;
+            }
 
-            for (glm::vec2& v : rotatedVertices) {
-                v -= minOffset;
+            glm::mat2 rotationMatrix = {
+                cos(angle), -sin(angle),
+                sin(angle),  cos(angle)
+            };
+
+            for (const glm::vec2& v : mVertices) {
+                rotatedVertices.emplace_back(
+                    rotationMatrix * (v * scale)
+                );
             }
 
             return rotatedVertices;
+
+            //maxOffset -= minOffset;
+
         }
 
         glm::vec2 Shape::getCenterOfGeometry() {

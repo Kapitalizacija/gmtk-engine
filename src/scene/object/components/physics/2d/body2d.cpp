@@ -59,9 +59,8 @@ namespace Sierra {
                 min1 = min2 = std::numeric_limits<double>::max();
                 max1 = max2 = std::numeric_limits<double>::min();
                 
-                for (const glm::vec2& v : shape1->getVertices(mTransform->getRotation())) {
-                    glm::vec2 p = v * (glm::vec2)mTransform->getScale() + (glm::vec2)mTransform->getPosition();
-                    DBG(p.x);
+                for (const glm::vec2& v : shape1->getVertices(mTransform->getRotation(), mTransform->getScale())) {
+                    glm::vec2 p = v + (glm::vec2)mTransform->getPosition();
                     float dotProduct = glm::dot(p, n);
 
                     if (dotProduct < min1) 
@@ -70,8 +69,8 @@ namespace Sierra {
                         max1 = dotProduct;
                 }
 
-                for (const glm::vec2& v : shape2->getVertices(other->mTransform->getRotation())) {
-                    glm::vec2 p = v * (glm::vec2)other->mTransform->getScale() + (glm::vec2)other->mTransform->getPosition();
+                for (const glm::vec2& v : shape2->getVertices(other->mTransform->getRotation(), other->mTransform->getScale())) {
+                    glm::vec2 p = v + (glm::vec2)other->mTransform->getPosition();
                     float dotProduct = glm::dot(p, n);
  
                     if (dotProduct < min2) 
