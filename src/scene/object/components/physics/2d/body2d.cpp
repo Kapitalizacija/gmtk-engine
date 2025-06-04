@@ -1,16 +1,15 @@
 #include "body2d.hpp"
 
-//The physics 2D engine hooks directly into the Transform2D component
+// The physics 2D engine hooks directly into the Transform2D component
 namespace Sierra {
     namespace Component {
 
-        Body2D::Body2D(): mMass(100), mVel(0.0f), mIsSimulated(true) {
+        Body2D::Body2D(): mInfo() {
             this->mShape = std::make_shared<Shape>();
         }
 
-        Body2D::Body2D(ResourceRef<Transform2D> transform, Shape shape, float mass, bool isSimulated): mMass(mass), mIsSimulated(isSimulated),
-         mVel(0.0f) {
-            this->mShape = std::make_shared<Shape>(shape);
+        Body2D::Body2D(Info& info): mInfo(info) {
+            this->mShape = std::make_shared<Shape>();
         }
 
         void Body2D::fixedUpdate() {
@@ -22,22 +21,22 @@ namespace Sierra {
             float mul = 1.0f / FIXED_TIMESTEP_MS;
             if (!mIsSimulated) {
                 return;
-            } 
+            }
 
             glm::vec3 dragForce = glm::pow2(mVel) * physicsConstants->air_drag * mul * -glm::sign(mVel);
-            glm::vec3 Fg = mMass * physicsConstants->g * mul;
+            glm::vec3 Fg = mInfo.mass * physicsConstants->g * mul;
 
             mVel += Fg;
-            //mVel += dragForce;
+            // mVel += dragForce;
         }
 
         void Body2D::lateUpdate(float dt) {
-            mTransform->translate(mVel * dt); 
+            mTransform->translate(mVel * dt);
         }
-        
+
         glm::vec2 Body2D::checkIntersection(ResourceRef<Body2D> other) {
-            ResourceRef<Shape> shape1 = mShape;    
-            ResourceRef<Shape> shape2 = other->getShape();    
+            ResourceRef<Shape> shape1 = mShape;
+            ResourceRef<Shape> shape2 = other->getShape();
 
             std::unordered_set<glm::vec2> perpendiculars;
 
@@ -54,37 +53,36 @@ namespace Sierra {
             glm::vec2 resolveAxis = glm::vec2(0.0);
             float minOverlap = std::numeric_limits<float>::max();
 
-            for(const glm::vec2& n : perpendiculars) {
+            for (const glm::vec2 &n : perpendiculars) {
                 double min1, max1, min2, max2;
                 min1 = min2 = std::numeric_limits<double>::max();
                 max1 = max2 = std::numeric_limits<double>::min();
-                
-                for (const glm::vec2& v : shape1->getVertices(mTransform->getRotation(), mTransform->getScale())) {
+
+                for (const glm::vec2 &v : shape1->getVertices(mTransform->getRotation(), mTransform->getScale())) {
                     glm::vec2 p = v + (glm::vec2)mTransform->getPosition();
                     float dotProduct = glm::dot(p, n);
 
-                    if (dotProduct < min1) 
+                    if (dotProduct < min1)
                         min1 = dotProduct;
-                    if(dotProduct > max1)
+                    if (dotProduct > max1)
                         max1 = dotProduct;
                 }
 
-                for (const glm::vec2& v : shape2->getVertices(other->mTransform->getRotation(), other->mTransform->getScale())) {
+                for (const glm::vec2 &v : shape2->getVertices(other->mTransform->getRotation(), other->mTransform->getScale())) {
                     glm::vec2 p = v + (glm::vec2)other->mTransform->getPosition();
                     float dotProduct = glm::dot(p, n);
- 
-                    if (dotProduct < min2) 
+
+                    if (dotProduct < min2)
                         min2 = dotProduct;
-                    if(dotProduct > max2)
+                    if (dotProduct > max2)
                         max2 = dotProduct;
-                }   
+                }
 
                 float overlap = std::min(
                     std::abs(min1 - max2),
-                    std::abs(min2 - max1)
-                );
+                    std::abs(min2 - max1));
 
-                if (overlap < minOverlap){
+                if (overlap < minOverlap) {
                     minOverlap = overlap;
                     resolveAxis = n;
                 }
@@ -96,87 +94,106 @@ namespace Sierra {
                 return glm::vec2(0.0);
             }
 
+            resolveAxis = glm::abs(resolveAxis);
+
+            if (mTransform->getPosition().y > other->mTransform->getPosition().y) {
+                resolveAxis.y *= -1;
+            }
+
+            if (mTransform->getPosition().x > other->mTransform->getPosition().x) {
+                resolveAxis.x *= -1;
+            }
+
             return resolveAxis * minOverlap;
         }
-        
+
         bool Body2D::resolveCollision(ResourceRef<Body2D> other) {
             if (!mIsSimulated && other->mIsSimulated)
                 return false;
-            
+
             glm::vec2 mtv = checkIntersection(other);
 
             if ((!mtv.x && !mtv.y))
                 return false;
 
+            glm::vec2 normal1 = getIntersectingNormal(mShape->getVertices(mTransform->getRotation()), glm::normalize(mtv));
+            glm::vec2 normal2 = getIntersectingNormal(other->mShape->getVertices(other->mTransform->getRotation()), glm::normalize(mtv));
+
             if (!mIsSimulated && other->mIsSimulated) {
                 other->mTransform->translate(glm::vec3(mtv, 0.0));
-
-            } else if (mIsSimulated && !other->mIsSimulated) {
+                other->mVel *= glm::abs(glm::vec3(normal1.y, normal1.x, 1.0f));
+                return true;
+            }
+            if (mIsSimulated && !other->mIsSimulated) {
                 mTransform->translate(glm::vec3(-mtv, 0.0));
-            } else {
-
-                float selfPush = other->getMass() / (mMass + other->getMass());
-                float otherPush = mMass / (mMass + other->getMass());
-
-                mTransform->translate(glm::vec3(-mtv * selfPush, 0.0));
-                other->mTransform->translate(glm::vec3(mtv * otherPush, 0.0));
-
+                mVel *= glm::abs(glm::vec3(normal2.y, normal2.x, 1.0f));
+                return true;
             }
 
-            glm::vec2 intersectionPoint = (glm::vec2)mTransform->getPosition() - mtv;
+            glm::vec2 force1 = mVel * mInfo.mass;
+            glm::vec2 force2 = other->mVel * other->mInfo.mass;
 
-            glm::vec2 n1 = getIntersectingNormal(mShape->getVertices(mTransform->getRotation()), glm::normalize(mtv));
+            float selfPush = other->mInfo.mass / (mInfo.mass + other->mInfo.mass);
+            float otherPush = mInfo.mass / (mInfo.mass + other->mInfo.mass);
 
-            mVel *= glm::abs(glm::vec3(n1.y, n1.x, 1.0f));
-            other->mVel *= glm::abs(glm::vec3(n1.y, n1.x, 1.0f));
+            mTransform->translate(glm::vec3(-mtv * selfPush, 0.0));
+            other->mTransform->translate(glm::vec3(mtv * otherPush, 0.0));
+
 
             return true;
         }
 
-        glm::vec2 Body2D::getIntersectingNormal(std::vector<glm::vec2> vertices,glm::vec2 p) {
+        glm::vec2 Body2D::getIntersectingNormal(std::vector<glm::vec2> vertices, glm::vec2 p) {
+            float minDiff = std::numeric_limits<float>::max();
+            glm::vec2 minEdge = glm::vec2(0.0f);
+
             for (int i = 0; i < vertices.size() - 1; i++) {
                 glm::vec2 a = vertices[i];
                 glm::vec2 b = vertices[(i + 1) % vertices.size()];
 
                 float totalDist = glm::length(a - b);
-                float distA  = glm::length(a - p);
+                float distA = glm::length(a - p);
                 float distB = glm::length(b - p);
 
                 float diff = std::abs(totalDist - (distA + distB));
 
-                if (diff > 0.1f) {// to account for floating point errors
-                    continue;                     
-                } 
+                if (diff < minDiff) {
+                    glm::vec2 edge = a - b;
 
-                glm::vec2 edge = a - b;
-                
-                return glm::normalize(glm::vec2(-edge.y, edge.x));
+                    minEdge = glm::normalize(glm::vec2(-edge.y, edge.x));
+                    minDiff = diff;
+                }
             }
 
-            //ERROR("Failed to find an intersecting edge, a bug?");
-            return glm::vec2(0.0f);
+            return minEdge;
         }
 
         void Body2D::applyImpulse(glm::vec3 f) {
-            mVel += f / mMass;
+            mVel += f / mInfo.mass;
         }
 
         ResourceRef<Shape> Body2D::getShape() {
             return (ResourceRef<Shape>)mShape;
         }
 
-        float Body2D::getMass() {
-            return mMass;
-        }
-
         void Body2D::setPhysicsConstants(ResourceRef<PhysicsConstants> constants) {
             physicsConstants = constants;
         }
+        
+        Body2D::Info Body2D::getInfo() {
+            return mInfo;
+        }
 
-        std::vector<size_t> Body2D::getRequiredComponentHashes() const{
-            return {
-                typeid(Transform2D).hash_code()
-            };
+        bool Body2D::getIsSimulated() {
+            return mIsSimulated;
+        }
+
+        void Body2D::setIsSimulated(bool isSimulated) {
+            mIsSimulated = isSimulated;
+        }
+
+        std::vector<size_t> Body2D::getRequiredComponentHashes() const {
+            return { typeid(Transform2D).hash_code()} ;
         }
 
         void Body2D::setRequiredComponents(std::vector<ResourceRef<Component>> components) {
@@ -185,13 +202,5 @@ namespace Sierra {
             mTransform = components[0];
         }
 
-        
-        bool Body2D::isSimulated() {
-            return mIsSimulated;
-        }
-        
-        void Body2D::setIsSimulated(bool isSimulated) {
-            mIsSimulated = isSimulated;
-        }
     }
 }

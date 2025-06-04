@@ -84,7 +84,7 @@ namespace Sierra {
     
     void Window::init_glad() {
         if ( !gladLoadGLLoader((GLADloadproc)glfwGetProcAddress) ) {
-            throw std::runtime_error("Failed to init GLAD, womp womp");
+            throw new std::runtime_error("Failed to init GLAD, womp womp");
         }
 
         glViewport(0, 0, resolution.w, resolution.h);

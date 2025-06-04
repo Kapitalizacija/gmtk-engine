@@ -21,9 +21,16 @@ namespace Sierra {
         class Body2D : public Component {
             friend class PhysicsManager2D;
 
+            struct Info {
+                float mass = 1.0f;
+                float elasticity = 0.1f;
+
+                
+            };
+
             public:
                 Body2D();
-                Body2D(ResourceRef<Transform2D> transform, Shape shape, float mass = 1.f, bool isSimulated = true);
+                Body2D(Info& info);
                 DISABLE_COPY_AND_MOVE(Body2D);
 
                 glm::vec2 checkIntersection(ResourceRef<Body2D> other);
@@ -32,12 +39,13 @@ namespace Sierra {
                 void applyImpulse(glm::vec3 f);
 
                 ResourceRef<Shape> getShape();
-                float getMass();
 
-                bool isSimulated();
-                void setIsSimulated(bool isSimulated);
+                Info getInfo();
 
                 void setPhysicsConstants(ResourceRef<PhysicsConstants> constants);
+
+                bool getIsSimulated();
+                void setIsSimulated(bool isSimulated);
                 
                 virtual void start() { return; }
                 virtual void earlyUpdate(float dt) { return; }
@@ -50,10 +58,10 @@ namespace Sierra {
                 virtual std::vector<size_t> getRequiredComponentHashes() const override;
                 virtual void setRequiredComponents(std::vector<ResourceRef<Component>> components) override;
             protected:
+                bool mIsSimulated = true;
 
             private:
-            bool mIsSimulated;
-            float mMass;
+                Info mInfo;
             
             std::shared_ptr<Shape> mShape;
             

@@ -70,14 +70,14 @@ int main() {
     obj1->getComponent<Transform2D>()->setPosition(glm::vec3(-100, 100, 0));
     obj2->getComponent<Transform2D>()->setPosition(glm::vec3(100, 100, 0));
 
-    obj1->getComponent<Transform2D>()->setScale(glm::vec3(50, 100, 100));
+    obj1->getComponent<Transform2D>()->setScale(glm::vec3(100, 20, 100));
     obj2->getComponent<Transform2D>()->setScale(glm::vec3(100, 100, 100));
 
     obj1->createComponent<Body2D>();
     obj2->createComponent<Body2D>();
 
     PhysicsConstants constants{};
-    constants.g = glm::vec3(5.0f, 0.0f, 0.0f);
+    constants.g = glm::vec3(10.0f, -0.2f, 0.0f);
 
     ResourceRef<PhysicsManager2D> physicsManager2D = scene.getPhysicsManager2D();
     physicsManager2D->setConstants(constants);
@@ -112,7 +112,7 @@ int main() {
 
         obj1->getComponent<Body2D>()->resolveCollision(obj2->getComponent<Body2D>());
         //obj1->getComponent<Transform2D>()->translate(glm::vec3(5.0f, 0.0f, 0.0f));
-        obj1->getComponent<Transform2D>()->setRotation(glfwGetTime());
+        //obj1->getComponent<Transform2D>()->setRotation(glfwGetTime());
 
         window.update();
         scene.update();
