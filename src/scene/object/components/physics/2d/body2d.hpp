@@ -21,14 +21,13 @@ namespace Sierra {
         class Body2D : public Component {
             friend class PhysicsManager2D;
 
-            struct Info {
-                float mass = 1.0f;
-                float elasticity = 0.1f;
-
-                
-            };
-
             public:
+                struct Info {
+                    float mass = 1.0f;
+                    float elasticity = 0.1f;
+                    float friction = 0.1f;
+                };
+
                 Body2D();
                 Body2D(Info& info);
                 DISABLE_COPY_AND_MOVE(Body2D);
@@ -41,11 +40,15 @@ namespace Sierra {
                 ResourceRef<Shape> getShape();
 
                 Info getInfo();
+                void setInfo(Info info);
 
                 void setPhysicsConstants(ResourceRef<PhysicsConstants> constants);
 
                 bool getIsSimulated();
                 void setIsSimulated(bool isSimulated);
+
+                bool getIsAffectedByGravity();
+                void setIsAffectedByGravity(bool isAffectedByGravity);
                 
                 virtual void start() { return; }
                 virtual void earlyUpdate(float dt) { return; }
@@ -59,18 +62,22 @@ namespace Sierra {
                 virtual void setRequiredComponents(std::vector<ResourceRef<Component>> components) override;
             protected:
                 bool mIsSimulated = true;
+                bool misAffectedByGravity = true;
+                bool mIsResting = false;
+                bool mIsGrounded = false;
 
             private:
                 Info mInfo;
+                glm::vec3 mVel;
+                
             
-            std::shared_ptr<Shape> mShape;
-            
-            glm::vec3 mVel;
+                std::shared_ptr<Shape> mShape;
 
-            static glm::vec2 getIntersectingNormal(std::vector<glm::vec2> verticesm,  glm::vec2 p);
-            
-            ResourceRef<Transform2D> mTransform;
-            ResourceRef<PhysicsConstants> physicsConstants;
+
+                static glm::vec2 getIntersectingNormal(std::vector<glm::vec2> vertices,  glm::vec2 p);
+
+                ResourceRef<Transform2D> mTransform;
+                ResourceRef<PhysicsConstants> physicsConstants;
         };
     }
 }

@@ -4,11 +4,11 @@
 namespace Sierra {
     namespace Component {
 
-        Body2D::Body2D(): mInfo() {
+        Body2D::Body2D(): mInfo(), mVel() {
             this->mShape = std::make_shared<Shape>();
         }
 
-        Body2D::Body2D(Info& info): mInfo(info) {
+        Body2D::Body2D(Info& info): mInfo(info), mVel() {
             this->mShape = std::make_shared<Shape>();
         }
 
@@ -23,15 +23,28 @@ namespace Sierra {
                 return;
             }
 
-            glm::vec3 dragForce = glm::pow2(mVel) * physicsConstants->air_drag * mul * -glm::sign(mVel);
-            glm::vec3 Fg = mInfo.mass * physicsConstants->g * mul;
 
-            mVel += Fg;
-            // mVel += dragForce;
+            glm::vec3 dragForce;
+            if (!physicsConstants->top_down_physics) {
+                dragForce = glm::pow2(mVel) * physicsConstants->airDrag * mul * -glm::sign(mVel); 
+            }  else {
+                dragForce = -glm::sign(mVel) * physicsConstants->airDrag;
+            }
+
+            if (misAffectedByGravity) {
+                glm::vec3 Fg = mInfo.mass * physicsConstants->g * mul;
+                mVel += Fg;
+            }
+            mVel += dragForce;
         }
 
         void Body2D::lateUpdate(float dt) {
             mTransform->translate(mVel * dt);
+
+            if (std::abs(mVel.x) < 1 && std::abs(mVel.y) < 1) {
+                mIsResting = true;
+                mVel = glm::vec3(0.0);
+            }
         }
 
         glm::vec2 Body2D::checkIntersection(ResourceRef<Body2D> other) {
@@ -61,6 +74,12 @@ namespace Sierra {
                 for (const glm::vec2 &v : shape1->getVertices(mTransform->getRotation(), mTransform->getScale())) {
                     glm::vec2 p = v + (glm::vec2)mTransform->getPosition();
                     float dotProduct = glm::dot(p, n);
+
+                    if (!p.length()) {
+                        DBG("na");
+                    } else if (!v.length()) {
+                        DBG("ya");
+                    }
 
                     if (dotProduct < min1)
                         min1 = dotProduct;
@@ -130,15 +149,21 @@ namespace Sierra {
                 return true;
             }
 
-            glm::vec2 force1 = mVel * mInfo.mass;
-            glm::vec2 force2 = other->mVel * other->mInfo.mass;
+            mtv *= 1.01;
 
+            //just resolution
             float selfPush = other->mInfo.mass / (mInfo.mass + other->mInfo.mass);
             float otherPush = mInfo.mass / (mInfo.mass + other->mInfo.mass);
 
             mTransform->translate(glm::vec3(-mtv * selfPush, 0.0));
             other->mTransform->translate(glm::vec3(mtv * otherPush, 0.0));
+            //
 
+            glm::vec2 force1 = mVel * mInfo.mass;
+            glm::vec2 force2 = other->mVel * other->mInfo.mass;
+
+            other->mVel = glm::vec3(force1 / other->mInfo.mass * other->mInfo.elasticity, 0.0);
+            mVel = glm::vec3(force2 / mInfo.mass * mInfo.elasticity, 0.0);
 
             return true;
         }
@@ -184,12 +209,24 @@ namespace Sierra {
             return mInfo;
         }
 
+        void Body2D::setInfo(Info info) {
+            mInfo = info;
+        }
+
         bool Body2D::getIsSimulated() {
             return mIsSimulated;
         }
 
         void Body2D::setIsSimulated(bool isSimulated) {
             mIsSimulated = isSimulated;
+        }
+
+        bool Body2D::getIsAffectedByGravity() {
+            return misAffectedByGravity;
+        }
+
+        void Body2D::setIsAffectedByGravity(bool isAffectedByGravity) {
+            misAffectedByGravity = isAffectedByGravity;
         }
 
         std::vector<size_t> Body2D::getRequiredComponentHashes() const {

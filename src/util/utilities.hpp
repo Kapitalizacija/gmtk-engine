@@ -31,7 +31,7 @@
 #endif
 
 #ifndef FIXED_TIMESTEP_MS
-#define FIXED_TIMESTEP_MS 33
+#define FIXED_TIMESTEP_MS 16
 #endif
 
 #ifndef DELETER_EMPTY

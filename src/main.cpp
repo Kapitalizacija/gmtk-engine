@@ -67,8 +67,8 @@ int main() {
     obj1->setShader(shader);
     obj2->setShader(shader);
 
-    obj1->getComponent<Transform2D>()->setPosition(glm::vec3(-100, 100, 0));
-    obj2->getComponent<Transform2D>()->setPosition(glm::vec3(100, 100, 0));
+    obj1->getComponent<Transform2D>()->setPosition(glm::vec3(-500, 100, 0));
+    obj2->getComponent<Transform2D>()->setPosition(glm::vec3(500, 100, 0));
 
     obj1->getComponent<Transform2D>()->setScale(glm::vec3(100, 20, 100));
     obj2->getComponent<Transform2D>()->setScale(glm::vec3(100, 100, 100));
@@ -77,7 +77,9 @@ int main() {
     obj2->createComponent<Body2D>();
 
     PhysicsConstants constants{};
-    constants.g = glm::vec3(10.0f, -0.2f, 0.0f);
+    constants.airDrag = 1;
+    constants.g = glm::vec3(250.0f, 0.0f, 0.0f);
+    constants.top_down_physics = true;
 
     ResourceRef<PhysicsManager2D> physicsManager2D = scene.getPhysicsManager2D();
     physicsManager2D->setConstants(constants);
@@ -85,7 +87,18 @@ int main() {
     physicsManager2D->addBody(obj1->getComponent<Body2D>());
     physicsManager2D->addBody(obj2->getComponent<Body2D>());
 
-    obj2->getComponent<Body2D>()->setIsSimulated(false);
+    obj2->getComponent<Body2D>()->setIsSimulated(true);
+    obj1->getComponent<Body2D>()->setIsSimulated(true);
+    obj1->getComponent<Body2D>()->setIsAffectedByGravity(false);
+    obj2->getComponent<Body2D>()->setIsAffectedByGravity(false);
+
+    Body2D::Info info{0};
+    info.elasticity = 0.5;
+    info.friction = 0.1f;
+    info.mass = 100.0f;
+
+    obj1->getComponent<Body2D>()->setInfo(info);
+    obj2->getComponent<Body2D>()->setInfo(info);
 
     ResourceRef<Camera> cam = scene.getCamera();
     cam->setProjectionType(Camera::ProjectionType::ORTHOGRAPHIC);
@@ -98,6 +111,9 @@ int main() {
     double fps = 0.0;
 
     //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+
+    obj1->getComponent<Body2D>()->applyImpulse(glm::vec3(10000, 0, 0));
+    obj2->getComponent<Body2D>()->applyImpulse(glm::vec3(-10000, 0, 0));
 
     while ( !window.shouldClose() ) {
         //Some basic fps counter login here, should be moved sometime
@@ -112,7 +128,7 @@ int main() {
 
         obj1->getComponent<Body2D>()->resolveCollision(obj2->getComponent<Body2D>());
         //obj1->getComponent<Transform2D>()->translate(glm::vec3(5.0f, 0.0f, 0.0f));
-        //obj1->getComponent<Transform2D>()->setRotation(glfwGetTime());
+       // obj1->getComponent<Transform2D>()->setRotation(glfwGetTime() * 10);
 
         window.update();
         scene.update();
