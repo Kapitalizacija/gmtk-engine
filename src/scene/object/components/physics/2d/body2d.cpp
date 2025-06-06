@@ -18,7 +18,7 @@ namespace Sierra {
                 return;
             }
 
-            float mul = 1.0f / FIXED_TIMESTEP_MS;
+            float mul = FIXED_TIMESTEP_MS / 1000.0f;
             if (!mIsSimulated) {
                 return;
             }
@@ -28,11 +28,11 @@ namespace Sierra {
             if (!physicsConstants->top_down_physics) {
                 dragForce = glm::pow2(mVel) * physicsConstants->airDrag * mul * -glm::sign(mVel); 
             }  else {
-                dragForce = -glm::sign(mVel) * physicsConstants->airDrag;
+                dragForce = -glm::sign(mVel) * physicsConstants->airDrag * mul;
             }
 
             if (misAffectedByGravity) {
-                glm::vec3 Fg = mInfo.mass * physicsConstants->g * mul;
+                glm::vec3 Fg = physicsConstants->g * mul;
                 mVel += Fg;
             }
             mVel += dragForce;
@@ -74,12 +74,6 @@ namespace Sierra {
                 for (const glm::vec2 &v : shape1->getVertices(mTransform->getRotation(), mTransform->getScale())) {
                     glm::vec2 p = v + (glm::vec2)mTransform->getPosition();
                     float dotProduct = glm::dot(p, n);
-
-                    if (!p.length()) {
-                        DBG("na");
-                    } else if (!v.length()) {
-                        DBG("ya");
-                    }
 
                     if (dotProduct < min1)
                         min1 = dotProduct;
@@ -135,8 +129,16 @@ namespace Sierra {
             if ((!mtv.x && !mtv.y))
                 return false;
 
-            glm::vec2 normal1 = getIntersectingNormal(mShape->getVertices(mTransform->getRotation()), glm::normalize(mtv));
-            glm::vec2 normal2 = getIntersectingNormal(other->mShape->getVertices(other->mTransform->getRotation()), glm::normalize(mtv));
+            glm::vec2 normal1 = getIntersectingNormal(mShape->getVertices(mTransform->getRotation(), mTransform->getScale()), glm::normalize(mtv));
+            glm::vec2 normal2 = getIntersectingNormal(other->mShape->getVertices(other->mTransform->getRotation(), other->mTransform->getScale()), mtv);
+
+            glm::vec2 normalizedMTV = glm::normalize(mtv);
+            glm::vec2 normalizedG = glm::normalize(physicsConstants->g);
+            if (normalizedMTV == normalizedG) {
+                mIsGrounded = true;
+            } else if (normalizedMTV == -normalizedG) {
+                other->mIsGrounded = true;
+            }
 
             if (!mIsSimulated && other->mIsSimulated) {
                 other->mTransform->translate(glm::vec3(mtv, 0.0));
@@ -146,6 +148,7 @@ namespace Sierra {
             if (mIsSimulated && !other->mIsSimulated) {
                 mTransform->translate(glm::vec3(-mtv, 0.0));
                 mVel *= glm::abs(glm::vec3(normal2.y, normal2.x, 1.0f));
+
                 return true;
             }
 
@@ -162,8 +165,8 @@ namespace Sierra {
             glm::vec2 force1 = mVel * mInfo.mass;
             glm::vec2 force2 = other->mVel * other->mInfo.mass;
 
-            other->mVel = glm::vec3(force1 / other->mInfo.mass * other->mInfo.elasticity, 0.0);
-            mVel = glm::vec3(force2 / mInfo.mass * mInfo.elasticity, 0.0);
+            other->mVel += glm::vec3(force1 / other->mInfo.mass * other->mInfo.elasticity, 0.0);
+            mVel += glm::vec3(force2 / mInfo.mass * mInfo.elasticity, 0.0);
 
             return true;
         }

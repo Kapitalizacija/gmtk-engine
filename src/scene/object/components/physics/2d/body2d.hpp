@@ -16,10 +16,11 @@
 #include "scene/physics_manager/physics_constants.hpp"
 
 namespace Sierra {
-    namespace Component {
+    class PhysicsManager2D;
 
+    namespace Component {
         class Body2D : public Component {
-            friend class PhysicsManager2D;
+            friend class Sierra::PhysicsManager2D;
 
             public:
                 struct Info {
@@ -33,7 +34,6 @@ namespace Sierra {
                 DISABLE_COPY_AND_MOVE(Body2D);
 
                 glm::vec2 checkIntersection(ResourceRef<Body2D> other);
-                bool resolveCollision(ResourceRef<Body2D> other);
 
                 void applyImpulse(glm::vec3 f);
 
@@ -66,6 +66,7 @@ namespace Sierra {
                 bool mIsResting = false;
                 bool mIsGrounded = false;
 
+                bool resolveCollision(ResourceRef<Body2D> other);
             private:
                 Info mInfo;
                 glm::vec3 mVel;

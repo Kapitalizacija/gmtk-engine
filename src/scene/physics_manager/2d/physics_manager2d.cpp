@@ -21,6 +21,10 @@ namespace Sierra {
     }
 
     void PhysicsManager2D::update() {
+        for (ResourceRef<Component::Body2D> b : bodies) {
+            b->mIsGrounded = false;
+        }
+
         for (ResourceRef<Component::Body2D> b1 : bodies) { // TODO 
             for (ResourceRef<Component::Body2D> b2 : bodies) {
                 if (b1 == b2) {
