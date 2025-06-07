@@ -26,6 +26,8 @@
 
 #include "memory/mempool.hpp"
 
+#include "input/input.hpp"
+
 #include <cmath>
 #include <thread>
 
@@ -44,6 +46,9 @@ int main() {
     Memory::Mempool mempool = Memory::Mempool(1048576); //1 MiB because I feel special
 
     Window window = Window("Sierra", {1280, 720});
+
+    Input::Input::init(window.get_glfw_window());
+
     ALDevice audio;
     if (!audio.isValid()) {
         ERROR("OpenAL Device Error, exiting");
@@ -115,7 +120,7 @@ int main() {
     obj1->getComponent<Body2D>()->applyImpulse(glm::vec3(10000, 0, 0));
     obj2->getComponent<Body2D>()->applyImpulse(glm::vec3(-10000, 0, 0));
 
-    while ( !window.shouldClose() ) {
+    while (!window.shouldClose()) {
         //Some basic fps counter login here, should be moved sometime
         double currentTime = glfwGetTime();
         deltaTime = currentTime - lastTime;
@@ -128,10 +133,19 @@ int main() {
 
         obj1->getComponent<Body2D>()->resolveCollision(obj2->getComponent<Body2D>());
         //obj1->getComponent<Transform2D>()->translate(glm::vec3(5.0f, 0.0f, 0.0f));
-       // obj1->getComponent<Transform2D>()->setRotation(glfwGetTime() * 10);
+        //obj1->getComponent<Transform2D>()->setRotation(glfwGetTime() * 10);
 
+        //double x, y;
+        //Input::Input::getMousePosition(x, y);
+        //DBG("Mouse pos; X: " << x << " Y: " << y);
+        //
+        //if (Input::Input::isKeyPressed(GLFW_KEY_W))
+        //    DBG("Pressing W!");
+        
         window.update();
         scene.update();
+
+        Input::Input::endFrame();
     }
 
     GLUtils::cleanup();
