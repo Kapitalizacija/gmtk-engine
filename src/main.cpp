@@ -54,7 +54,6 @@ int main() {
         ERROR("OpenAL Device Error, exiting");
     }
 
-    GLUtils::init();
 
     Scene scene = Scene();
     
@@ -148,5 +147,8 @@ int main() {
         Input::Input::endFrame();
     }
 
+    Debug::Renderer::cleanup();
     GLUtils::cleanup();
+
+
 }

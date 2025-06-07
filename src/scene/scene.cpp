@@ -2,8 +2,13 @@
 
 namespace Sierra {
     Scene::Scene(): sinceLastFixedUpdate(0) {
+
+        GLUtils::init();
+
         renderer = std::make_shared<Renderer>();
         physicsManager2D = std::make_shared<PhysicsManager2D>();
+
+        Debug::Renderer::init(renderer->mCamera);
     }
 
     void Scene::start() {
@@ -17,7 +22,7 @@ namespace Sierra {
 
         dt.update();
 
-        renderer->camera->update(dt.get()); 
+        renderer->mCamera->update(dt.get()); 
 
 
         for (auto& object: objects ) {
@@ -61,7 +66,7 @@ namespace Sierra {
     }
     
     ResourceRef<Camera> Scene::getCamera() {
-        return renderer->camera;
+        return renderer->mCamera;
     }
     
     ResourceRef<Renderer> Scene::getRenderer() {

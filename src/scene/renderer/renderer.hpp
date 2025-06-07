@@ -30,7 +30,7 @@ namespace Sierra {
             void addCustomRenderObject(ResourceRef<T> object);
 
         protected:
-            std::shared_ptr<Camera> camera;
+            std::shared_ptr<Camera> mCamera;
 
         private:
 

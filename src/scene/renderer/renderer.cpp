@@ -2,7 +2,7 @@
 
 namespace Sierra {
     Renderer::Renderer() {
-        camera = std::make_shared<Camera>();
+        mCamera = std::make_shared<Camera>();
         renderer2d = std::make_shared<Renderer2D>();
     }
 
@@ -11,10 +11,10 @@ namespace Sierra {
     }
 
     void Renderer::renderer(){
-        renderer2d->render(*camera);
+        renderer2d->render(*mCamera);
 
         for (auto& object : customRenderObjects) {
-            object->draw(*camera);
+            object->draw(*mCamera);
         }
     }
 

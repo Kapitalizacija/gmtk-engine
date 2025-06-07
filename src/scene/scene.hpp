@@ -12,6 +12,7 @@
 #include "object/2d/object2d.hpp"
 #include "object/3d/object3d.hpp"
 #include "object/camera/camera.hpp"
+#include "renderer/dbg/debug_renderer.hpp"
 #include "renderer/renderer.hpp"
 #include "util/utilities.hpp"
 #include "physics_manager/2d/physics_manager2d.hpp"

@@ -14,19 +14,24 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 file(GLOB_RECURSE SOURCES src/*.cpp)
 file(GLOB_RECURSE SOURCES ${SOURCES} glad/glad.c)
 
+
 find_package(OpenAL REQUIRED)
 
 # Add executable
 add_executable(engine ${SOURCES})
 
+#add_library(engine SHARED ${SOURCES})
+#set_target_properties(engine PROPERTIES OUTPUT_NAME "SierraEngine")
+
 # Add compile options based on build type
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    # -g flag for debugging symbols
-    target_compile_options(engine PRIVATE -g -DDEBUG -Wno-int-to-pointer-cast -Wno-cpp -O0)
+# -g flag for debugging symbols
+target_compile_options(engine PRIVATE -g -DDEBUG -Wno-int-to-pointer-cast -Wno-cpp -O0)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    # Optimization flag for release builds. You can change -O3 to other optimization levels if desired.
-    target_compile_options(engine PRIVATE -O3)
+# Optimization flag for release builds. You can change -O3 to other optimization levels if desired.
+target_compile_options(engine PRIVATE -O3)
 endif()
+
 
 # Include directories (assumes headers are in PATH-visible locations)
 include_directories(/usr/include) # Just in case :)

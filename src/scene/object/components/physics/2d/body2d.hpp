@@ -17,10 +17,12 @@
 
 namespace Sierra {
     class PhysicsManager2D;
+    class QuadTree;
 
     namespace Component {
         class Body2D : public Component {
             friend class Sierra::PhysicsManager2D;
+            friend class Sierra::QuadTree;
 
             public:
                 struct Info {
@@ -49,7 +51,7 @@ namespace Sierra {
 
                 bool getIsAffectedByGravity();
                 void setIsAffectedByGravity(bool isAffectedByGravity);
-                
+
                 virtual void start() { return; }
                 virtual void earlyUpdate(float dt) { return; }
                 virtual void update(float dt) { return; }
