@@ -128,7 +128,7 @@ int main() {
         glfwSetWindowTitle(window.get_glfw_window(), title.c_str());
 
         if (glfwGetTime() < 1){
-            obj1->getComponent<Body2D>()->applyImpulse(glm::vec3(500, 0, 0) * scene.getDeltaTime());
+            obj1->getComponent<Body2D>()->applyImpulse(glm::vec3(50000, 0, 0) * scene.getDeltaTime());
         }
 
         //obj1->getComponent<Transform2D>()->translate(glm::vec3(5.0f, 0.0f, 0.0f));
