@@ -47,7 +47,7 @@ int main() {
 
     Window window = Window("Sierra", {1280, 720});
 
-    Input::Input::init(window.get_glfw_window());
+    Input::Input::init(&window);
 
     ALDevice audio;
     if (!audio.isValid()) {
@@ -133,9 +133,8 @@ int main() {
         //obj1->getComponent<Transform2D>()->setRotation(glfwGetTime() * 10);
         DBG(obj1->getComponent<Transform2D>()->getPosition().y);
 
-        //double x, y;
-        //Input::Input::getMousePosition(x, y);
-        //DBG("Mouse pos; X: " << x << " Y: " << y);
+        //glm::ivec2 pos = Input::Input::getMousePosition();
+        //DBG("Mouse pos; X: " << pos.x << " Y: " << pos.y);
         //
         //if (Input::Input::isKeyPressed(GLFW_KEY_W))
         //    DBG("Pressing W!");
