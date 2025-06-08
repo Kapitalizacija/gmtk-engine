@@ -1,16 +1,17 @@
 #pragma once
 
-#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 #include "io/logging/logger.hpp"
+#include "window/window.hpp"
 
 namespace Sierra::Input {
     class Input {
         public:
-            static void init(GLFWwindow *window);
+            static void init(Window *window);
         
             static bool isKeyPressed(int key);
             static bool isMouseButtonPressed(int button);
-            static void getMousePosition(double &x, double &y);
+            static glm::ivec2 getMousePosition();
             static double getScrollOffset();
             static void endFrame();
         
@@ -23,6 +24,7 @@ namespace Sierra::Input {
             static bool mKeys[GLFW_KEY_LAST];
             static bool mMouseButtons[GLFW_MOUSE_BUTTON_LAST];
             static double mMouseX, mMouseY;
+            static glm::ivec2 mMousePos;
             static double mScrollOffset;
     };
 }

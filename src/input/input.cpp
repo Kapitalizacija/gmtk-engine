@@ -6,13 +6,16 @@ namespace Sierra::Input {
     bool Input::mMouseButtons[GLFW_MOUSE_BUTTON_LAST] = {};
     double Input::mMouseX = 0.0;
     double Input::mMouseY = 0.0;
+    glm::ivec2 Input::mMousePos = glm::ivec2(0, 0);
     double Input::mScrollOffset = 0.0;
     
-    void Input::init(GLFWwindow *window) {
-        glfwSetKeyCallback(window, keyCallback);
-        glfwSetMouseButtonCallback(window, mouseButtonCallback);
-        glfwSetCursorPosCallback(window, cursorPositionCallback);
-        glfwSetScrollCallback(window, scrollCallback);
+    void Input::init(Window *window) {
+        GLFWwindow *ref = window->get_glfw_window();
+        
+        glfwSetKeyCallback(ref, keyCallback);
+        glfwSetMouseButtonCallback(ref, mouseButtonCallback);
+        glfwSetCursorPosCallback(ref, cursorPositionCallback);
+        glfwSetScrollCallback(ref, scrollCallback);
     
         LOG("Input system initialized");
     }
@@ -28,8 +31,7 @@ namespace Sierra::Input {
     }
 
     void Input::cursorPositionCallback(GLFWwindow*, double xpos, double ypos) {
-        mMouseX = xpos;
-        mMouseY = ypos;
+        mMousePos = glm::ivec2(xpos, ypos);
     }
 
     void Input::scrollCallback(GLFWwindow*, double, double yoffset) {
@@ -44,9 +46,8 @@ namespace Sierra::Input {
         return button >= 0 && button < GLFW_MOUSE_BUTTON_LAST && mMouseButtons[button];
     }
 
-    void Input::getMousePosition(double &x, double &y) {
-        x = mMouseX;
-        y = mMouseY;
+    glm::ivec2 Input::getMousePosition() {
+        return mMousePos;
     }
 
     double Input::getScrollOffset() {
