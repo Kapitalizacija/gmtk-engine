@@ -66,52 +66,44 @@ int main() {
 
 
     PhysicsConstants constants{};
-    constants.airDrag = 0.01;
+    constants.airDrag = 0.5f;
     constants.g = glm::vec3(0.0f, -300.0f, 0.0f);
     constants.top_down_physics = false;
 
     ResourceRef<PhysicsManager2D> physicsManager2D = scene.getPhysicsManager2D();
     physicsManager2D->setConstants(constants);
 
-    std::vector<ResourceRef<Object2D>> objs;
-    for (int i = 0; i < 1000; i++) {
+    ResourceRef<Object2D> obj1 = scene.createObject<Object2D>();
+    ResourceRef<Object2D> obj2 = scene.createObject<Object2D>();
 
-        ResourceRef<Object2D> obj1 = scene.createObject<Object2D>();
-        ResourceRef<Object2D> obj2 = scene.createObject<Object2D>();
+    obj1->getComponent<Texture>()->setTexture(tex);
+    obj2->getComponent<Texture>()->setTexture(tex1);
 
-        obj1->getComponent<Texture>()->setTexture(tex);
-        obj2->getComponent<Texture>()->setTexture(tex1);
+    obj1->setShader(shader);
+    obj2->setShader(shader);
 
-        obj1->setShader(shader);
-        obj2->setShader(shader);
+    obj1->getComponent<Transform2D>()->setPosition(glm::vec3(-100, 0, 0));
+    obj2->getComponent<Transform2D>()->setPosition(glm::vec3(200, 0, 0));
 
-        obj1->getComponent<Transform2D>()->setPosition(glm::vec3(rand() % 1000 - 500, rand() % 1000 - 500, 0));
-        obj2->getComponent<Transform2D>()->setPosition(glm::vec3(rand() % 1000 - 500, rand() % 1000 - 500, 0));
+    obj1->getComponent<Transform2D>()->setScale(glm::vec3(50));
+    obj2->getComponent<Transform2D>()->setScale(glm::vec3(50));
 
-        obj1->getComponent<Transform2D>()->setScale(glm::vec3(10, 10, 10));
-        obj2->getComponent<Transform2D>()->setScale(glm::vec3(10, 10, 10));
+    obj1->createComponent<Body2D>();
+    obj2->createComponent<Body2D>();
 
-        obj1->createComponent<Body2D>();
-        obj2->createComponent<Body2D>();
+    physicsManager2D->addBody(obj1->getComponent<Body2D>());
+    physicsManager2D->addBody(obj2->getComponent<Body2D>());
 
-        physicsManager2D->addBody(obj1->getComponent<Body2D>());
-        physicsManager2D->addBody(obj2->getComponent<Body2D>());
+    obj1->getComponent<Body2D>()->setIsSimulated(true);
+    obj2->getComponent<Body2D>()->setIsSimulated(true);
+    obj1->getComponent<Body2D>()->setIsAffectedByGravity(false);
+    obj2->getComponent<Body2D>()->setIsAffectedByGravity(false);
 
-        obj1->getComponent<Body2D>()->setIsSimulated(true);
-        obj2->getComponent<Body2D>()->setIsSimulated(true);
-        obj1->getComponent<Body2D>()->setIsAffectedByGravity(false);
-        obj2->getComponent<Body2D>()->setIsAffectedByGravity(false);
-
-        scene.getRenderer()->addObject2d(obj1);
-        scene.getRenderer()->addObject2d(obj2);
-
-        objs.push_back(obj1);
-        objs.push_back(obj2);
-    }
-
+    scene.getRenderer()->addObject2d(obj1);
+    scene.getRenderer()->addObject2d(obj2);
 
     Body2D::Info info{0};
-    info.elasticity = 0.5;
+    info.elasticity = 0.2f;
     info.friction = 0.1f;
     info.mass = 100.0f;
 
@@ -126,7 +118,7 @@ int main() {
 
     //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 
-    //obj1->getComponent<Body2D>()->applyImpulse(glm::vec3(10000, 0, 0));
+    obj1->getComponent<Body2D>()->applyImpulse(glm::vec3(100, 0, 0));
     //obj2->getComponent<Body2D>()->applyImpulse(glm::vec3(-10000, 0, 0));
 
     while (!window.shouldClose()) {
@@ -137,12 +129,9 @@ int main() {
         std::string title = "FPS: " + std::to_string(static_cast<int>(fps));
         glfwSetWindowTitle(window.get_glfw_window(), title.c_str());
 
-        for (auto& obj : objs) {
-            obj->getComponent<Transform2D>()->setPosition(glm::vec3(rand() % 1000 - 500, rand() % 1000 - 500, 0));
-        }
-
         //obj1->getComponent<Transform2D>()->translate(glm::vec3(5.0f, 0.0f, 0.0f));
         //obj1->getComponent<Transform2D>()->setRotation(glfwGetTime() * 10);
+        DBG(obj1->getComponent<Transform2D>()->getPosition().y);
 
         //double x, y;
         //Input::Input::getMousePosition(x, y);

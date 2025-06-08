@@ -12,7 +12,7 @@ namespace Sierra {
 
         mDt = (CLOCK_NS - mLast) / 1000000000.0f;
 
-        //mDt = std::min(mDt, MAX_DT);
+        mDt = std::min(mDt, MAX_DT);
 
         mLast = CLOCK_NS;
     }
