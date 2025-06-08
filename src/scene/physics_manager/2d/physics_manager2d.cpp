@@ -1,7 +1,7 @@
 #include "physics_manager2d.hpp"
 
 namespace Sierra {
-    PhysicsManager2D::PhysicsManager2D() {
+    PhysicsManager2D::PhysicsManager2D(): quadTree(glm::vec2(0.0f), glm::vec2(1000.0f, 1000.0f)) {
         physicsConstants = std::make_shared<PhysicsConstants>();
     }
 
@@ -14,6 +14,8 @@ namespace Sierra {
         body->setPhysicsConstants(physicsConstants);
 
         bodies.insert(body);
+
+        quadTree.addBody(body);
     }
 
     void PhysicsManager2D::removeBody(ResourceRef<Component::Body2D> body) {
@@ -21,19 +23,13 @@ namespace Sierra {
     }
 
     void PhysicsManager2D::update() {
+        quadTree.update();
+        quadTree.draw();
+
         for (ResourceRef<Component::Body2D> b : bodies) {
             b->mIsGrounded = false;
         }
 
-        for (ResourceRef<Component::Body2D> b1 : bodies) { // TODO 
-            for (ResourceRef<Component::Body2D> b2 : bodies) {
-                if (b1 == b2) {
-                    continue;
-                }
-
-                b1->resolveCollision(b2); 
-            }
-        }
     }
 
     void PhysicsManager2D::setConstants(PhysicsConstants& constants) {
