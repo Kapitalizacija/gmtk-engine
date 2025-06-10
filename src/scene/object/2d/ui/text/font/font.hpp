@@ -4,9 +4,11 @@
 #include <vector>
 #include <tuple>
 
-
 #include "io/logging/logger.hpp"
 #include "gl/texture/gl_texture.hpp"
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 namespace Sierra {
     
@@ -24,8 +26,15 @@ namespace Sierra {
             GLTexture& getBitmap();            
 
         private:
+            void initFreeType();
+            void loadFontFace(std::string path);
+            void load_glyphs();
+
             std::vector<uint8_t> readFont(std::string path);
             std::vector<uint8_t> createBitmap(std::vector<uint8_t>& buff, std::string fontPath);
+
+            FT_Library library;
+            FT_Face face;
 
             GLTexture fontBitmap;
             uint32_t bitmapWidth;
@@ -36,6 +45,5 @@ namespace Sierra {
             static const uint32_t CHAR_HEIGHT = 256;
             static const char START_CHAR = '!';
             static const char END_CHAR = 'z';
-
     };
 }

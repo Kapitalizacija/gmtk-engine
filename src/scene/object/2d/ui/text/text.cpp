@@ -44,7 +44,7 @@ namespace Sierra {
     }
     
     void Text::createBuffers(std::vector<float> offsetData) {
-        offsetGLBuffer = GLBuffer(GLBuffer::Type::STORAGE, offsetData.data(), offsetData.size() * sizeof(float), GLBuffer::Usage::RARELY);
+        offsetGLBuffer = GLBuffer(GLBuffer::Type::STORAGE, (uint8_t*)offsetData.data(), offsetData.size() * sizeof(float), GLBuffer::Usage::RARELY);
 
         GLAttribPointer ptr1{};
         ptr1.buff = &(*VERTEXGLBUFF.get());
@@ -63,8 +63,8 @@ namespace Sierra {
 
     void Text::createGlobalResources() {
         SHADER = std::make_shared<GLShader>("Text shader", VERTEX_PATH, FRAGMENT_PATH);
-        VERTEXGLBUFF = std::make_shared<GLBuffer>(GLBuffer::Type::VERTEX, vertices, sizeof(vertices), GLBuffer::Usage::RARELY);
-        INDEXGLBUFF = std::make_shared<GLBuffer>(GLBuffer::Type::INDEX, indices, sizeof(indices), GLBuffer::Usage::RARELY);
+        VERTEXGLBUFF = std::make_shared<GLBuffer>(GLBuffer::Type::VERTEX, (uint8_t*)vertices, sizeof(vertices), GLBuffer::Usage::RARELY);
+        INDEXGLBUFF = std::make_shared<GLBuffer>(GLBuffer::Type::INDEX, (uint8_t*)indices, sizeof(indices), GLBuffer::Usage::RARELY);
 
         posUniformLocation = glGetUniformLocation(SHADER->getProgram(), "pos");        
         rotationUniformLocation = glGetUniformLocation(SHADER->getProgram(), "rotation");        

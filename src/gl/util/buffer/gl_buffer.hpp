@@ -34,8 +34,7 @@ namespace Sierra {
             GLBuffer();
             GLBuffer(Type buffer_type);
 
-            template<typename T>
-            GLBuffer(Type buffer_type, T data, size_t size, Usage buffer_usage);
+            GLBuffer(Type buffer_type, uint8_t* data, size_t size, Usage buffer_usage);
             
             GLBuffer(const GLBuffer& other) = delete;
 
@@ -46,8 +45,7 @@ namespace Sierra {
 
             void bindBase(GLuint index);
 
-            template<typename T>
-            void uploadData(T data, size_t size, Usage buffer_usage);
+            void uploadData(uint8_t* data, size_t size, Usage buffer_usage);
 
             void partialUpdate(std::vector<GLBufferUpdateRegion> updateRegions);
 
@@ -68,7 +66,5 @@ namespace Sierra {
             GLuint buff;
             size_t size;
     };
-
-    #include "gl_buffer.tpp"
 
 }

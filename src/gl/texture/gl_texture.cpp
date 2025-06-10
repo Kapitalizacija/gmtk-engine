@@ -4,9 +4,13 @@
 #include <stb_image/stb_image.h>
 
 namespace Sierra {
-	GLTexture::GLTexture(): tex(0) {}
+	GLTexture::GLTexture(): mTex(0) {}
 
-    GLTexture::GLTexture(std::string imagePath): tex(0) {
+    GLTexture::GLTexture(uint8_t* data, int width, int height, int channels): mWidth(width), mHeight(height) {
+        createTexture((uint8_t*) data, width, height, channels);
+    }
+
+    GLTexture::GLTexture(std::string imagePath): mTex(0) {
 		stbi_set_flip_vertically_on_load(true);
 
 		int width, height, channels;
@@ -22,16 +26,22 @@ namespace Sierra {
 		stbi_image_free(data);
 	}
 
-    GLTexture::GLTexture(GLTexture&& other) noexcept{
-		tex = other.tex;
+    void GLTexture::partialUpdate(uint8_t* data, int xOffset, int yOffset) {
+        glBindTexture(GL_TEXTURE_2D, mTex);
 
-		other.tex = 0;
+        glTexSubImage2D(GL_TEXTURE_2D, 0, xOffset, yOffset, mWidth, mHeight, mFormat, GL_UNSIGNED_BYTE, data);
+	}
+
+    GLTexture::GLTexture(GLTexture&& other) noexcept{
+		mTex = other.mTex;
+
+		other.mTex = 0;
 	} 
 
     void GLTexture::operator=(GLTexture&& other) noexcept{
-		tex = other.tex;
+		mTex = other.mTex;
 
-		other.tex = 0;
+		other.mTex = 0;
 	}
 
 	GLTexture::~GLTexture() {
@@ -39,31 +49,30 @@ namespace Sierra {
 			return;
 		}
 
-		glDeleteTextures(1, &tex);
+		glDeleteTextures(1, &mTex);
 	}
 
     void GLTexture::createTexture(uint8_t* data, int width, int height, int channels) {
 
-		glGenTextures(1, &tex);
-		glBindTexture(GL_TEXTURE_2D, tex);
+		glGenTextures(1, &mTex);
+		glBindTexture(GL_TEXTURE_2D, mTex);
 
-		GLint format;
 		switch(channels) {
 			case 1: 
-				format = GL_RED;
+				mFormat = GL_RED;
 				break;
 			case 2: 
-				format = GL_RG;
+				mFormat = GL_RG;
 				break;
 			case 3: 
-				format = GL_RGB;
+				mFormat = GL_RGB;
 				break;
 			case 4: 
-				format = GL_RGBA;
+				mFormat = GL_RGBA;
 				break;
 		}
 
-		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, mFormat, width, height, 0, mFormat, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
@@ -74,10 +83,10 @@ namespace Sierra {
 	}
     
 	GLuint GLTexture::getTexture(){
-		return tex;
+		return mTex;
 	}
 
 	bool GLTexture::isValid() {
-		return tex != 0;
+		return mTex != 0;
 	}
 }

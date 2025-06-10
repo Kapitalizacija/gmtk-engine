@@ -19,10 +19,9 @@ namespace Sierra {
             GLTexture();
             GLTexture(std::string imagePath);
 
-            template<typename T>
-            GLTexture(T* data, int width, int height, int channels) {
-                createTexture((uint8_t*) data, width, height, channels);
-            }
+            GLTexture(uint8_t* data, int width, int height, int channels);
+
+            void partialUpdate(uint8_t* data, int xOffset, int yOffset); 
 
             GLTexture(const GLTexture&) = delete; 
 
@@ -36,6 +35,11 @@ namespace Sierra {
         private:
             void createTexture(uint8_t* data, int width, int height, int channels);
 
-            GLuint tex;
+            GLuint mTex;
+
+            int mWidth;
+            int mHeight;
+            
+            GLenum mFormat;
     };
 }

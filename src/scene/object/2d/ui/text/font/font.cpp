@@ -1,94 +1,57 @@
 #include "font.hpp"
 
-#define STB_TRUETYPE_IMPLEMENTATION
-#include <stb_truetype/stb_truetype.h>
 
 namespace Sierra {
 
     Font::Font(std::string fontPath) {
-        std::vector<uint8_t> rawBuff = readFont(fontPath);
-        if (rawBuff.empty()) {
-            return;
-        }
+        initFreeType();
+        loadFontFace(fontPath);
 
-        std::vector<uint8_t> bitmapBuff = createBitmap(rawBuff, fontPath);
-        if(bitmapBuff.empty()) {
-            return;
-        }
+        //fontBitmap = GLTexture(bitmapBuff.data(), bitmapWidth, bitmapHeight, 1);
+    }
 
-        fontBitmap = GLTexture(bitmapBuff.data(), bitmapWidth, bitmapHeight, 1);
+    void Font::initFreeType() {
+        FT_Error err = FT_Init_FreeType(&library);
+
+        if (err) 
+            ERROR("Failed to init the FreeType library");
+       
+    }
+
+    void Font::loadFontFace(std::string path) {
+        FT_Error err = FT_New_Face( library,
+                                    path.c_str(),
+                                    0,
+                                    &face);
+
+        if (err)
+            ERROR("Failed to load a new font face");
+
+        err = FT_Set_Pixel_Sizes(face, 128, 128);
+
+        if (err)
+            ERROR("Failed to set char size");
+    }
+
+    void Font::load_glyphs() {
+
+        FT_Error err;
+        for (int i = START_CHAR; i <= END_CHAR; i++) {
+            FT_UInt index =  FT_Get_Char_Index(face, i);
+
+            err = FT_Load_Glyph(face, index, FT_LOAD_DEFAULT);
+            if (err) 
+                ERROR("Failed to load glyph " << (char)i);
+
+            err = FT_Render_Glyph(face->glyph, FT_RENDER_MODE_MONO); // or normal idfk
+
+            if (err)
+                ERROR("Failed to render glyph" << (char)i);
+        }
     }
     
     std::vector<uint8_t> Font::createBitmap(std::vector<uint8_t>& buff, std::string fontPath) {
-        stbtt_fontinfo info;
-        if (!stbtt_InitFont(&info, buff.data(), 0)) {
-            ERROR("Failed to parse font " << fontPath);
-            return {};
-        }
-        
-        int x0, x1, y0, y1;
-        bitmapHeight = CHAR_HEIGHT;
-        bitmapWidth = 0;
-
-        int maxHeight = 0;
-        for (int i = START_CHAR; i <= END_CHAR; i++) {
-            stbtt_GetCodepointBox(&info, i, &x0, &y0, &x1, &y1);
-            bitmapWidth += x1 - x0;
-            maxHeight = std::max(maxHeight, y1 - y0);
-        }
-
-        bitmapWidth = ceil((float)bitmapWidth * ((float)bitmapHeight / maxHeight));
-
-
-        std::vector<uint8_t> bitmapBuff;
-        bitmapBuff.resize(bitmapHeight * bitmapWidth);
-        std::vector<stbtt_packedchar> charInfo;
-        charInfo.resize(END_CHAR - START_CHAR);
-
-        stbtt_pack_context context{};
-        int res = stbtt_PackBegin(&context, bitmapBuff.data(), bitmapWidth, bitmapHeight, 0, 1, nullptr);
-
-        if (!res) {
-            ERROR("Failed to create font context for " << fontPath);
-            return {};
-        }
-
-        res = stbtt_PackFontRange(&context, buff.data(), 0, bitmapHeight, START_CHAR, (END_CHAR - START_CHAR), charInfo.data());
-
-        if (!res) {
-            ERROR("Failed to pack font: " << fontPath);
-            stbtt_PackEnd(&context);
-            return {};
-        }
-
-        stbtt_PackEnd(&context);
-
-        charPositions.reserve(charInfo.size());;
-        for (stbtt_packedchar& info : charInfo) {
-            charPositions.push_back( {info.x0, info.x1} );
-        }
-
-        return bitmapBuff;
-    }
-
-    std::vector<uint8_t> Font::readFont(std::string path) {
-        std::fstream stream(path, std::ios::ate | std::ios_base::in);
-
-        if (!stream.is_open()) {
-            ERROR("Failed to open font: " << path);
-            return {};
-        }
-
-        size_t size = stream.tellg();
-        stream.seekg(0);
-
-        std::vector<uint8_t> buff;
-        buff.resize(size);
-
-        stream.read((char*)buff.data(), size);
-        stream.close();
-
-        return buff;
+       
     }
     
     std::vector<float> Font::getCharOffsets(std::string text) {

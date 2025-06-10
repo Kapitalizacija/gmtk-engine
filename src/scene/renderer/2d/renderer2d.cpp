@@ -241,8 +241,8 @@ namespace Sierra {
 
                 bool updatedObjectData = false;
                 if (batch.objectData.size() * sizeof(std::float32_t) > batch.objectDataGLBuffer.getSize()) {
-                    batch.objectDataGLBuffer.uploadData(batch.objectData.data(), batch.objectData.size() * sizeof(std::float32_t), GLBuffer::Usage::OFTEN); 
-                    batch.extraDrawDataGLBuffer.uploadData(batch.extraDrawInfo.data(), batch.extraDrawInfo.size() * sizeof(uint32_t), GLBuffer::Usage::OFTEN);
+                    batch.objectDataGLBuffer.uploadData((uint8_t*)batch.objectData.data(), batch.objectData.size() * sizeof(std::float32_t), GLBuffer::Usage::OFTEN); 
+                    batch.extraDrawDataGLBuffer.uploadData((uint8_t*)batch.extraDrawInfo.data(), batch.extraDrawInfo.size() * sizeof(uint32_t), GLBuffer::Usage::OFTEN);
                     updatedObjectData = true;
                 }
 

@@ -75,7 +75,46 @@ namespace Sierra {
 
         return true;
     }
+
+    GLBuffer::GLBuffer(Type buffer_type, uint8_t* data, size_t size, Usage buffer_usage): size(0), type(buffer_type) {
+        if (buffer_type == Type::UNDEFINED) {
+            WARN("Tried to create a buffer of undefined type");
+        }
+
+        this->size = size;
+        create_buffer();
+        matchType(buffer_type);
+        uploadData(data, size, buffer_usage);
+    }
+
+    void GLBuffer::uploadData(uint8_t* data, size_t size, Usage buffer_usage) {
+
+        if ( !assert_valid() ) {
+            return;
+        }
+
+        this->size = size;
+
+        GLuint usage;
+        switch (buffer_usage) {
+            case Usage::STREAM:
+                usage = GL_STREAM_DRAW;
+                break;
+            case Usage::OFTEN:
+                usage = GL_DYNAMIC_DRAW;
+                break;
+            case Usage::RARELY:
+                usage = GL_STATIC_DRAW;
+                break;
+        }
+
+        glBindBuffer(glType, buff);
+        glBufferData(glType, size, data, usage);
+        glBindBuffer(glType, 0);
+    }
     
+   
+
     void GLBuffer::matchType(Type buffer_type) {
         switch (buffer_type) {
             case Type::VERTEX:

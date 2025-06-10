@@ -29,8 +29,8 @@ namespace Sierra {
     }
 
     void GLUtils::loadBuffers() {
-        squareVertexBuffer = std::make_unique<GLBuffer>(GLBuffer::Type::VERTEX, vertices, sizeof(vertices), GLBuffer::Usage::RARELY);
-        squareIndexBuffer = std::make_unique<GLBuffer>(GLBuffer::Type::INDEX, indices, sizeof(indices), GLBuffer::Usage::RARELY);
+        squareVertexBuffer = std::make_unique<GLBuffer>(GLBuffer::Type::VERTEX, (uint8_t*)vertices, sizeof(vertices), GLBuffer::Usage::RARELY);
+        squareIndexBuffer = std::make_unique<GLBuffer>(GLBuffer::Type::INDEX, (uint8_t*)indices, sizeof(indices), GLBuffer::Usage::RARELY);
     }
 
     GLBuffer& GLUtils::getSquareVertexBuffer() {
