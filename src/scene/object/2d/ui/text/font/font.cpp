@@ -6,8 +6,11 @@ namespace Sierra {
     Font::Font(std::string fontPath) {
         initFreeType();
         loadFontFace(fontPath);
+        load_glyphs();
 
-        //fontBitmap = GLTexture(bitmapBuff.data(), bitmapWidth, bitmapHeight, 1);
+        bitmapWidth = 10 * CHAR_BOX_SIZE;
+        bitmapHeight = 9 * CHAR_BOX_SIZE;
+        fontBitmap = GLTexture(nullptr, bitmapWidth, bitmapHeight, 1);
     }
 
     void Font::initFreeType() {
@@ -27,7 +30,7 @@ namespace Sierra {
         if (err)
             ERROR("Failed to load a new font face");
 
-        err = FT_Set_Pixel_Sizes(face, 128, 128);
+        err = FT_Set_Pixel_Sizes(face, CHAR_BOX_SIZE, CHAR_BOX_SIZE);
 
         if (err)
             ERROR("Failed to set char size");
@@ -47,11 +50,12 @@ namespace Sierra {
 
             if (err)
                 ERROR("Failed to render glyph" << (char)i);
+
+            uint32_t x = (i % 10) * CHAR_BOX_SIZE;
+            uint32_t y = floor(i / 10) * CHAR_BOX_SIZE;
+
+           fontBitmap.partialUpdate(face->glyph->bitmap.buffer, x, y); 
         }
-    }
-    
-    std::vector<uint8_t> Font::createBitmap(std::vector<uint8_t>& buff, std::string fontPath) {
-       
     }
     
     std::vector<float> Font::getCharOffsets(std::string text) {
@@ -60,18 +64,20 @@ namespace Sierra {
 
         for(char c : text) {
             if (c < START_CHAR || c > END_CHAR) {
-                if ((int)c != 32) {
-                    ERROR("Character in text out of range: " << (int)c);
-                }
-
-                offsets.push_back(0);
-                offsets.push_back(0);
-
                 continue;
             }
 
-            offsets.push_back(charPositions[c - START_CHAR].first / (float)bitmapWidth);
-            offsets.push_back(charPositions[c - START_CHAR].second / (float)bitmapWidth);
+
+            uint32_t x = ((c - START_CHAR) % 10) * CHAR_BOX_SIZE;
+            uint32_t y = floor((c - START_CHAR) / 10) * CHAR_BOX_SIZE;
+
+            if ((int)c == 32) {
+                x = 0;
+                y = 0;
+            }
+
+            offsets.push_back(x);
+            offsets.push_back(y);
         }
 
         return offsets;

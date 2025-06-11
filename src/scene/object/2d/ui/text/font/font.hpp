@@ -3,6 +3,7 @@
 #include <fstream>
 #include <vector>
 #include <tuple>
+#include <cmath>
 
 #include "io/logging/logger.hpp"
 #include "gl/texture/gl_texture.hpp"
@@ -42,7 +43,7 @@ namespace Sierra {
 
             std::vector<std::pair<int, int>> charPositions;
 
-            static const uint32_t CHAR_HEIGHT = 256;
+            static const uint32_t CHAR_BOX_SIZE = 128;
             static const char START_CHAR = '!';
             static const char END_CHAR = 'z';
     };
