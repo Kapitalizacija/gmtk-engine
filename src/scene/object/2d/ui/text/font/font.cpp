@@ -4,13 +4,15 @@
 namespace Sierra {
 
     Font::Font(std::string fontPath) {
+        bitmapWidth = 14 * CHAR_BOX_SIZE;
+        bitmapHeight = 10 * CHAR_BOX_SIZE;
+
+        fontBitmap = GLTexture(nullptr, bitmapWidth, bitmapHeight, 1, 1);
+
         initFreeType();
         loadFontFace(fontPath);
-        load_glyphs();
+        loadGlyphs();
 
-        bitmapWidth = 10 * CHAR_BOX_SIZE;
-        bitmapHeight = 9 * CHAR_BOX_SIZE;
-        fontBitmap = GLTexture(nullptr, bitmapWidth, bitmapHeight, 1);
     }
 
     void Font::initFreeType() {
@@ -30,57 +32,72 @@ namespace Sierra {
         if (err)
             ERROR("Failed to load a new font face");
 
-        err = FT_Set_Pixel_Sizes(face, CHAR_BOX_SIZE, CHAR_BOX_SIZE);
+        err = FT_Set_Pixel_Sizes(face, 0, CHAR_BOX_SIZE);
 
         if (err)
             ERROR("Failed to set char size");
     }
 
-    void Font::load_glyphs() {
+    void Font::loadGlyphs() {
+        glyphs.resize(END_CHAR - START_CHAR + 1);
 
         FT_Error err;
         for (int i = START_CHAR; i <= END_CHAR; i++) {
-            FT_UInt index =  FT_Get_Char_Index(face, i);
-
-            err = FT_Load_Glyph(face, index, FT_LOAD_DEFAULT);
+            err = FT_Load_Char(face, i, FT_LOAD_RENDER);
             if (err) 
                 ERROR("Failed to load glyph " << (char)i);
 
-            err = FT_Render_Glyph(face->glyph, FT_RENDER_MODE_MONO); // or normal idfk
+            if (face->glyph->bitmap.buffer == nullptr)
+                continue;
 
-            if (err)
-                ERROR("Failed to render glyph" << (char)i);
+            uint32_t x = ((i - START_CHAR) % 14) * CHAR_BOX_SIZE;
+            uint32_t y = floor((i - START_CHAR) / 14) * CHAR_BOX_SIZE;
 
-            uint32_t x = (i % 10) * CHAR_BOX_SIZE;
-            uint32_t y = floor(i / 10) * CHAR_BOX_SIZE;
+           fontBitmap.partialUpdate(face->glyph->bitmap.buffer, x, y, face->glyph->bitmap.width, face->glyph->bitmap.rows); 
 
-           fontBitmap.partialUpdate(face->glyph->bitmap.buffer, x, y); 
+           glyphs[i - START_CHAR] = *face->glyph;
         }
+
+        FT_Done_Face(face);
+        FT_Done_FreeType(library);
     }
     
     std::vector<float> Font::getCharOffsets(std::string text) {
-        std::vector<float> offsets;
-        offsets.reserve(text.length() * 2);
+        std::vector<float> charDat;
+        charDat.reserve(text.length() * 7);
 
         for(char c : text) {
-            if (c < START_CHAR || c > END_CHAR) {
+
+            if (c == ' ') {
+                charDat.push_back(0);
+                charDat.push_back(0);
+                charDat.push_back(0);
+                charDat.push_back(0);
+                charDat.push_back(0.5);
+                charDat.push_back(0);
+                charDat.push_back(0);
+
                 continue;
             }
 
+            const FT_GlyphSlotRec_& glyph = glyphs[c - START_CHAR];
 
-            uint32_t x = ((c - START_CHAR) % 10) * CHAR_BOX_SIZE;
-            uint32_t y = floor((c - START_CHAR) / 10) * CHAR_BOX_SIZE;
+            float x = ((c - START_CHAR) % 14) * CHAR_BOX_SIZE / (float)bitmapWidth;
+            float y = floor((c - START_CHAR) / 14) * CHAR_BOX_SIZE / (float)bitmapHeight;
 
-            if ((int)c == 32) {
-                x = 0;
-                y = 0;
-            }
+            charDat.push_back(x);
+            charDat.push_back(y);
 
-            offsets.push_back(x);
-            offsets.push_back(y);
+            charDat.push_back(x + CHAR_BOX_SIZE / (float)bitmapWidth);
+            charDat.push_back(y + CHAR_BOX_SIZE / (float)bitmapHeight);
+
+            charDat.push_back(glyph.advance.x / 64.0f / (float)CHAR_BOX_SIZE);
+            
+            charDat.push_back((float)glyph.bitmap_left / (float)CHAR_BOX_SIZE);
+            charDat.push_back((float)glyph.bitmap_top / (float)CHAR_BOX_SIZE);
         }
 
-        return offsets;
+        return charDat;
     }
 
     GLTexture& Font::getBitmap() {

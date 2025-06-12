@@ -62,11 +62,11 @@ int main() {
 
     GLShader shader = GLShader("test_shader", "test_shaders/sprite_2d.vert", "test_shaders/sprite_2d.frag"); // fellas in paris
 
-    Font font = Font("fonts/F25_Bank_Printer.ttf");
+    Font font = Font("fonts/arial-font/arial.ttf");
 
-    ResourceRef<Text> text = scene.createObject<Text>(font, "sigma sigma");
-    text->getComponent<Transform2D>()->setPosition(glm::vec3(0.0));
-    text->getComponent<Transform2D>()->setScale(glm::vec3(100.0));
+    ResourceRef<Text> text = scene.createObject<Text>(font, "sigma sigma (WORKING TEXT??");
+    text->getComponent<Transform2D>()->setPosition(glm::vec3(-500, 0, 0));
+    text->getComponent<Transform2D>()->setScale(glm::vec3(75.0));
     scene.getRenderer()->addCustomRenderObject(text);
 
     PhysicsConstants constants{};

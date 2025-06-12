@@ -6,8 +6,10 @@
 namespace Sierra {
 	GLTexture::GLTexture(): mTex(0) {}
 
-    GLTexture::GLTexture(uint8_t* data, int width, int height, int channels): mWidth(width), mHeight(height) {
-        createTexture((uint8_t*) data, width, height, channels);
+    GLTexture::GLTexture(uint8_t* data, int width, int height, int channels, int alignment): mWidth(width), mHeight(height) {
+        createTexture((uint8_t*)data, width, height, channels);
+
+		glPixelStorei( GL_UNPACK_ALIGNMENT, alignment);
     }
 
     GLTexture::GLTexture(std::string imagePath): mTex(0) {
@@ -26,20 +28,26 @@ namespace Sierra {
 		stbi_image_free(data);
 	}
 
-    void GLTexture::partialUpdate(uint8_t* data, int xOffset, int yOffset) {
+    void GLTexture::partialUpdate(uint8_t* data, int xOffset, int yOffset, int width,int height) {
         glBindTexture(GL_TEXTURE_2D, mTex);
 
-        glTexSubImage2D(GL_TEXTURE_2D, 0, xOffset, yOffset, mWidth, mHeight, mFormat, GL_UNSIGNED_BYTE, data);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, xOffset, yOffset, width, height, mFormat, GL_UNSIGNED_BYTE, data);
 	}
 
     GLTexture::GLTexture(GLTexture&& other) noexcept{
 		mTex = other.mTex;
+		mWidth = other.mWidth;
+		mHeight = other.mHeight;
+		mFormat = other.mFormat;
 
 		other.mTex = 0;
 	} 
 
     void GLTexture::operator=(GLTexture&& other) noexcept{
 		mTex = other.mTex;
+		mWidth = other.mWidth;
+		mHeight = other.mHeight;
+		mFormat = other.mFormat;
 
 		other.mTex = 0;
 	}
@@ -73,13 +81,13 @@ namespace Sierra {
 		}
 
 		glTexImage2D(GL_TEXTURE_2D, 0, mFormat, width, height, 0, mFormat, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-
+		
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		
+		glGenerateMipmap(GL_TEXTURE_2D);
 	}
     
 	GLuint GLTexture::getTexture(){

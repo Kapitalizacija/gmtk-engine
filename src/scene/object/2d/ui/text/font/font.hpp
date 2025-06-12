@@ -29,7 +29,7 @@ namespace Sierra {
         private:
             void initFreeType();
             void loadFontFace(std::string path);
-            void load_glyphs();
+            void loadGlyphs();
 
             std::vector<uint8_t> readFont(std::string path);
             std::vector<uint8_t> createBitmap(std::vector<uint8_t>& buff, std::string fontPath);
@@ -41,10 +41,10 @@ namespace Sierra {
             uint32_t bitmapWidth;
             uint32_t bitmapHeight;
 
-            std::vector<std::pair<int, int>> charPositions;
+            std::vector<FT_GlyphSlotRec_> glyphs;
 
             static const uint32_t CHAR_BOX_SIZE = 128;
-            static const char START_CHAR = '!';
-            static const char END_CHAR = 'z';
+            static const char START_CHAR = 0;
+            static const char END_CHAR = 126;
     };
 }

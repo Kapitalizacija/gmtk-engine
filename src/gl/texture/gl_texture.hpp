@@ -19,9 +19,9 @@ namespace Sierra {
             GLTexture();
             GLTexture(std::string imagePath);
 
-            GLTexture(uint8_t* data, int width, int height, int channels);
+            GLTexture(uint8_t* data, int width, int height, int channels, int alignment = 4);
 
-            void partialUpdate(uint8_t* data, int xOffset, int yOffset); 
+            void partialUpdate(uint8_t* data, int xOffset, int yOffset, int width, int height); 
 
             GLTexture(const GLTexture&) = delete; 
 
