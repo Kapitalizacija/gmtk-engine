@@ -17,6 +17,8 @@
 #include "scene/ref/resource_ref.hpp"
 
 namespace Sierra {
+    class Scene;
+
     class Object {
         friend class Scene;
         friend class Renderer2D;
@@ -52,10 +54,10 @@ namespace Sierra {
             
         protected:
             virtual void start();
-            virtual void earlyUpdate(float dt);
-            virtual void update(float dt);
-            virtual void lateUpdate(float dt);
-            virtual void fixedUpdate();
+            virtual void earlyUpdate(const StateInfo& stateInfo);
+            virtual void update(const StateInfo& stateInfo);
+            virtual void lateUpdate(const StateInfo& stateInfo);
+            virtual void fixedUpdate(const StateInfo& stateInfo);
             virtual std::vector<float> getDrawData();
             virtual void frameCleanup();
 
@@ -64,6 +66,8 @@ namespace Sierra {
             std::string mObjectName;
             std::unordered_map<size_t, std::shared_ptr<Component::Component>> mComponents;
             std::unordered_set<std::string> mTags;
+
+            ResourceRef<Scene> mScene;
     
             bool enabled;
             bool rendered;

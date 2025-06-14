@@ -9,3 +9,4 @@ shell.nix
 .direnv
 .vscode
 build/
+perf*

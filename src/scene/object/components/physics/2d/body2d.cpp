@@ -16,7 +16,7 @@ namespace Sierra
             this->mShape = std::make_shared<Shape>();
         }
 
-        void Body2D::fixedUpdate()
+        void Body2D::fixedUpdate(const StateInfo& stateInfo)
         {
             if (physicsConstants.isEmpty())
             {
@@ -46,9 +46,9 @@ namespace Sierra
             }
         }
 
-        void Body2D::lateUpdate(float dt)
+        void Body2D::lateUpdate(const StateInfo& stateInfo)
         {
-            mTransform->translate(mVel * dt);
+            mTransform->translate(mVel * stateInfo.dt);
 
             if (std::abs(mVel.x) < 1 && std::abs(mVel.y) < 1)
             {

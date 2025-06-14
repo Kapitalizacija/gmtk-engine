@@ -3,7 +3,7 @@
 namespace Sierra {
     namespace Component {
         Component::Component(std::weak_ptr<Object> ref) {
-            mGameObject = ResourceRef<Object>(ref);
+            mObject = ResourceRef<Object>(ref);
         }
 
         std::string Component::getComponentName() {

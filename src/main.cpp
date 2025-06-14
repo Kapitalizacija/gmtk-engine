@@ -47,15 +47,13 @@ int main() {
 
     Window window = Window("Sierra", {1280, 720});
 
-    Input::Input::init(&window);
-
     ALDevice audio;
     if (!audio.isValid()) {
         ERROR("OpenAL Device Error, exiting");
     }
 
 
-    Scene scene = Scene();
+    Scene scene = Scene(window);
     
     GLTexture tex = GLTexture("lepotec.jpg");
     GLTexture tex1 = GLTexture("bombardino.jpg");
@@ -147,8 +145,6 @@ int main() {
         
         window.update();
         scene.update();
-
-        Input::Input::endFrame();
     }
 
     Debug::Renderer::cleanup();

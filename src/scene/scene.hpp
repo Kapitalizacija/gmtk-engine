@@ -17,16 +17,16 @@
 #include "util/utilities.hpp"
 #include "physics_manager/2d/physics_manager2d.hpp"
 #include "dt/delta_time.hpp"
+#include "input/input.hpp"
 
 namespace Sierra {
  
     class Scene {
         public:
-            Scene();
+            Scene(Window& window);
 
             Scene(const Scene&) = delete;
             Scene(Scene&&) = delete;
-
             
             template<class T, typename... Args>
             ResourceRef<T> createObject(Args&... args);
@@ -48,6 +48,9 @@ namespace Sierra {
     
         private:
             DeltaTime dt;
+            InputHandler mInputHandler;
+
+            StateInfo mStateInfo;
 
             std::unordered_set<std::shared_ptr<Object>> objects;
 

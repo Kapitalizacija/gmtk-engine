@@ -19,11 +19,11 @@ namespace Sierra {
                 glm::vec3 scale = glm::vec3(1.0f));
 
                 virtual void start() { return; }
-                virtual void earlyUpdate(float dt) { return; }
-                virtual void update(float dt) { return; }
-                virtual void lateUpdate(float dt) { return; }
+                virtual void earlyUpdate(const StateInfo& stateInfo) { return; }
+                virtual void update(const StateInfo& stateInfo) { return; }
+                virtual void lateUpdate(const StateInfo& stateInfo) { return; }
+                virtual void fixedUpdate(const StateInfo& stateInfo) { return; }
                 virtual void frameCleanup() override;
-                virtual void fixedUpdate() { return; }
                 virtual bool hasChanged() override;  
 
                 glm::vec3 getPosition();

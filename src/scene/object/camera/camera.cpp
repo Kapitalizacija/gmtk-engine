@@ -8,7 +8,7 @@ namespace Sierra {
 		dimensions = glm::ivec2(1280, 720);
 	}
 
-    void Camera::update(float dt) {
+    void Camera::update(const StateInfo& stateInfo) {
 		if (projectionType == ProjectionType::ORTHOGRAPHIC) {
 			updateOrtho();
 		} else {

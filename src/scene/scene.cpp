@@ -1,8 +1,8 @@
 #include "scene.hpp"
 
 namespace Sierra {
-    Scene::Scene(): sinceLastFixedUpdate(0) {
-
+    Scene::Scene(Window& window): mInputHandler(window), sinceLastFixedUpdate(0),
+     mStateInfo(mInputHandler, 0) {
         GLUtils::init();
 
         renderer = std::make_shared<Renderer>();
@@ -22,19 +22,21 @@ namespace Sierra {
 
         dt.update();
 
-        renderer->mCamera->update(dt.get()); 
+        mStateInfo.dt = dt.get();
+
+        renderer->mCamera->update(mStateInfo); 
 
 
         for (auto& object: objects ) {
-            object->earlyUpdate(dt.get());
+            object->earlyUpdate(mStateInfo);
         }
     
         for (auto& object: objects ) {
-            object->update(dt.get());
+            object->update(mStateInfo);
         }
     
         for (auto& object: objects ) {
-            object->lateUpdate(dt.get());
+            object->lateUpdate(mStateInfo);
         }
 
         fixedUpdate();
@@ -46,6 +48,8 @@ namespace Sierra {
         for (auto& object : objects ) {
             object->frameCleanup();
         }
+
+        mInputHandler.endFrame();
         
     }
     
@@ -57,7 +61,7 @@ namespace Sierra {
         sinceLastFixedUpdate = CLOCK_MS;
         
         for (auto& object: objects ) {
-            object->fixedUpdate();
+            object->fixedUpdate(mStateInfo);
         }
     }
 

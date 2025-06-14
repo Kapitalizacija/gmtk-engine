@@ -19,10 +19,10 @@ namespace Sierra {
                 GLuint getRawHandle();
 
                 virtual void start() { return; }
-                virtual void earlyUpdate(float dt) { return; }
-                virtual void update(float dt) { return; }
-                virtual void lateUpdate(float dt) { return; }
-                virtual void fixedUpdate() { return; }
+                virtual void earlyUpdate(const StateInfo& stateInfo) { return; }
+                virtual void update(const StateInfo& stateInfo) { return; }
+                virtual void lateUpdate(const StateInfo& stateInfo) { return; }
+                virtual void fixedUpdate(const StateInfo& stateInfo) { return; }
                 virtual void frameCleanup() override;
                 virtual bool hasChanged() override;
 

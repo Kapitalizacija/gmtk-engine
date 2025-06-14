@@ -53,11 +53,11 @@ namespace Sierra {
                 void setIsAffectedByGravity(bool isAffectedByGravity);
 
                 virtual void start() { return; }
-                virtual void earlyUpdate(float dt) { return; }
-                virtual void update(float dt) { return; }
-                virtual void lateUpdate(float dt);
+                virtual void earlyUpdate(const StateInfo& stateInfo) { return; }
+                virtual void update(const StateInfo& stateInfo) { return; }
+                virtual void lateUpdate(const StateInfo& stateInfo);
+                virtual void fixedUpdate(const StateInfo& stateInfo);
                 virtual void frameCleanup() { return; }
-                virtual void fixedUpdate();
                 virtual bool hasChanged() { return false; }
             
                 virtual std::vector<size_t> getRequiredComponentHashes() const override;

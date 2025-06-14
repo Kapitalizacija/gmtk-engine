@@ -14,44 +14,64 @@ namespace Sierra {
                 hash = 0;
             }
 
-            ResourceRef(std::weak_ptr<T> ptr): weakPtr(ptr) {
+            ResourceRef(std::weak_ptr<T> ptr): weakPtr(ptr), rawPtr(nullptr) {
                 hash = std::hash<std::shared_ptr<T>>{}(weakPtr.lock());
             }
 
-            ResourceRef(std::shared_ptr<T> ptr): weakPtr(ptr) {
+            ResourceRef(std::shared_ptr<T> ptr): weakPtr(ptr), rawPtr(nullptr) {
                 hash = std::hash<std::shared_ptr<T>>{}(weakPtr.lock());
             }
+            ResourceRef(T* ptr): rawPtr(ptr) {
+                hash = (size_t)ptr;
+            }
 
-            std::shared_ptr<T> operator->() const {
-                if (isEmpty()) {
+            T* operator->() const {
+                if (isEmpty()) 
                     throw new std::runtime_error("Tried to access an empty component");
-                }
 
-                return weakPtr.lock();
+                if (rawPtr)
+                    return rawPtr;
+                
+                return weakPtr.lock().get();
             }
 
             bool isEmpty() const {
-                return weakPtr.use_count() == 0;
+                return weakPtr.use_count() == 0 && rawPtr == nullptr;
             }
 
             std::shared_ptr<T> getLock() {
-                if (isEmpty()) {
+                if (isEmpty()) 
                     throw new std::runtime_error("Tried to access an empty component");
-                }
+                
+                if (rawPtr) 
+                    throw new std::runtime_error("Tried to access a reference with a raw handle");
+                
 
                 return weakPtr.lock();
             }
 
-            std::weak_ptr<T> getPtr() {
-                if (isEmpty()) {
+            std::weak_ptr<T> getSmartPtr() {
+                if (isEmpty()) 
                     throw new std::runtime_error("Tried to access an empty component");
-                }
+                
+                if (rawPtr)
+                    throw new std::runtime_error("Tried to access a reference with a raw handle");
 
                 return weakPtr;
             }
 
+            T* getRawPtr() {
+                if (isEmpty()) 
+                    throw new std::runtime_error("Tried to access an empty component");
+                
+                if (weakPtr.use_count() == 0)
+                    throw new std::runtime_error("Tried to access a reference with a smart ptr handle");
+
+                return rawPtr;
+            }
+
             bool operator==(const ResourceRef &other) const noexcept {
-                return !weakPtr.owner_before(other.weakPtr) && !other.weakPtr.owner_before(weakPtr);
+                return hash;
             }
 
             size_t getHash() const {
@@ -71,6 +91,8 @@ namespace Sierra {
 
         private:
             std::weak_ptr<T> weakPtr;
+            T* rawPtr;
+
             size_t hash;
     };
 }

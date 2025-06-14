@@ -8,6 +8,7 @@
 #include "scene/object/custom_render_object/custom_render_object.hpp"
 #include "scene/ref/resource_ref.hpp"
 #include "2d/renderer2d.hpp"
+#include "scene/state_info.hpp"
 
 namespace Sierra {
     typedef std::unordered_set<ResourceRef<CustomRenderObject>> CustomObjectTable;

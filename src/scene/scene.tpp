@@ -5,6 +5,7 @@ ResourceRef<T> Scene::createObject(Args&... args) {
     static_assert(std::is_base_of_v<Object, T>);
 
     std::shared_ptr<T> obj = std::make_shared<T>(args...);
+    obj->mScene = this;
             
     objects.insert(obj);
 

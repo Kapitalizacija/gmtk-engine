@@ -24,11 +24,11 @@ namespace Sierra {
                 Transform3D(glm::vec3 position = glm::vec3(0.f, 0.f, 0.f), glm::vec4 rotation = glm::vec4(0.f, 0.f, 0.f, 0.f), glm::vec3 scale = glm::vec3(0.f, 0.f, 0.f), std::vector<Vertex> vertices = {});
 
                 virtual void start() { return; }
-                virtual void earlyUpdate(float dt) { return; }
-                virtual void update(float dt) { return; }
-                virtual void lateUpdate(float dt) { return; }
+                virtual void earlyUpdate(const StateInfo& stateInfo) { return; }
+                virtual void update(const StateInfo& stateInfo) { return; }
+                virtual void lateUpdate(const StateInfo& stateInfo) { return; }
+                virtual void fixedUpdate(const StateInfo& stateInfo) { return; }
                 virtual void frameCleanup() override;
-                virtual void fixedUpdate() { return; }
                 virtual bool hasChanged() override;  
 
                 glm::vec3 getPosition();

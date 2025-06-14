@@ -16,11 +16,11 @@ namespace Sierra {
                 DISABLE_COPY_AND_MOVE(Script);
 
                 virtual void start() { return; }
-                virtual void earlyUpdate(float dt) { return; }
-                virtual void update(float dt) { return; }
-                virtual void lateUpdate(float dt) { return; }
+                virtual void earlyUpdate(const StateInfo& stateInfo) { return; }
+                virtual void update(const StateInfo& stateInfo) { return; }
+                virtual void lateUpdate(const StateInfo& stateInfo) { return; }
+                virtual void fixedUpdate(const StateInfo& stateInfo) { return; }
                 virtual void frameCleanup() { return; }
-                virtual void fixedUpdate() { return; }
                 virtual bool hasChanged() { return false; }
             private:
                 

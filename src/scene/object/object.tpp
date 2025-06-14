@@ -13,6 +13,8 @@ ResourceRef<T> Object::createComponent(Args&... args) {
     
     std::shared_ptr<T> component = std::make_shared<T>(args...);
 
+    component->mObject = this;
+
     std::vector<size_t> dependencyHashes = component->getRequiredComponentHashes();
     std::vector<ResourceRef<Component::Component>> dependencies;
     dependencies.reserve(dependencyHashes.size());

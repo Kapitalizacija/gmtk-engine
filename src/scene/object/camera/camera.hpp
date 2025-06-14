@@ -33,9 +33,9 @@ namespace Sierra {
 			protected:
 			
             virtual void start() { return; }
-            virtual void earlyUpdate(float dt) { return; }
-			virtual void update(float dt) override;
-            virtual void lateUpdate(float dt) { return; }
+            virtual void earlyUpdate(const StateInfo& stateInfo) { return; }
+			virtual void update(const StateInfo& stateInfo) override;
+            virtual void lateUpdate(const StateInfo& stateInfo) { return; }
 
 		private:
 			void updateOrtho();
