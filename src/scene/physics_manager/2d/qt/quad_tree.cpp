@@ -2,13 +2,15 @@
                 
 namespace Sierra {
 
-    QuadTree::QuadTree(glm::vec2 pos, glm::vec2 size): mRootNode() {
+    QuadTree::QuadTree(glm::vec2 pos, glm::vec2 size) {
         mRootNode.pos = pos;
         mRootNode.size = size;
         mRootNode.depth = 1;
     }
 
     void QuadTree::update() {
+        resetNodeState(mRootNode);
+
         updateNode(mRootNode);
         resolveCollisionsOnNode(mRootNode);
     }
@@ -18,26 +20,45 @@ namespace Sierra {
     }
 
     void QuadTree::addBody(ResourceRef<Component::Body2D> body) {
-        addBodyToNode(mRootNode, body);
+        ChildObject obj;
+        obj.updated = std::make_shared<bool>(false);
+        obj.affected = true;
+
+        addBodyToNode(mRootNode, obj, body);
     }
 
-    bool QuadTree::addBodyToNode(Node& node, ResourceRef<Component::Body2D> body) {
+    bool QuadTree::addBodyToNode(Node& node, ChildObject obj, ResourceRef<Component::Body2D> body) {
         if (!isInNode(node, body))
             return false;
 
             
         if (node.children.empty()) {
-            node.bodies.insert(body);
+            *obj.updated = true;
+            obj.affected = true;
+
+            node.bodies[body] = obj;
+
             return true;
         }
             
         bool inNode = false;
         for (Node& child : node.children) {
-            if (addBodyToNode(child, body))
+            if (addBodyToNode(child, obj, body))
                 inNode = true;
         }
 
         return inNode;
+    }
+
+    void QuadTree::resetNodeState(Node& node) {
+        for (Node& child : node.children) {
+            resetNodeState(child);
+        }
+
+        for (auto& obj : node.bodies) {
+            obj.second.affected = false;
+            *obj.second.updated = false;
+        }
     }
 
     void QuadTree::updateNode(Node& node) { // recursion actually being usefu???? unheard of
@@ -51,13 +72,19 @@ namespace Sierra {
 
 
         for (auto it = node.bodies.begin(); it != node.bodies.end();) {
-            if (isInNode(node, *it)) {
+            if (isInNode(node, it->first)) {
                 it++;
                 continue;
             }
 
-            addBody(*it);
-            it = node.bodies.erase(it);
+            if(!*it->second.updated) 
+                addBodyToNode(mRootNode, it->second, it->first);
+            
+
+            if (*it->second.updated && !it->second.affected)
+                it = node.bodies.erase(it);
+            else
+                it++;
         }
 
         bool childrenEmpty = true;
@@ -88,8 +115,8 @@ namespace Sierra {
         node.children[2].pos = glm::vec2(node.pos.x - node.size.x / 4, node.pos.y + node.size.y / 4);
         node.children[3].pos = glm::vec2(node.pos.x + node.size.x / 4, node.pos.y + node.size.y / 4);
 
-        for (const ResourceRef<Component::Body2D>& body : node.bodies) {
-            addBody(body);
+        for (auto& pair : node.bodies) {
+            addBodyToNode(mRootNode, pair.second, pair.first);
         }
 
         node.bodies.clear();
@@ -124,12 +151,12 @@ namespace Sierra {
             }
         }
 
-        for(ResourceRef<Component::Body2D> b1 : node.bodies) {
-            for(ResourceRef<Component::Body2D> b2 : node.bodies) {
-                if (b1 == b2)
+        for(auto& b1 : node.bodies) {
+            for(auto& b2 : node.bodies) {
+                if (b1.first == b2.first)
                     continue;
 
-                b1->resolveCollision(b2);
+                b1.first->resolveCollision(b2.first);
             }
         }
     }

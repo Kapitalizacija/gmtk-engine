@@ -8,7 +8,7 @@
 #include "io/logging/logger.hpp"
 #include "gl/texture/gl_texture.hpp"
 
-#include <ft2build.h>
+#include <freetype2/ft2build.h>
 #include FT_FREETYPE_H
 
 namespace Sierra {

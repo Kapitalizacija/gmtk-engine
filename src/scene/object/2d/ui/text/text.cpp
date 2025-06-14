@@ -23,6 +23,7 @@ namespace Sierra {
     GLuint Text::rotationUniformLocation = 0;
     GLuint Text::textureUniformLocation = 0;
     GLuint Text::projectionUniformLocation = 0;
+    GLuint Text::instanceCountUniformLocation = 0;
 
     uint32_t Text::USE_COUNT = 0;
 
@@ -71,6 +72,7 @@ namespace Sierra {
         scaleUniformLocation = glGetUniformLocation(SHADER->getProgram(), "scale");        
         textureUniformLocation = glGetUniformLocation(SHADER->getProgram(), "tex");        
         projectionUniformLocation = glGetUniformLocation(SHADER->getProgram(), "projection");        
+        instanceCountUniformLocation = glGetUniformLocation(SHADER->getProgram(), "instanceCount");        
     }
     
 
@@ -89,6 +91,7 @@ namespace Sierra {
         glUniform3fv(posUniformLocation, 1, glm::value_ptr(transform->getPosition()));
         glUniform2fv(scaleUniformLocation, 1, glm::value_ptr(transform->getScale()));
         glUniform1f(rotationUniformLocation, transform->getRotation());
+        glUniform1i(instanceCountUniformLocation, text.length());
 
         camera.__applyProjection(projectionUniformLocation);
 

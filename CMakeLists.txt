@@ -43,6 +43,7 @@ include_directories(stb/stb_image)
 include_directories(stb/stb_truetype)
 include_directories(stb)
 include_directories(drlibs)
+include_directories(/usr/include/freetype2)
 
 # Link libraries (assuming they are in the system linker path)
 target_link_libraries(engine PRIVATE glfw OpenAL::OpenAL freetype)

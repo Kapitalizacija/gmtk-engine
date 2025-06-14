@@ -41,6 +41,7 @@ namespace Sierra {
             static GLuint rotationUniformLocation;
             static GLuint textureUniformLocation;
             static GLuint projectionUniformLocation;
+            static GLuint instanceCountUniformLocation;
 
 
             static const std::string VERTEX_PATH;

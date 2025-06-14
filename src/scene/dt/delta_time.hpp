@@ -14,6 +14,6 @@ namespace Sierra {
             float mDt;
             size_t mLast;
 
-            const float MAX_DT = 0.032; // to prevent game breaking stutters
+            const float MAX_DT = 1; // to prevent game breaking stutters
     };
 }
