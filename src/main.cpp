@@ -28,6 +28,8 @@
 
 #include "input/input.hpp"
 
+#include "engine/engine.hpp"
+
 #include <cmath>
 #include <thread>
 
@@ -42,19 +44,20 @@ class TestObj : public Object2D {
 };
 
 int main() {
-    //Allocate a small mempool for the lulz
-    Memory::Mempool mempool = Memory::Mempool(1048576); //1 MiB because I feel special
+    std::string title = "Sierra";
+    Engine engine = Engine(title, glm::ivec2(1280, 720), 1024);    
 
+    /*
     Window window = Window("Sierra", {1280, 720});
 
     ALDevice audio;
     if (!audio.isValid()) {
         ERROR("OpenAL Device Error, exiting");
     }
+    */
+    //Scene scene = Scene(window);
+    Scene scene = Scene(*engine.getWindow()); //This is janky as fuck, holy shit someone take away my pc
 
-
-    Scene scene = Scene(window);
-    
     GLTexture tex = GLTexture("lepotec.jpg");
     GLTexture tex1 = GLTexture("bombardino.jpg");
 
@@ -113,6 +116,11 @@ int main() {
     ResourceRef<Camera> cam = scene.getCamera();
     cam->setProjectionType(Camera::ProjectionType::ORTHOGRAPHIC);
 
+    //std::shared_ptr<Scene> s(&scene);
+
+    bool res = engine.loadScene(&scene); //surely
+    if (res)
+        DBG("No error.");
 
     double lastTime = glfwGetTime();
     double deltaTime = 0.0;
@@ -122,13 +130,13 @@ int main() {
 
     //obj2->getComponent<Body2D>()->applyImpulse(glm::vec3(-10000, 0, 0));
 
-    while (!window.shouldClose()) {
+    while (!engine.getWindow()->shouldClose()) {
         //Some basic fps counter login here, should be moved sometime
 
         fps = 1.0 / scene.getDeltaTime();
 
         std::string title = "FPS: " + std::to_string(static_cast<int>(fps));
-        glfwSetWindowTitle(window.get_glfw_window(), title.c_str());
+        glfwSetWindowTitle(engine.getWindow()->get_glfw_window(), title.c_str());
 
         for (auto& obj : objs) {
             obj->getComponent<Transform2D>()->setPosition(glm::vec3(rand() % 1000 - 500, rand() % 1000 - 500, 0));
@@ -143,12 +151,11 @@ int main() {
         //if (Input::Input::isKeyPressed(GLFW_KEY_W))
         //    DBG("Pressing W!");
         
-        window.update();
-        scene.update();
+        engine.update();
+        //scene.update();
     }
 
+    //engine.unloadScene();
     Debug::Renderer::cleanup();
     GLUtils::cleanup();
-
-
 }
