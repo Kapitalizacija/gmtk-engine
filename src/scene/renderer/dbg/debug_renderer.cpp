@@ -56,7 +56,7 @@ namespace Sierra {
             glUniform4fv(COLOR_UNIFORM_LOC, 1, glm::value_ptr(color));
 
             if (useCamera)
-                CAMERA->__applyProjection(CAM_UNFIROM_LOC); 
+                CAMERA->__applyProjection(CAM_UNFIROM_LOC, Camera::ProjectionType::ORTHOGRAPHIC); 
             else
                 glUniform4fv(CAM_UNFIROM_LOC, 1, glm::value_ptr(identityMat));
 

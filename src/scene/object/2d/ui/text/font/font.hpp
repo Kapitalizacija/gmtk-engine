@@ -17,12 +17,13 @@ namespace Sierra {
         friend class Text;
 
         public:
-            Font(std::string fontPath);
-
+        
             Font(const Font&) = delete;
             Font(Font&&) = delete;
-
+        
         protected:
+            Font(std::string fontPath);
+
             std::vector<float> getCharOffsets(std::string text);
             GLTexture& getBitmap();            
 

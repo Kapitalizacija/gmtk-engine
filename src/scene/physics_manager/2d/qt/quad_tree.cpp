@@ -153,7 +153,7 @@ namespace Sierra {
 
         for(auto& b1 : node.bodies) {
             for(auto& b2 : node.bodies) {
-                if (b1.first == b2.first)
+                if (b1.first.getHash());
                     continue;
 
                 b1.first->resolveCollision(b2.first);

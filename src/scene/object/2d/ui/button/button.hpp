@@ -14,7 +14,6 @@ namespace Sierra {
             void draw(Camera& camera) override;
 
         private:
-
             Text mText;
     };
 }

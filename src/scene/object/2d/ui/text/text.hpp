@@ -11,15 +11,17 @@
 
 namespace Sierra {
     class Text : public Object, public CustomRenderObject {
-        public:
-            Text(Font& font, std::string text);
+        friend class Button;
 
+        public:
             Text(Text&) = delete;
             Text(Text&&) = delete;
 
             ~Text();
 
         protected:
+            Text(Font& font, std::string text);
+
             void draw(Camera& camera) override;
 
         private:

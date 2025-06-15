@@ -13,7 +13,7 @@ namespace Sierra {
         friend class Scene;
         public:
 
-            InputHandler(Window& window);
+            InputHandler(ResourceRef<Window> window);
 
             InputHandler(const InputHandler&) = delete;
             InputHandler(const InputHandler&&) = delete;

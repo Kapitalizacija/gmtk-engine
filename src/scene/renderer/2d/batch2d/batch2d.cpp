@@ -25,6 +25,11 @@ namespace Sierra {
 
         std::vector<float> new_dat = object->getDrawData();
         objectData.insert(objectData.end(), new_dat.begin(), new_dat.end());
+
+        glm::ivec3 colorVec = object->getComponent<Component::Texture>()->getColor();
+        objectData.push_back(colorVec.r);
+        objectData.push_back(colorVec.g);
+        objectData.push_back(colorVec.b);
     }
 
     std::optional<ObjectMap::iterator> RenderBatch2D::removeObject(ResourceRef<Object2D> object, GLuint texture) {
@@ -97,12 +102,12 @@ namespace Sierra {
         ptr3.isInstanced = true;
 
         GLAttribPointer ptr4;
-        ptr4.buff = &extraDrawDataGLBuffer;
+        ptr4.buff = &objectDataGLBuffer;
         ptr4.index = 4;
-        ptr4.componentCount = 1;
-        ptr4.type = GL_INT;
-        ptr4.stride = sizeof(uint32_t) * 2;
-        ptr4.offset = 0;
+        ptr4.componentCount = 3;
+        ptr4.type = GL_UNSIGNED_INT;
+        ptr4.stride = instanceDataSize;
+        ptr4.offset = 24;
         ptr4.isInstanced = true;
 
         GLAttribPointer ptr5;
@@ -111,10 +116,19 @@ namespace Sierra {
         ptr5.componentCount = 1;
         ptr5.type = GL_INT;
         ptr5.stride = sizeof(uint32_t) * 2;
-        ptr5.offset = 4;
+        ptr5.offset = 0;
         ptr5.isInstanced = true;
 
-        GLAttribPointer ptrs[] = {ptr0, ptr1, ptr2, ptr3, ptr4, ptr5};
+        GLAttribPointer ptr6;
+        ptr6.buff = &extraDrawDataGLBuffer;
+        ptr6.index = 6;
+        ptr6.componentCount = 1;
+        ptr6.type = GL_INT;
+        ptr6.stride = sizeof(uint32_t) * 2;
+        ptr6.offset = 4;
+        ptr6.isInstanced = true;
+
+        GLAttribPointer ptrs[] = {ptr0, ptr1, ptr2, ptr3, ptr4, ptr5, ptr6};
 
         vao = GLVAO(ptrs, sizeof(ptrs) / sizeof(GLAttribPointer));
         vao.addEBO(GLUtils::getSquareIndexBuffer());

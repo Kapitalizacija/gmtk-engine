@@ -45,7 +45,7 @@ class TestObj : public Object2D {
 
 int main() {
     std::string title = "Sierra";
-    Engine engine = Engine(title, glm::ivec2(1280, 720), 1024);    
+    Engine engine = Engine(title, {1280, 720}, 1024);    
 
     /*
     Window window = Window("Sierra", {1280, 720});
@@ -56,7 +56,7 @@ int main() {
     }
     */
     //Scene scene = Scene(window);
-    Scene scene = Scene(*engine.getWindow()); //This is janky as fuck, holy shit someone take away my pc
+    Scene scene = Scene(engine.getWindow()); //This is janky as fuck, holy shit someone take away my pc
 
     GLTexture tex = GLTexture("lepotec.jpg");
     GLTexture tex1 = GLTexture("bombardino.jpg");
@@ -71,41 +71,35 @@ int main() {
     ResourceRef<PhysicsManager2D> physicsManager2D = scene.getPhysicsManager2D();
     physicsManager2D->setConstants(constants);
 
-    std::vector<ResourceRef<Object2D>> objs;
-    for (int i = 0; i < 1000; i++) {
 
-        ResourceRef<Object2D> obj1 = scene.createObject<Object2D>();
-        ResourceRef<Object2D> obj2 = scene.createObject<Object2D>();
+    ResourceRef<Object2D> obj1 = scene.createObject<Object2D>();
+    ResourceRef<Object2D> obj2 = scene.createObject<Object2D>();
 
-        obj1->getComponent<Texture>()->setTexture(tex);
-        obj2->getComponent<Texture>()->setTexture(tex1);
+    obj1->getComponent<Texture>()->setTexture(tex);
+    obj2->getComponent<Texture>()->setTexture(tex1);
 
-        obj1->setShader(shader);
-        obj2->setShader(shader);
+    obj1->setShader(shader);
+    obj2->setShader(shader);
 
-        obj1->getComponent<Transform2D>()->setPosition(glm::vec3(rand() % 1000 - 500, rand() % 1000 - 500, 0));
-        obj2->getComponent<Transform2D>()->setPosition(glm::vec3(rand() % 1000 - 500, rand() % 1000 - 500, 0));
+    obj1->getComponent<Transform2D>()->setPosition(glm::vec3(300, 0, 0));
+    obj2->getComponent<Transform2D>()->setPosition(glm::vec3(0, 0, 0));
 
-        obj1->getComponent<Transform2D>()->setScale(glm::vec3(10, 10, 10));
-        obj2->getComponent<Transform2D>()->setScale(glm::vec3(10, 10, 10));
+    obj1->getComponent<Transform2D>()->setScale(glm::vec3(100));
+    obj2->getComponent<Transform2D>()->setScale(glm::vec3(100));
 
-        obj1->createComponent<Body2D>();
-        obj2->createComponent<Body2D>();
+    obj1->createComponent<Body2D>();
+    obj2->createComponent<Body2D>();
 
-        physicsManager2D->addBody(obj1->getComponent<Body2D>());
-        physicsManager2D->addBody(obj2->getComponent<Body2D>());
+    physicsManager2D->addBody(obj1->getComponent<Body2D>());
+    physicsManager2D->addBody(obj2->getComponent<Body2D>());
 
-        obj1->getComponent<Body2D>()->setIsSimulated(true);
-        obj2->getComponent<Body2D>()->setIsSimulated(true);
-        obj1->getComponent<Body2D>()->setIsAffectedByGravity(false);
-        obj2->getComponent<Body2D>()->setIsAffectedByGravity(false);
+    obj1->getComponent<Body2D>()->setIsSimulated(true);
+    obj2->getComponent<Body2D>()->setIsSimulated(true);
+    obj1->getComponent<Body2D>()->setIsAffectedByGravity(false);
+    obj2->getComponent<Body2D>()->setIsAffectedByGravity(false);
 
-        scene.getRenderer()->addObject2d(obj1);
-        scene.getRenderer()->addObject2d(obj2);
-
-        objs.push_back(obj1);
-        objs.push_back(obj2);
-    }
+    scene.getRenderer()->addObject2d(obj1);
+    scene.getRenderer()->addObject2d(obj2);
 
 
     Body2D::Info info{0};
@@ -114,13 +108,10 @@ int main() {
     info.mass = 100.0f;
 
     ResourceRef<Camera> cam = scene.getCamera();
-    cam->setProjectionType(Camera::ProjectionType::ORTHOGRAPHIC);
 
     //std::shared_ptr<Scene> s(&scene);
 
-    bool res = engine.loadScene(&scene); //surely
-    if (res)
-        DBG("No error.");
+    (void)engine.loadScene(&scene); //surely
 
     double lastTime = glfwGetTime();
     double deltaTime = 0.0;
@@ -137,10 +128,6 @@ int main() {
 
         std::string title = "FPS: " + std::to_string(static_cast<int>(fps));
         glfwSetWindowTitle(engine.getWindow()->get_glfw_window(), title.c_str());
-
-        for (auto& obj : objs) {
-            obj->getComponent<Transform2D>()->setPosition(glm::vec3(rand() % 1000 - 500, rand() % 1000 - 500, 0));
-        }
 
         //obj1->getComponent<Transform2D>()->translate(glm::vec3(5.0f, 0.0f, 0.0f));
         //obj1->getComponent<Transform2D>()->setRotation(glfwGetTime() * 10);

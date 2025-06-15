@@ -7,6 +7,7 @@ namespace Sierra {
     }
 
     void Renderer2D::createGLBuffers(){
+
     }
 
     void Renderer2D::update() {
@@ -39,7 +40,7 @@ namespace Sierra {
             GLint texturesUniformLoc = glGetUniformLocation(shaderGroup.first, "textures");
             GLuint projectionLoc = glGetUniformLocation(shaderGroup.first, "projection");
 
-            camera.__applyProjection(projectionLoc);
+            camera.__applyProjection(projectionLoc, Camera::ProjectionType::ORTHOGRAPHIC);
 
             glUniform1iv(texturesUniformLoc, 32, texture_indices);
 
@@ -114,7 +115,7 @@ namespace Sierra {
         }
 
         if (!found_group) {
-            shader_group.emplace_back(object->getDrawData().size() * sizeof(std::float32_t), object->getDrawData().size());
+            shader_group.emplace_back(object->getDrawData().size() * sizeof(std::float32_t) + sizeof(glm::ivec3), object->getDrawData().size() + 3);
 
             RenderBatch2D& batch = shader_group.back();
 
@@ -212,7 +213,7 @@ namespace Sierra {
            return; 
         }
 
-        std::copy(batch.objectData.begin() + srcStartOffset * batch.instanceDataCount, batch.objectData.end(), batch.objectData.begin() + dstStartOffset *  batch.instanceDataCount);
+        std::copy(batch.objectData.begin() + srcStartOffset * batch.instanceDataCount, batch.objectData.end(), batch.objectData.begin() + dstStartOffset * batch.instanceDataCount);
         std::copy(batch.extraDrawInfo.begin() + srcStartOffset * 2, batch.extraDrawInfo.end(), batch.extraDrawInfo.begin() + dstStartOffset *  2);
     }
     
@@ -265,6 +266,13 @@ namespace Sierra {
                         }
 
                         std::vector<float> newData = it->first->getDrawData();
+                        glm::ivec3 color = it->first->getComponent<Component::Texture>()->getColor();
+                        newData.resize(newData.size() + 3); // todo could be faster
+
+                        newData.push_back(color.r);
+                        newData.push_back(color.g);
+                        newData.push_back(color.b);
+
                         memcpy((char*)batch.objectData.data() + (*it).second * batch.instanceDataSize, newData.data(), batch.instanceDataSize); 
 
                         objectDataUpdateRegions.push_back(
@@ -295,6 +303,7 @@ namespace Sierra {
 
 
     void Renderer2D::initBatch(RenderBatch2D& batch) {
+
     }
     
     void Renderer2D::freeUnusedMemory() {

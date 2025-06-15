@@ -1,42 +1,21 @@
 #include "engine.hpp"
 
 namespace Sierra {
-    Engine::Engine(std::string &windowTitle, glm::ivec2 dimensions, uint32_t mempoolSize) {
-        mMempool = new Memory::Mempool(mempoolSize); //This is pretty stupid, but I can't be bothered to implement a better solution (a move constructor)
-        LOG("Mempool init");
-        
-        mALDevice = new ALDevice(); //Should be moved to stack as well
-        if (!mALDevice->isValid()) {
+    Engine::Engine(std::string &windowTitle, Resolution dimensions, uint32_t mempoolSize): mWindow(windowTitle, dimensions), mMempool(mempoolSize),
+     mALDevice() {
+        if (!mALDevice.isValid()) {
             ERROR("OpenAL Device Error");
         }
-
-        Sierra::Resolution res;
-        res.w = dimensions.x;
-        res.h = dimensions.y;
-        mWindow = new Window(windowTitle, res);
-        LOG("Window init");
-    }
-
-    Engine::~Engine() {
-        //Active scene is handled by stack, so we're not touching that shit
-        if (mALDevice)
-            delete mALDevice;
-        if (mMempool)
-            delete mMempool;
-        if (mWindow)
-            delete mWindow;
     }
 
     void Engine::start() {
-        if (mActiveScene != nullptr) {
+        if (mActiveScene != nullptr) { // FIXME tf does this even evaluate to??
             mActiveScene->update();
         }
     }
         
     void Engine::update() {
-        if (mWindow != nullptr) {
-            mWindow->update();
-        }
+        mWindow.update();
         
         if (mActiveScene != nullptr) {
             mActiveScene->update();
@@ -53,6 +32,6 @@ namespace Sierra {
     }
 
     void Engine::unloadScene() {
-        //mActiveScene = nullptr; //Setting to nullptr should nuke the scene (if the last owner)
+        mActiveScene.reset();
     }        
 }

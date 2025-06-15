@@ -6,12 +6,14 @@ namespace Sierra {
             mComponentName = "Texture";
             mTextureID = 0;
             changed = false;
+            mColor = glm::ivec3(1);
         }
 
         Texture::Texture(GLTexture& gl_texture) {
             mComponentName = "Texture";
             mTextureID = gl_texture.getTexture();
             changed = false;
+            mColor = glm::ivec3(1);
         }
 
         void Texture::setTexture(GLTexture& glTexture) {
@@ -20,6 +22,14 @@ namespace Sierra {
             }
 
             mTextureID = glTexture.getTexture();
+        }
+
+        void Texture::setColor(glm::ivec3 color) {
+            mColor = color;
+        }
+
+        glm::ivec3 Texture::getColor() {
+            return mColor;
         }
 
         GLuint Texture::getRawHandle() {

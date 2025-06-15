@@ -23,9 +23,9 @@ namespace Sierra {
         friend class Scene;
         friend class Renderer2D;
         friend class RenderBatch2D;
+        friend class GameObjectWrapper;
 
         public:
-            Object();
             virtual ~Object() = default;
 
             Object(const Object&) = delete;
@@ -53,6 +53,8 @@ namespace Sierra {
             bool isRendered();
             
         protected:
+            Object();
+
             virtual void start();
             virtual void earlyUpdate(const StateInfo& stateInfo);
             virtual void update(const StateInfo& stateInfo);

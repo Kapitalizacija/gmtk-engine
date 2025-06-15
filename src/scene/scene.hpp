@@ -23,10 +23,10 @@ namespace Sierra {
  
     class Scene {
         public:
-            Scene(Window& window);
+            Scene(ResourceRef<Window> window);
 
             Scene(const Scene&) = delete;
-            Scene(Scene&&) = delete;
+            Scene(const Scene&&) = delete;
             
             template<class T, typename... Args>
             ResourceRef<T> createObject(Args&... args);

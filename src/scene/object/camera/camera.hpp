@@ -25,10 +25,9 @@ namespace Sierra {
 
 			Camera();
 
-			void setProjectionType(ProjectionType newType);
 			void setDimensions(glm::ivec2 newDimensions);
 			
-			void __applyProjection(GLuint location);
+			void __applyProjection(GLuint location, ProjectionType type);
 
 			protected:
 			
@@ -41,9 +40,9 @@ namespace Sierra {
 			void updateOrtho();
 			void updatePerspective();
 
-			ProjectionType projectionType;
+			glm::mat4 orthoProjection;
+			glm::mat4 perspectiveProjection;
 
-			glm::mat4 projection;
 			glm::ivec2 dimensions;
 	};
 }

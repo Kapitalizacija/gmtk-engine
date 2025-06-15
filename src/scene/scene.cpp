@@ -1,7 +1,7 @@
 #include "scene.hpp"
 
 namespace Sierra {
-    Scene::Scene(Window& window): mInputHandler(window), sinceLastFixedUpdate(0),
+    Scene::Scene(ResourceRef<Window> window): mInputHandler(window), sinceLastFixedUpdate(0),
      mStateInfo(mInputHandler, 0) {
         GLUtils::init();
 

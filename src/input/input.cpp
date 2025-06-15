@@ -9,8 +9,8 @@ namespace Sierra {
     glm::ivec2 InputHandler::mMousePos = glm::ivec2(0, 0);
     double InputHandler::mScrollOffset = 0.0;
     
-    InputHandler::InputHandler(Window& window) {
-        GLFWwindow *ref = window.get_glfw_window();
+    InputHandler::InputHandler(ResourceRef<Window> window) {
+        GLFWwindow *ref = window->get_glfw_window();
         
         glfwSetKeyCallback(ref, keyCallback);
         glfwSetMouseButtonCallback(ref, mouseButtonCallback);

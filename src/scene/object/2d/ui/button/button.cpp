@@ -6,6 +6,6 @@ namespace Sierra {
     }
     
     void Button::draw(Camera& camera) {
-
+        
     }
 }

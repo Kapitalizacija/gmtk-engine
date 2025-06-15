@@ -93,7 +93,7 @@ namespace Sierra {
         glUniform1f(rotationUniformLocation, transform->getRotation());
         glUniform1i(instanceCountUniformLocation, text.length());
 
-        camera.__applyProjection(projectionUniformLocation);
+        camera.__applyProjection(projectionUniformLocation, Camera::ProjectionType::ORTHOGRAPHIC);
 
         glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr, text.length());
 

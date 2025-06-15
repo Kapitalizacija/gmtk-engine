@@ -71,7 +71,7 @@ namespace Sierra {
             }
 
             bool operator==(const ResourceRef &other) const noexcept {
-                return hash;
+                return hash == other.hash;
             }
 
             size_t getHash() const {
@@ -87,6 +87,12 @@ namespace Sierra {
                 return ResourceRef<G>(
                     std::static_pointer_cast<G>(weakPtr.lock()) // reinterpret_cast?? NO
                 );
+            }
+
+            void reset() {
+                hash = 0;
+                rawPtr = nullptr;
+                weakPtr.reset();
             }
 
         private:
