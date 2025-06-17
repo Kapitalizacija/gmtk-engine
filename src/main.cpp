@@ -135,11 +135,19 @@ int main() {
         //glm::ivec2 pos = Input::Input::getMousePosition();
         //DBG("Mouse pos; X: " << pos.x << " Y: " << pos.y);
         //
-        //if (Input::Input::isKeyPressed(GLFW_KEY_W))
-        //    DBG("Pressing W!");
         
+        float moveSpeed = 6.f;
+        glm::vec3 curPos = obj1->getComponent<Transform2D>()->getPosition();
+        if (InputHandler::isKeyPressed(GLFW_KEY_W))
+            curPos.y += moveSpeed;
+        if (InputHandler::isKeyPressed(GLFW_KEY_S))
+            curPos.y -= moveSpeed;
+        if (InputHandler::isKeyPressed(GLFW_KEY_D))
+            curPos.x += moveSpeed;
+        if (InputHandler::isKeyPressed(GLFW_KEY_A))
+            curPos.x -= moveSpeed;
+        obj1->getComponent<Transform2D>()->setPosition(curPos);
         engine.update();
-        //scene.update();
     }
 
     //engine.unloadScene();

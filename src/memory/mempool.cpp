@@ -12,11 +12,6 @@ namespace Sierra::Memory {
 	}
 
 	uint8_t* Mempool::allocate(uint32_t sz) {
-		//TODO: This is inefficient. The current setup will
-		//cause the effective available memory to be allocated
-		//to decay over time, if continuously smaller amounts
-		//of memory are allocated.
-
 		//Check if we can reuse a bound
 		for (auto it = mFreedBounds.begin(); it != mFreedBounds.end(); ++it) {
 			if (it->second - it->first >= sz) {
@@ -49,6 +44,20 @@ namespace Sierra::Memory {
 			if (overwrite) {
 				size_t len = ptr - mFreedBounds[ptr];
 				std::memset(ptr, 0x00, len);
+			}
+
+			//Combine multiple unallocated (freed) bounds into one (if sequential)
+			for (const auto & [ key, value ] : mFreedBounds) {
+				if (value == ptr - 1) { // -1 because previous address (I think)
+					mFreedBounds[key] = mFreedBounds[ptr];
+					mFreedBounds.erase(ptr); //Get rid of the ref
+					break;
+				}
+
+				if (key - 1 == mFreedBounds[ptr]) { //Next free
+					mFreedBounds[ptr] = mFreedBounds[key];
+					break;
+				}
 			}
 
 			return true;

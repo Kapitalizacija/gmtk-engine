@@ -18,8 +18,8 @@ namespace Sierra {
             InputHandler(const InputHandler&) = delete;
             InputHandler(const InputHandler&&) = delete;
 
-            bool isKeyPressed(int key);
-            bool isMouseButtonPressed(int button);
+            static bool isKeyPressed(int key);
+            static bool isMouseButtonPressed(int button);
 
             glm::ivec2 getMousePosition();
 
